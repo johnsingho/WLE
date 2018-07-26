@@ -1,0 +1,187 @@
+﻿@model WarehouseLaborEfficiencyWeb.Controllers.LogInModel
+@using WarehouseLaborEfficiencyWeb.DAL;
+
+@{
+    ViewBag.Title = "Signin";
+    Layout = null;
+}
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/bs")
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")    
+    @Scripts.Render("~/bundles/bs")
+    @*@Styles.Render("~/Content/my")*@
+    @*@Scripts.Render("~/bundles/my")*@
+    @Scripts.Render("~/bundles/main")
+
+    <style type="text/css">
+        .form-control {
+            height: 34px;
+        }
+
+        .alert {
+            padding: 5px;
+        }
+
+        .form-control {
+            font-size: 14px;
+            font-weight: bold;
+        }
+    </style>
+    
+    <script type="text/javascript">
+
+        function ShowRegDialog() {
+            $('#dlgReg').modal('show');
+        }
+        function DoRegister() {
+            var ad = $("#modalUser").val();
+            if (!ad) {
+                BootstrapDialog.show({ message: "AD Account is required", size: BootstrapDialog.SIZE_SMALL });
+                return false;
+            }
+            $('#dlgReg').modal('hide');
+            AjaxPost("@Url.Action("DoRegister")", "{'inputad':'" + ad + "'}",
+                true,
+                function (result) {
+                    if (result) {
+                        if (result.bok) {
+                            BootstrapDialog.success('Register ok, you can login now.');
+                        } else {
+                            BootstrapDialog.alert(result.errMsg);
+                        }
+                    }
+            });
+            return false;
+        }
+
+        $(function() {
+            $("#Password").keypress(function(event) {
+                var keycode = (event.keyCode ? event.keyCode : event.which);
+                if(keycode === 13) {
+                    $("#btnLoginIn").click();
+                }
+            });
+        });
+    </script>
+
+</head>
+<body>
+    <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+        <div class="navbar-header">
+            <div class="navbar-header headerbg">
+                <div class="navbar-brand" style="margin-left: 75px; font-size: 30px; color: #19adcc;">
+                    @CommonInfo.SiteTitle
+                </div>
+            </div>
+        </div>
+        <!-- /.navbar-header -->
+    </nav>
+
+    <div class="container" style="width: 430px;">
+        <div style="margin-top: 100px;">
+            &nbsp;
+        </div>
+
+        @using (Html.BeginForm("Signin", "Login", FormMethod.Post, new { @id = "form_login" }))
+        {
+        @Html.AntiForgeryToken()
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h2 class="panel-title">
+                    欢迎使用 Welcome
+                </h2>
+            </div>
+
+            <div class="panel-body">
+                @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-addon">
+                            <i class="glyphicon glyphicon-user"></i>
+                        </div>
+                        @Html.TextBoxFor(m => m.Username,
+                           new Dictionary<string, object>
+                           {
+                                        {"class", "form-control"},
+                                        {"placeholder", "Username"},
+                                        {"autocomplete", "off"},
+                                        {"required", "true"}
+                           })
+                        @*@Html.ValidationMessageFor(a => a.Username)*@
+                    </div>
+                </div>
+                <div class="form-group ">
+                    <div class="input-group">
+                        <div class="input-group-addon">
+                            <i class="glyphicon glyphicon-lock"></i>
+                        </div>
+                        @Html.PasswordFor(m => m.Password,
+                           new Dictionary<string, object>
+                           {
+                                        {"class", "form-control"},
+                                        {"placeholder", "Password"},
+                                        {"autocomplete", "off"},
+                                        {"required", "true"}
+                           })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.HiddenFor(m => m.ReturnUrl)
+                    <button type='submit' id="btnLoginIn"
+                            class='btn btn-info btn-block btn-login'>
+                        Login In
+                    </button>
+                    @if (!SysUserInfo.HasOtherUsers())
+                    {
+                        <button type='button' id="btnRegister" onclick="ShowRegDialog()"
+                                class='btn btn-info btn-block'>
+                            Register
+                        </button>
+                    }
+                </div>
+            </div>
+        </div>
+        }
+
+        <div class="modal fade" id="dlgReg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header" style="padding: 5px">
+                        <label style="font-size: 12px; font-weight: 600; margin: 0;">
+                            注册 Register for @CommonInfo.SiteTitle
+                        </label>
+                    </div>
+                    <div class="modal-body">
+                        <form id="loginForm" style="font-size: 12px">
+                            <div class="form-group">
+                                <label class="control-label"> AD Account</label>
+                                <input type="text" id="modalUser" autocomplete="off" name="modalUser" value="" class="form-control"
+                                       placeholder="your AD Account" />
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer" style="padding: 5px">
+                        <button type="button" onclick="DoRegister()" class="btn btn-info btn-xs">
+                            确认 Confirm
+                        </button>
+                        <button type="button" class="btn btn-default btn-xs" data-dismiss="modal">
+                            取消 Cancel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

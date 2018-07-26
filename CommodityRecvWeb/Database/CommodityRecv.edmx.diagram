@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="435c9e258cd94f8eb37dfda371637dd0" Name="Diagram1" ZoomLevel="86">
+        <EntityTypeShape EntityType="CommodityRecv_DashboardModel.sys_user" Width="1.5" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="CommodityRecv_DashboardModel.tbl_cr_Baan" Width="1.5" PointX="2.75" PointY="0.75" />
+        <EntityTypeShape EntityType="CommodityRecv_DashboardModel.tbl_cr_Condition" Width="1.5" PointX="4.75" PointY="0.75" />
+        <EntityTypeShape EntityType="CommodityRecv_DashboardModel.tbl_cr_mailReceiver" Width="1.5" PointX="4.75" PointY="3.75" />
+        <EntityTypeShape EntityType="CommodityRecv_DashboardModel.v_CommodityRecvCmp" Width="1.5" PointX="0.75" PointY="5.75" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

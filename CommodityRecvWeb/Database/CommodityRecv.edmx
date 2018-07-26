@@ -1,0 +1,262 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="CommodityRecv_DashboardModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="sys_user">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ADAccount" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="FullName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Email" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="LastLogon" Type="datetime" />
+          <Property Name="IsValid" Type="bit" Nullable="false" />
+          <Property Name="IsAdmin" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_cr_Baan">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PONUMBER" Type="varchar" MaxLength="80" />
+          <Property Name="SUPPLIERNBR" Type="varchar" MaxLength="80" />
+          <Property Name="POTYPE" Type="varchar" MaxLength="20" />
+          <Property Name="BUYER" Type="varchar" MaxLength="100" />
+          <Property Name="REFERENCEA" Type="varchar" MaxLength="80" />
+          <Property Name="REFERENCEB" Type="varchar" MaxLength="80" />
+          <Property Name="ITEM" Type="varchar" MaxLength="80" />
+          <Property Name="ITEMDSE" Type="nvarchar" MaxLength="200" />
+          <Property Name="QTY" Type="int" />
+          <Property Name="UNIT" Type="varchar" MaxLength="20" />
+          <Property Name="RECEIVEDATE" Type="datetime" />
+          <Property Name="CompCode" Type="varchar" MaxLength="8" />
+        </EntityType>
+        <EntityType Name="tbl_cr_Condition">
+          <Key>
+            <PropertyRef Name="CostItemNumber" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CommodityCode" Type="varchar" MaxLength="40" />
+          <Property Name="CostItemNumber" Type="varchar" MaxLength="40" Nullable="false" />
+          <Property Name="CommodityCodeDescription" Type="varchar" MaxLength="300" />
+        </EntityType>
+        <EntityType Name="tbl_cr_mailReceiver">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="cnName" Type="nvarchar" MaxLength="40" />
+          <Property Name="enName" Type="varchar" MaxLength="40" />
+          <Property Name="mailAddr" Type="varchar" MaxLength="120" Nullable="false" />
+          <Property Name="mailAddrType" Type="int" />
+          <Property Name="isValid" Type="bit" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'CommodityRecv_Dashboard.dbo.v_CommodityRecvCmp' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="v_CommodityRecvCmp">
+          <Key>
+            <PropertyRef Name="ITEM" />
+          </Key>
+          <Property Name="PONUMBER" Type="varchar" MaxLength="80" />
+          <Property Name="ITEM" Type="varchar" MaxLength="40" Nullable="false" />
+          <Property Name="Qty" Type="int" />
+          <Property Name="UNIT" Type="varchar" MaxLength="20" />
+          <Property Name="Receiver" Type="varchar" MaxLength="80" />
+          <Property Name="RECEIVEDATE" Type="datetime" />
+          <Property Name="CompCode" Type="varchar" MaxLength="8" />
+          <Property Name="CommodityCodeDescription" Type="varchar" MaxLength="300" />
+        </EntityType>
+        <EntityContainer Name="CommodityRecv_DashboardModelStoreContainer">
+          <EntitySet Name="sys_user" EntityType="Self.sys_user" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_cr_Baan" EntityType="Self.tbl_cr_Baan" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_cr_Condition" EntityType="Self.tbl_cr_Condition" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_cr_mailReceiver" EntityType="Self.tbl_cr_mailReceiver" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="v_CommodityRecvCmp" EntityType="Self.v_CommodityRecvCmp" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [v_CommodityRecvCmp].[PONUMBER] AS [PONUMBER], 
+    [v_CommodityRecvCmp].[ITEM] AS [ITEM], 
+    [v_CommodityRecvCmp].[Qty] AS [Qty], 
+    [v_CommodityRecvCmp].[UNIT] AS [UNIT], 
+    [v_CommodityRecvCmp].[Receiver] AS [Receiver], 
+    [v_CommodityRecvCmp].[RECEIVEDATE] AS [RECEIVEDATE], 
+    [v_CommodityRecvCmp].[CompCode] AS [CompCode], 
+    [v_CommodityRecvCmp].[CommodityCodeDescription] AS [CommodityCodeDescription]
+    FROM [dbo].[v_CommodityRecvCmp] AS [v_CommodityRecvCmp]</DefiningQuery>
+          </EntitySet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="CommodityRecv_DashboardModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="CommodityRecv_DashboardEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="sys_user" EntityType="CommodityRecv_DashboardModel.sys_user" />
+          <EntitySet Name="tbl_cr_Baan" EntityType="CommodityRecv_DashboardModel.tbl_cr_Baan" />
+          <EntitySet Name="tbl_cr_Condition" EntityType="CommodityRecv_DashboardModel.tbl_cr_Condition" />
+          <EntitySet Name="tbl_cr_mailReceiver" EntityType="CommodityRecv_DashboardModel.tbl_cr_mailReceiver" />
+          <EntitySet Name="v_CommodityRecvCmp" EntityType="CommodityRecv_DashboardModel.v_CommodityRecvCmp" />
+        </EntityContainer>
+        <EntityType Name="sys_user">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ADAccount" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="FullName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Email" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="LastLogon" Type="DateTime" Precision="3" />
+          <Property Name="IsValid" Type="Boolean" Nullable="false" />
+          <Property Name="IsAdmin" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_cr_Baan">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PONUMBER" Type="String" MaxLength="80" FixedLength="false" Unicode="false" />
+          <Property Name="SUPPLIERNBR" Type="String" MaxLength="80" FixedLength="false" Unicode="false" />
+          <Property Name="POTYPE" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="BUYER" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="REFERENCEA" Type="String" MaxLength="80" FixedLength="false" Unicode="false" />
+          <Property Name="REFERENCEB" Type="String" MaxLength="80" FixedLength="false" Unicode="false" />
+          <Property Name="ITEM" Type="String" MaxLength="80" FixedLength="false" Unicode="false" />
+          <Property Name="ITEMDSE" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="QTY" Type="Int32" />
+          <Property Name="UNIT" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="RECEIVEDATE" Type="DateTime" Precision="3" />
+          <Property Name="CompCode" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="tbl_cr_Condition">
+          <Key>
+            <PropertyRef Name="CostItemNumber" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CommodityCode" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
+          <Property Name="CostItemNumber" Type="String" Nullable="false" MaxLength="40" FixedLength="false" Unicode="false" />
+          <Property Name="CommodityCodeDescription" Type="String" MaxLength="300" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="tbl_cr_mailReceiver">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="cnName" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
+          <Property Name="enName" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
+          <Property Name="mailAddr" Type="String" Nullable="false" MaxLength="120" FixedLength="false" Unicode="false" />
+          <Property Name="mailAddrType" Type="Int32" />
+          <Property Name="isValid" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="v_CommodityRecvCmp">
+          <Key>
+            <PropertyRef Name="ITEM" />
+          </Key>
+          <Property Name="PONUMBER" Type="String" MaxLength="80" FixedLength="false" Unicode="false" />
+          <Property Name="ITEM" Type="String" Nullable="false" MaxLength="40" FixedLength="false" Unicode="false" />
+          <Property Name="Qty" Type="Int32" />
+          <Property Name="UNIT" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Receiver" Type="String" MaxLength="80" FixedLength="false" Unicode="false" />
+          <Property Name="RECEIVEDATE" Type="DateTime" Precision="3" />
+          <Property Name="CompCode" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+          <Property Name="CommodityCodeDescription" Type="String" MaxLength="300" FixedLength="false" Unicode="false" />
+        </EntityType>
+        </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="CommodityRecv_DashboardModelStoreContainer" CdmEntityContainer="CommodityRecv_DashboardEntities">
+          <EntitySetMapping Name="sys_user">
+            <EntityTypeMapping TypeName="CommodityRecv_DashboardModel.sys_user">
+              <MappingFragment StoreEntitySet="sys_user">
+                <ScalarProperty Name="IsAdmin" ColumnName="IsAdmin" />
+                <ScalarProperty Name="IsValid" ColumnName="IsValid" />
+                <ScalarProperty Name="LastLogon" ColumnName="LastLogon" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="FullName" ColumnName="FullName" />
+                <ScalarProperty Name="ADAccount" ColumnName="ADAccount" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_cr_Baan">
+            <EntityTypeMapping TypeName="CommodityRecv_DashboardModel.tbl_cr_Baan">
+              <MappingFragment StoreEntitySet="tbl_cr_Baan">
+                <ScalarProperty Name="CompCode" ColumnName="CompCode" />
+                <ScalarProperty Name="RECEIVEDATE" ColumnName="RECEIVEDATE" />
+                <ScalarProperty Name="UNIT" ColumnName="UNIT" />
+                <ScalarProperty Name="QTY" ColumnName="QTY" />
+                <ScalarProperty Name="ITEMDSE" ColumnName="ITEMDSE" />
+                <ScalarProperty Name="ITEM" ColumnName="ITEM" />
+                <ScalarProperty Name="REFERENCEB" ColumnName="REFERENCEB" />
+                <ScalarProperty Name="REFERENCEA" ColumnName="REFERENCEA" />
+                <ScalarProperty Name="BUYER" ColumnName="BUYER" />
+                <ScalarProperty Name="POTYPE" ColumnName="POTYPE" />
+                <ScalarProperty Name="SUPPLIERNBR" ColumnName="SUPPLIERNBR" />
+                <ScalarProperty Name="PONUMBER" ColumnName="PONUMBER" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_cr_Condition">
+            <EntityTypeMapping TypeName="CommodityRecv_DashboardModel.tbl_cr_Condition">
+              <MappingFragment StoreEntitySet="tbl_cr_Condition">
+                <ScalarProperty Name="CommodityCodeDescription" ColumnName="CommodityCodeDescription" />
+                <ScalarProperty Name="CostItemNumber" ColumnName="CostItemNumber" />
+                <ScalarProperty Name="CommodityCode" ColumnName="CommodityCode" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_cr_mailReceiver">
+            <EntityTypeMapping TypeName="CommodityRecv_DashboardModel.tbl_cr_mailReceiver">
+              <MappingFragment StoreEntitySet="tbl_cr_mailReceiver">
+                <ScalarProperty Name="isValid" ColumnName="isValid" />
+                <ScalarProperty Name="mailAddrType" ColumnName="mailAddrType" />
+                <ScalarProperty Name="mailAddr" ColumnName="mailAddr" />
+                <ScalarProperty Name="enName" ColumnName="enName" />
+                <ScalarProperty Name="cnName" ColumnName="cnName" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="v_CommodityRecvCmp">
+            <EntityTypeMapping TypeName="CommodityRecv_DashboardModel.v_CommodityRecvCmp">
+              <MappingFragment StoreEntitySet="v_CommodityRecvCmp">
+                <ScalarProperty Name="CommodityCodeDescription" ColumnName="CommodityCodeDescription" />
+                <ScalarProperty Name="CompCode" ColumnName="CompCode" />
+                <ScalarProperty Name="RECEIVEDATE" ColumnName="RECEIVEDATE" />
+                <ScalarProperty Name="Receiver" ColumnName="Receiver" />
+                <ScalarProperty Name="UNIT" ColumnName="UNIT" />
+                <ScalarProperty Name="Qty" ColumnName="Qty" />
+                <ScalarProperty Name="ITEM" ColumnName="ITEM" />
+                <ScalarProperty Name="PONUMBER" ColumnName="PONUMBER" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

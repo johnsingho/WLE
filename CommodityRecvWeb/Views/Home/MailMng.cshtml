@@ -1,0 +1,225 @@
+﻿@using WarehouseLaborEfficiencyWeb.DAL;
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="row InfoHead">
+    <div class="col-md-9">
+        <h2>
+            邮件接收者维护
+        </h2>
+    </div>
+</div>
+
+
+<div id="gridcontainer">
+    <table id="tblMail" class="table table-striped table-bordered table-hover dataTable">
+        <thead>
+            <tr></tr>
+        </thead>
+    </table>
+</div>
+
+
+@using (Html.BeginForm("DoAddMail", "Home",
+                       FormMethod.Post, new { @id = "frmMailAdd" }))
+{
+    <div class="modal fade" id="dlgMailAdd" tabindex="-1" role="dialog" aria-labelledby="dlgMailAdd" aria-hidden="true">
+        <div class="modal-dialog" style="width: 640px;">
+            <div class="modal-content">
+                <div class="modal-header" style="padding: 5px">
+                    <label style="font-size: 12px; font-weight: 600; margin: 0;">逐个新增对比条件</label>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="control-label">English Name：</label>
+                        @Html.TextBox("txtEnName", null, new Dictionary<string, object>
+                                        {
+                                            {"class", "form-control"},
+                                            {"required", "true"}
+                                        })
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">中文名：</label>
+                        @Html.TextBox("txtCnName", null, new Dictionary<string, object>
+                                        {
+                                            {"class", "form-control"}
+                                        })
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">邮件地址：</label>
+                        <input id="txtMailAddr" name="txtMailAddr" type="email" class="form-control" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">邮件类型：</label>
+                        @Html.DropDownList("txtMailAddrType",
+                                            new SelectList(Enum.GetValues(typeof(TMailType))),
+                                            "Select Mail Type",
+                                            new Dictionary<string, object>
+                                            {
+                                                {"class", "form-control"},
+                                                {"required", "true"}
+                                            })
+                        <div class="help-block with-errors"></div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="padding: 5px">
+                    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                    <input type="submit" class="btn btn-info btn-sm" value="确认 Confirm" />
+                    <input type="button" class="btn btn-default btn-sm" data-dismiss="modal" value="关闭 Close" />
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+@section Scripts{
+    <script>
+    var oTabLector = null;
+
+    $(function () {
+        InitCondTab();
+        InitDlg();
+        BindCheckbox();
+    });
+
+    function InitCondTab() {
+        var tabCols = [
+                { title: "English Name", data: "enName" },
+                { title: "中文名", data: "cnName" },
+                { title: "Mail", data: "mailAddr" },
+                {
+                    title: "邮件地址类型", data: "mailAddrType",
+                    render: function (data, type, full, meta) {
+                        if (0 == data) {
+                            return "To";
+                        } else {
+                            return "Cc";
+                        }
+                    }
+                },
+                {
+                    title: "是否启用", data: "isValid",
+                    render: function (data, type, full, meta) {
+                        var isValid = data;
+                        var sCheck = isValid ? 'checked' : '';
+                        var tag='<label class="switch">'
+                                   + '<input class="chkValid" type="checkbox" '+ sCheck + '>' 
+                                   + '<span class="slider round"></span>'
+                                +'</label>';
+                        return tag;
+                    }
+                },
+                {
+                    title: "",
+                    render: function (data, type, full, meta) {
+                        var tButton = '&nbsp;&nbsp;<Button onclick="RemoveMail(this)" class="btn btn-warning btn-sm">Remove</button>';
+                        return tButton;
+                    }
+                }
+        ];
+        var colDefs = [];
+        var idTabLector = "#tblMail";
+        var sDom = 'Bfrtip';
+        var $tabLec = $(idTabLector).DataTable({
+            destroy: true,
+            paging: true,
+            processing: true,
+            searching: true,
+            ordering: false,
+            autoWidth: false,
+            select: true,
+            columns: tabCols,
+            columnDefs: colDefs,
+            ajax: {
+                url: '@Url.Action("GetAllMails")'
+                    , type: 'POST'
+                    , dataSrc: ""
+            },
+            dom: sDom,
+            buttons: [
+                {
+                    text: '新增',
+                    action: function (e, dt, node, config) {
+                        ShowAddMailDlg(true);
+                    }
+                }
+            ]
+        });
+        oTabLector = new TTabHelper($tabLec);
+    }
+
+        function InitDlg() {
+            var idFrm = "#frmMailAdd";
+            $(idFrm).validate();
+            $(idFrm).on('submit', function (e) {
+                if (e.isDefaultPrevented()) {
+                    //invalid
+                    return false;
+                } else {
+                    var url = $(this).attr("action");
+                    AjaxPostForm(url, idFrm, true, function (resp) {
+                        ShowAddMailDlg(false);
+                        if (resp.bok) {                            
+                            reload();
+                        } else {
+                            BootstrapDialog.alert("添加新邮件地址失败:<br>" + resp.msg);
+                        }
+                    },
+                    undefined,
+                    function () {
+                        showBusyLoading(true);
+                    },
+                    function () {
+                        showBusyLoading(false);
+                    });
+                }
+                return false;
+            });
+        }
+        function ShowAddMailDlg(bshow) {
+            ShowModalDlg('#dlgMailAdd', bshow);
+        }
+        function RemoveMail(cell) {
+            var dt = oTabLector.GetDataByCell(cell);
+            if (!dt) { return; }
+
+            BootstrapDialog.confirm("确实要移除？", function(result) {
+                if (!result) { return; }
+                var url = "@Url.Action("DelMail")";
+                AjaxPost(url, JSON.stringify(dt), true, function (resp) {
+                    if (resp.bok) {
+                        oTabLector.RemoveRow(cell);
+                    } else {
+                        BootstrapDialog.alert("删除失败！");
+                    }
+                });
+            });            
+        }
+
+        function BindCheckbox() {
+            $("#tblMail").on('change', "input[type='checkbox']", function () {
+                var bValid = $(this).is(":checked");
+                var dt = oTabLector.GetDataByCell(this);
+                if (!dt) { return; }
+                var url = "@Url.Action("EnableUser")";
+                var para={"id":dt.id, "enable":bValid};
+                AjaxPost(url, JSON.stringify(para), true, function (resp) {
+                    if (resp.bok) {
+                        //
+                    } else {
+                        BootstrapDialog.alert("操作失败！" + resp.msg, function () {
+                            reload();
+                        });
+                    }
+                });
+            });
+        }
+    </script>
+}
+

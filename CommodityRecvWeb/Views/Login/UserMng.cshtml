@@ -1,0 +1,164 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-lg-8">
+        <header class="panel-heading">
+            <h3>用户管理 User Management</h3>
+        </header>
+        <div class="panel-body" style="overflow: auto">
+            <div class="col-sm-9 form-group">
+                @using (Html.BeginForm("DoRegister", "Login",
+                        FormMethod.Post, new { @id = "frmAddUser" }))
+                {
+                @Html.Label("AD Account:")
+                @Html.TextBox("inputad", null, new Dictionary<string, object>
+                                            {
+                                                {"required", "true"}
+                                            })
+                @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                <input type="submit" class="btn btn-info btn-sm" value="Add New" />
+                }
+            </div>
+
+            <div id="gridcontainer">
+                <table id="tblUsers" class="table table-striped table-bordered table-hover dataTable">
+                    <thead>
+                        <tr></tr>
+                    </thead>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+@section Scripts{
+    <script>
+    var oTabLector = null;
+
+    $(function () {
+        InitCondTab();
+        InitDlg();
+        BindCheckbox();
+    });
+
+    function InitCondTab() {
+        var tabCols = [
+                { title: "AD Account", data: "ADAccount" },
+                { title: "English Name", data: "FullName" },
+                { title: "邮件地址", data: "Email" },
+                {
+                    title: "是否启用", data: "IsValid",
+                    render: function (data, type, full, meta) {
+                        var isValid = data;
+                        //var tag = '<input type="radio" readonly ' + nValid>0?'checked':'' +'/>';
+                        var sCheck = isValid ? 'checked' : '';
+                        var tag='<label class="switch">'
+                                   + '<input class="chkValid" type="checkbox" '+ sCheck + '>' 
+                                   + '<span class="slider round"></span>'
+                                +'</label>';
+                        return tag;
+                    }
+                },
+                {
+                    title: "",
+                    render: function (data, type, full, meta) {
+                        var tag = '<Button onclick="RemoveItem(this)" class="btn btn-warning btn-sm">Remove</button>';
+                        return tag;
+                    }
+                }
+        ];
+        var colDefs = [];
+        var idTabLector = "#tblUsers";
+        var sDom = 'frtip';
+        var $tabLec = $(idTabLector).DataTable({
+            destroy: true,
+            paging: false,
+            processing: true,
+            searching: false,
+            ordering: false,
+            autoWidth: false,
+            select: true,
+            columns: tabCols,
+            columnDefs: colDefs,
+            ajax: {
+                url: '@Url.Action("GetAllUsers")'
+                    , type: 'POST'
+                    , dataSrc: ""
+            },
+            dom: sDom
+        });
+        oTabLector = new TTabHelper($tabLec);
+    }
+
+    function InitDlg() {
+        var idFrm = "#frmAddUser";
+        $(idFrm).validate();
+        $(idFrm).on('submit', function (e) {
+            if (e.isDefaultPrevented()) {
+                //invalid
+                return false;
+            } else {
+                var url = $(this).attr("action");
+                AjaxPostForm(url, idFrm, true, function (resp) {
+                    if (resp.bok) {
+                        reload();
+                    } else {
+                        BootstrapDialog.alert("添加失败:<br>" + resp.msg);
+                    }
+                },
+                undefined,
+                function () {
+                    showBusyLoading(true);
+                },
+                function () {
+                    showBusyLoading(false);
+                });
+            }
+            return false;
+        });
+    }
+    function BindCheckbox() {
+        $("#tblUsers").on('change', "input[type='checkbox']", function () {
+            var bValid = $(this).is(":checked");
+            var dt = oTabLector.GetDataByCell(this);
+            if (!dt) { return; }
+            var url = "@Url.Action("ModifyRegister")";
+            var para={"id":dt.id, "enable":bValid};
+            AjaxPost(url, JSON.stringify(para), true, function (resp) {
+                if (resp.bok) {
+                    //
+                } else {
+                    BootstrapDialog.alert("操作失败！" + resp.msg);
+                }
+            });
+        });
+    }
+
+    function RemoveItem(cell) {
+        var dt = oTabLector.GetDataByCell(cell);
+        if (!dt) { return; }
+
+        var str = "确定要删除此用户["+dt.FullName+"]吗?"
+        BootstrapDialog.confirm(str, function (result) {
+            if (!result) {
+                return;
+            }
+            var url = "@Url.Action("DelRegister")";
+            var para = { "id": dt.id };
+            AjaxPost(url, JSON.stringify(para), true, function (resp) {
+                if (resp.bok) {
+                    oTabLector.RemoveRow(cell);
+                } else {
+                    BootstrapDialog.alert("删除失败！" + resp.msg);
+                }
+            });
+        });
+    }
+    </script>
+}
+
+
