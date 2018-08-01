@@ -1,6 +1,5 @@
 ﻿using WarehouseLaborEfficiencyWeb.Database;
 using Common;
-using SyncData;
 using System;
 using System.Collections.Generic;
 using System.Linq;

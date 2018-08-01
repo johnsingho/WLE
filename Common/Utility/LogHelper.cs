@@ -1,12 +1,20 @@
 ﻿using System;
 using System.IO;
 
-namespace Common.Utility {
+namespace Common
+{
+    /// <summary>
+    /// LogHelper
+    /// log4net 辅助类
+    /// By H.Z.XIN
+    /// Modified:
+    ///     2018-07-31 整理
+    /// </summary>
     public class LogHelper {
 
-        //public static readonly log4net.ILog loginfo = log4net.LogManager.GetLogger("loginfo");   //选择<logger name="loginfo">的配置 
-        //public static readonly log4net.ILog logerror = log4net.LogManager.GetLogger("logerror");   //选择<logger name="logerror">的配置 
-        public static void SetConfig() {
+        public static void SetConfig()
+        {
+            //use exe's
             log4net.Config.XmlConfigurator.Configure();
         }
 
@@ -17,7 +25,8 @@ namespace Common.Utility {
         public static void WriteInfo(Type type, string info) {
             SetConfig();
             log4net.ILog loginfo = log4net.LogManager.GetLogger(type);
-            if(loginfo.IsInfoEnabled) {
+            if (loginfo.IsInfoEnabled)
+            {
                 loginfo.Info(info);
             }
         }
@@ -28,7 +37,8 @@ namespace Common.Utility {
         public static void WriteError(Type type, string message, Exception ex) {
             SetConfig();
             log4net.ILog logerror = log4net.LogManager.GetLogger(type);
-            if(logerror.IsErrorEnabled) {
+            if (logerror.IsErrorEnabled)
+            {
                 logerror.Error(message, ex);
             }
         }
