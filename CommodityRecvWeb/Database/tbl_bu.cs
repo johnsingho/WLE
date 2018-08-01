@@ -12,11 +12,9 @@ namespace WarehouseLaborEfficiencyWeb.Database
     using System;
     using System.Collections.Generic;
     
-    public partial class tbl_cr_Condition
+    public partial class tbl_bu
     {
         public int id { get; set; }
-        public string CommodityCode { get; set; }
-        public string CostItemNumber { get; set; }
-        public string CommodityCodeDescription { get; set; }
+        public string bu { get; set; }
     }
 }

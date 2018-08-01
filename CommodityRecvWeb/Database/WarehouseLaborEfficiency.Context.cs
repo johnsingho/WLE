@@ -13,10 +13,10 @@ namespace WarehouseLaborEfficiencyWeb.Database
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class CommodityRecv_DashboardEntities : DbContext
+    public partial class WarehouseLaborEfficiencyEntities : DbContext
     {
-        public CommodityRecv_DashboardEntities()
-            : base("name=CommodityRecv_DashboardEntities")
+        public WarehouseLaborEfficiencyEntities()
+            : base("name=WarehouseLaborEfficiencyEntities")
         {
         }
     
@@ -25,10 +25,9 @@ namespace WarehouseLaborEfficiencyWeb.Database
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<sys_user> sys_user { get; set; }
-        public virtual DbSet<tbl_cr_Baan> tbl_cr_Baan { get; set; }
-        public virtual DbSet<tbl_cr_Condition> tbl_cr_Condition { get; set; }
-        public virtual DbSet<tbl_cr_mailReceiver> tbl_cr_mailReceiver { get; set; }
-        public virtual DbSet<v_CommodityRecvCmp> v_CommodityRecvCmp { get; set; }
+        public virtual DbSet<tbl_bu> tbl_bu { get; set; }
+        public virtual DbSet<tbl_HCData> tbl_HCData { get; set; }
+        public virtual DbSet<tbl_MonthData> tbl_MonthData { get; set; }
+        public virtual DbSet<tbl_WeekData> tbl_WeekData { get; set; }
     }
 }

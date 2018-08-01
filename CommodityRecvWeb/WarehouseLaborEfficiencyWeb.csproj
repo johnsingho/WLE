@@ -163,61 +163,58 @@
     <Compile Include="DAL\QueryHelper.cs" />
     <Compile Include="DAL\SysUserInfo.cs" />
     <Compile Include="DAL\TMailType.cs" />
-    <Compile Include="Database\CommodityRecv.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>CommodityRecv.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Database\CommodityRecv.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>CommodityRecv.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Database\CommodityRecv.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>CommodityRecv.edmx</DependentUpon>
-    </Compile>
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="DAL\CommodityRecvHelper.cs" />
     <Compile Include="DAL\TRes.cs" />
-    <Compile Include="Database\sys_user.cs">
-      <DependentUpon>CommodityRecv.tt</DependentUpon>
+    <Compile Include="Database\tbl_bu.cs">
+      <DependentUpon>WarehouseLaborEfficiency.tt</DependentUpon>
     </Compile>
-    <Compile Include="Database\v_CommodityRecvCmp.cs">
-      <DependentUpon>CommodityRecv.tt</DependentUpon>
+    <Compile Include="Database\tbl_HCData.cs">
+      <DependentUpon>WarehouseLaborEfficiency.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\tbl_MonthData.cs">
+      <DependentUpon>WarehouseLaborEfficiency.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\tbl_WeekData.cs">
+      <DependentUpon>WarehouseLaborEfficiency.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\WarehouseLaborEfficiency.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>WarehouseLaborEfficiency.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\WarehouseLaborEfficiency.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>WarehouseLaborEfficiency.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\WarehouseLaborEfficiency.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>WarehouseLaborEfficiency.edmx</DependentUpon>
     </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Database\tbl_cr_Baan.cs">
-      <DependentUpon>CommodityRecv.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Database\tbl_cr_Condition.cs">
-      <DependentUpon>CommodityRecv.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Database\tbl_cr_mailReceiver.cs">
-      <DependentUpon>CommodityRecv.tt</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-dialog.min.css" />
     <Content Include="Content\datatables.min.css" />
-    <Content Include="Database\CommodityRecv.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>CommodityRecv.edmx</DependentUpon>
-      <LastGenOutput>CommodityRecv.Context.cs</LastGenOutput>
-    </Content>
-    <Content Include="Database\CommodityRecv.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>CommodityRecv.edmx</DependentUpon>
-      <LastGenOutput>CommodityRecv.cs</LastGenOutput>
-    </Content>
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Database\WarehouseLaborEfficiency.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>WarehouseLaborEfficiency.edmx</DependentUpon>
+      <LastGenOutput>WarehouseLaborEfficiency.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Database\WarehouseLaborEfficiency.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>WarehouseLaborEfficiency.edmx</DependentUpon>
+      <LastGenOutput>WarehouseLaborEfficiency.cs</LastGenOutput>
+    </Content>
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -234,12 +231,12 @@
     <Content Include="Content\bootstrap.css.map" />
     <Content Include="Content\bootstrap-theme.min.css.map" />
     <Content Include="Content\bootstrap-theme.css.map" />
-    <EntityDeploy Include="Database\CommodityRecv.edmx">
+    <EntityDeploy Include="Database\WarehouseLaborEfficiency.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>CommodityRecv.Designer.cs</LastGenOutput>
+      <LastGenOutput>WarehouseLaborEfficiency.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <Content Include="Database\CommodityRecv.edmx.diagram">
-      <DependentUpon>CommodityRecv.edmx</DependentUpon>
+    <Content Include="Database\WarehouseLaborEfficiency.edmx.diagram">
+      <DependentUpon>WarehouseLaborEfficiency.edmx</DependentUpon>
     </Content>
     <None Include="Properties\PublishProfiles\CommodityRecv.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
