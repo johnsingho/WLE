@@ -1,0 +1,174 @@
+﻿@using WarehouseLaborEfficiencyWeb.DAL
+
+@{
+    ViewBag.Title = CommonInfo.SiteTitle;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <title>@ViewBag.Title</title>    
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+    @Styles.Render("~/Content/bs")    
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/bs")
+    @Scripts.Render("~/bundles/main")
+    @RenderSection("styles", required: false)
+</head>
+
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink(@ViewBag.Title as string, "Index", "Home", new { area = "" }, new { @class = "navbar-brand headTitle" })
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">                    
+                    @*启用登录限制*@
+                    @if (CommonInfo.IsLogin())
+                    {
+                        <li>@Html.ActionLink("Weekly Trend", "WeekData", "Home")</li>
+                        <li>@Html.ActionLink("Monthly Trend", "MonthData", "Home")</li>
+                        <li>@Html.ActionLink("HC & Position", "HCData", "Home")</li>
+                        <li><a href="#" onclick="DoUpload()"><i class="fa fa-upload fa-fw"></i>上传数据</a></li>
+                    }
+                </ul>
+                @*启用登录限制*@
+                <ul class="nav navbar-nav navbar-right">
+                    @if (CommonInfo.IsLogin())
+                    {
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <i class="fa fa-user fa-fw"></i>
+                                @{
+                                    var user = CommonInfo.CurrentUser;
+                                    if (null != user)
+                                    {
+                                        <label id="lblLogin">@user.NickName</label>
+                                    }
+                                }
+                                <b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a href="@Url.Action("UserMng","Login")"><i class="fa fa-asterisk fa-fw"></i>Login User Manage</a></li>
+                                <li><a href="@Url.Action("Signout","Login")"><i class="fa fa-sign-out fa-fw"></i>Logout</a></li>
+                            </ul>
+                        </li>
+                    }
+                    else
+                    {
+                        <li>
+                            <a href="@Url.Action("Signin","Login")"><i class="fa fa-sign-in fa-fw"></i>Login</a>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - Flex</p>
+        </footer>
+    </div>
+
+    <div class="busyLoading" style="display: none">
+        <div class="center">
+            <img alt="正在操作，请稍候..." src="@Url.Content("~/Images/loader.gif")" />
+        </div>
+        <script>
+            function showBusyLoading(bShow) {
+                bShow ? $(".busyLoading").show() : $(".busyLoading").hide();
+            }
+        </script>
+    </div>
+
+    @*上传数据*@
+    @using (Html.BeginForm("UploadData", "Home",
+                            FormMethod.Post, new { @id = "frmUploadData" }))
+    {
+        <div class="modal fade" id="dlgUploadData" tabindex="-1" role="dialog" aria-labelledby="dlgUploadData" aria-hidden="true">
+            <div class="modal-dialog" style="width: 640px;">
+                <div class="modal-content">
+                    <div class="modal-header" style="padding: 5px">
+                        <label style="font-size: 12px; font-weight: 600; margin: 0;">上传数据</label>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label class="control-label">上传要导入的对比条件：</label>
+                            <input type="file" id="file" name="file"
+                                   data-error="请选择要上传的excel文件!" required
+                                   pattern=".+xls(x)?">
+                            <div class="help-block with-errors"></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer" style="padding: 5px">
+                        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                        <input type="submit" class="btn btn-info btn-sm" value="确认 Confirm" />
+                        <input type="button" class="btn btn-default btn-sm" data-dismiss="modal" value="关闭 Close" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <script>
+        $(function () {
+            InitDlg();
+        });
+        function DoUpload() {
+            ShowUploadDlg(true);
+        }
+        function ShowUploadDlg(bshow) {
+            ShowModalDlg('#dlgUploadData', bshow);
+        }
+        function InitDlg() {
+            $("#file").change(function () {
+                var sfile = $(this).val();
+                if (!/\.xlsx?$/i.test(sfile)) {
+                    $(this).val("");
+                }
+            });
+            var idFrmUpload = "#frmUploadData";
+            $(idFrmUpload).validate();
+            $(idFrmUpload).on('submit', function (e) {
+                if (e.isDefaultPrevented()) {
+                    //invalid
+                    return false;
+                } else {
+                    var url = $(this).attr("action");
+                    AjaxPostForm(url, idFrmUpload, true, function (resp) {
+                        ShowUploadDlg(false);
+                        if (resp.bok) {
+                            BootstrapDialog.alert("上传成功");
+                            reload();
+                        } else {
+                            BootstrapDialog.alert("上传失败:<br>" + resp.msg);
+                        }
+                    },
+                    undefined,
+                    function () {
+                        showBusyLoading(true);
+                    },
+                    function () {
+                        showBusyLoading(false);
+                    });
+                }
+                return false;
+            });
+        }
+    </script>
+
+    @RenderSection("scripts", required: false)
+</body>
+</html>

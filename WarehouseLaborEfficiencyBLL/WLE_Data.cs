@@ -1,4 +1,4 @@
-﻿using Common.Data;
+﻿using Common.DotNetData;
 using Common.DotNetExcel;
 using System;
 using System.Collections.Generic;
@@ -51,7 +51,7 @@ namespace WarehouseLaborEfficiencyBLL
             
             return dtNew;
         }
-        public static bool ImportWeekData(FileInfo xlsxFile, out string sErr)
+        public static long ImportWeekData(FileInfo xlsxFile, out string sErr)
         {
             sErr = string.Empty;
             DataTable dtRead = ReadWeekData(xlsxFile);
@@ -69,7 +69,7 @@ namespace WarehouseLaborEfficiencyBLL
                 WriteDBLog(conn, "start Upload WeekData");
                 var nWritten = SqlServerHelper.BulkToDB(conn, dtRead, TBL_WEEKDATA, out sErr);
                 WriteDBLog(conn, string.Format("end Upload WeekData:{0}", nWritten));
-                return nWritten > 0;
+                return nWritten;
             }
         }
         #endregion
@@ -99,7 +99,7 @@ namespace WarehouseLaborEfficiencyBLL
 
             return dtNew;
         }
-        public static bool ImportMonthData(FileInfo xlsxFile, out string sErr)
+        public static long ImportMonthData(FileInfo xlsxFile, out string sErr)
         {
             sErr = string.Empty;
             DataTable dtRead = ReadMonthData(xlsxFile);
@@ -117,7 +117,7 @@ namespace WarehouseLaborEfficiencyBLL
                 WriteDBLog(conn, "start Upload MonthData");
                 var nWritten = SqlServerHelper.BulkToDB(conn, dtRead, TBL_MONTHDATA, out sErr);
                 WriteDBLog(conn, string.Format("end Upload MonthData:{0}", nWritten));
-                return nWritten > 0;
+                return nWritten;
             }
         }
         #endregion
@@ -144,7 +144,7 @@ namespace WarehouseLaborEfficiencyBLL
 
             return dtNew;
         }
-        public static bool ImportHCData(FileInfo xlsxFile, out string sErr)
+        public static long ImportHCData(FileInfo xlsxFile, out string sErr)
         {
             sErr = string.Empty;
             DataTable dtRead = ReadHCData(xlsxFile);
@@ -162,7 +162,7 @@ namespace WarehouseLaborEfficiencyBLL
                 WriteDBLog(conn, "start Upload HCData");
                 var nWritten = SqlServerHelper.BulkToDB(conn, dtRead, TBL_HCDATA, out sErr);
                 WriteDBLog(conn, string.Format("end Upload HCData:{0}", nWritten));
-                return nWritten > 0;
+                return nWritten;
             }
         }
         #endregion

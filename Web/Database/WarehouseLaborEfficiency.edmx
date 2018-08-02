@@ -1,0 +1,519 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="WarehouseLaborEfficiencyModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="sys_user">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ADAccount" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="FullName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Email" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="LastLogon" Type="datetime" />
+          <Property Name="IsValid" Type="bit" Nullable="false" />
+          <Property Name="IsAdmin" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_bu">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="bu" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="tbl_HCData">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Date" Type="date" Nullable="false" />
+          <Property Name="Warehouse" Type="nvarchar" MaxLength="50" />
+          <Property Name="Overall" Type="int" />
+          <Property Name="System_Clerk" Type="int" />
+          <Property Name="Inventory_Control" Type="int" />
+          <Property Name="RTV_Scrap" Type="int" />
+          <Property Name="Receiving" Type="int" />
+          <Property Name="Shipping" Type="int" />
+          <Property Name="Forklift_Driver" Type="int" />
+          <Property Name="Total" Type="int" />
+          <Property Name="UpdateTime" Type="datetime" />
+        </EntityType>
+        <EntityType Name="tbl_MonthData">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Date" Type="date" Nullable="false" />
+          <Property Name="Warehouse" Type="nvarchar" MaxLength="50" />
+          <Property Name="HC_FCST" Type="int" />
+          <Property Name="HC_Actual" Type="int" />
+          <Property Name="HC_Support" Type="int" />
+          <Property Name="HC_Utilization" Type="real" />
+          <Property Name="Case_ID_in" Type="int" />
+          <Property Name="Case_ID_out" Type="int" />
+          <Property Name="Pallet_In" Type="int" />
+          <Property Name="Pallet_Out" Type="int" />
+          <Property Name="Jobs_Rec" Type="int" />
+          <Property Name="Jobs_Issue" Type="int" />
+          <Property Name="Reel_ID_Rec" Type="int" />
+          <Property Name="UpdateTime" Type="datetime" />
+        </EntityType>
+        <EntityType Name="tbl_WeekData">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Date" Type="date" Nullable="false" />
+          <Property Name="Warehouse" Type="nvarchar" MaxLength="50" />
+          <Property Name="HC_FCST" Type="int" />
+          <Property Name="HC_Actual" Type="int" />
+          <Property Name="HC_Support" Type="int" />
+          <Property Name="HC_Utilization" Type="real" />
+          <Property Name="Case_ID_in" Type="int" />
+          <Property Name="Case_ID_out" Type="int" />
+          <Property Name="Pallet_In" Type="int" />
+          <Property Name="Pallet_Out" Type="int" />
+          <Property Name="Jobs_Rec" Type="int" />
+          <Property Name="Jobs_Issue" Type="int" />
+          <Property Name="Reel_ID_Rec" Type="int" />
+          <Property Name="UpdateTime" Type="datetime" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'WarehouseLaborEfficiency.dbo.V_Tbl_HCData' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="V_Tbl_HCData">
+          <Key>
+            <PropertyRef Name="id" />
+            <PropertyRef Name="Date" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Date" Type="date" Nullable="false" />
+          <Property Name="Warehouse" Type="nvarchar" MaxLength="50" />
+          <Property Name="Overall" Type="int" />
+          <Property Name="System_Clerk" Type="int" />
+          <Property Name="Inventory_Control" Type="int" />
+          <Property Name="RTV_Scrap" Type="int" />
+          <Property Name="Receiving" Type="int" />
+          <Property Name="Shipping" Type="int" />
+          <Property Name="Forklift_Driver" Type="int" />
+          <Property Name="Total" Type="int" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'WarehouseLaborEfficiency.dbo.V_Tbl_MonthData' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="V_Tbl_MonthData">
+          <Key>
+            <PropertyRef Name="id" />
+            <PropertyRef Name="Date" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Date" Type="date" Nullable="false" />
+          <Property Name="Warehouse" Type="nvarchar" MaxLength="50" />
+          <Property Name="HC_FCST" Type="int" />
+          <Property Name="HC_Actual" Type="int" />
+          <Property Name="HC_Support" Type="int" />
+          <Property Name="HC_Utilization" Type="real" />
+          <Property Name="Case_ID_in" Type="int" />
+          <Property Name="Case_ID_out" Type="int" />
+          <Property Name="Pallet_In" Type="int" />
+          <Property Name="Pallet_Out" Type="int" />
+          <Property Name="Jobs_Rec" Type="int" />
+          <Property Name="Jobs_Issue" Type="int" />
+          <Property Name="Reel_ID_Rec" Type="int" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'WarehouseLaborEfficiency.dbo.V_Tbl_WeekData' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="V_Tbl_WeekData">
+          <Key>
+            <PropertyRef Name="id" />
+            <PropertyRef Name="Date" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Date" Type="date" Nullable="false" />
+          <Property Name="Warehouse" Type="nvarchar" MaxLength="50" />
+          <Property Name="HC_FCST" Type="int" />
+          <Property Name="HC_Actual" Type="int" />
+          <Property Name="HC_Support" Type="int" />
+          <Property Name="HC_Utilization" Type="real" />
+          <Property Name="Case_ID_in" Type="int" />
+          <Property Name="Case_ID_out" Type="int" />
+          <Property Name="Pallet_In" Type="int" />
+          <Property Name="Pallet_Out" Type="int" />
+          <Property Name="Jobs_Rec" Type="int" />
+          <Property Name="Jobs_Issue" Type="int" />
+          <Property Name="Reel_ID_Rec" Type="int" />
+        </EntityType>
+        <EntityContainer Name="WarehouseLaborEfficiencyModelStoreContainer">
+          <EntitySet Name="sys_user" EntityType="Self.sys_user" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_bu" EntityType="Self.tbl_bu" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_HCData" EntityType="Self.tbl_HCData" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_MonthData" EntityType="Self.tbl_MonthData" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_WeekData" EntityType="Self.tbl_WeekData" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="V_Tbl_HCData" EntityType="Self.V_Tbl_HCData" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [V_Tbl_HCData].[id] AS [id], 
+    [V_Tbl_HCData].[Date] AS [Date], 
+    [V_Tbl_HCData].[Warehouse] AS [Warehouse], 
+    [V_Tbl_HCData].[Overall] AS [Overall], 
+    [V_Tbl_HCData].[System_Clerk] AS [System_Clerk], 
+    [V_Tbl_HCData].[Inventory_Control] AS [Inventory_Control], 
+    [V_Tbl_HCData].[RTV_Scrap] AS [RTV_Scrap], 
+    [V_Tbl_HCData].[Receiving] AS [Receiving], 
+    [V_Tbl_HCData].[Shipping] AS [Shipping], 
+    [V_Tbl_HCData].[Forklift_Driver] AS [Forklift_Driver], 
+    [V_Tbl_HCData].[Total] AS [Total]
+    FROM [dbo].[V_Tbl_HCData] AS [V_Tbl_HCData]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="V_Tbl_MonthData" EntityType="Self.V_Tbl_MonthData" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [V_Tbl_MonthData].[id] AS [id], 
+    [V_Tbl_MonthData].[Date] AS [Date], 
+    [V_Tbl_MonthData].[Warehouse] AS [Warehouse], 
+    [V_Tbl_MonthData].[HC_FCST] AS [HC_FCST], 
+    [V_Tbl_MonthData].[HC_Actual] AS [HC_Actual], 
+    [V_Tbl_MonthData].[HC_Support] AS [HC_Support], 
+    [V_Tbl_MonthData].[HC_Utilization] AS [HC_Utilization], 
+    [V_Tbl_MonthData].[Case_ID_in] AS [Case_ID_in], 
+    [V_Tbl_MonthData].[Case_ID_out] AS [Case_ID_out], 
+    [V_Tbl_MonthData].[Pallet_In] AS [Pallet_In], 
+    [V_Tbl_MonthData].[Pallet_Out] AS [Pallet_Out], 
+    [V_Tbl_MonthData].[Jobs_Rec] AS [Jobs_Rec], 
+    [V_Tbl_MonthData].[Jobs_Issue] AS [Jobs_Issue], 
+    [V_Tbl_MonthData].[Reel_ID_Rec] AS [Reel_ID_Rec]
+    FROM [dbo].[V_Tbl_MonthData] AS [V_Tbl_MonthData]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="V_Tbl_WeekData" EntityType="Self.V_Tbl_WeekData" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [V_Tbl_WeekData].[id] AS [id], 
+    [V_Tbl_WeekData].[Date] AS [Date], 
+    [V_Tbl_WeekData].[Warehouse] AS [Warehouse], 
+    [V_Tbl_WeekData].[HC_FCST] AS [HC_FCST], 
+    [V_Tbl_WeekData].[HC_Actual] AS [HC_Actual], 
+    [V_Tbl_WeekData].[HC_Support] AS [HC_Support], 
+    [V_Tbl_WeekData].[HC_Utilization] AS [HC_Utilization], 
+    [V_Tbl_WeekData].[Case_ID_in] AS [Case_ID_in], 
+    [V_Tbl_WeekData].[Case_ID_out] AS [Case_ID_out], 
+    [V_Tbl_WeekData].[Pallet_In] AS [Pallet_In], 
+    [V_Tbl_WeekData].[Pallet_Out] AS [Pallet_Out], 
+    [V_Tbl_WeekData].[Jobs_Rec] AS [Jobs_Rec], 
+    [V_Tbl_WeekData].[Jobs_Issue] AS [Jobs_Issue], 
+    [V_Tbl_WeekData].[Reel_ID_Rec] AS [Reel_ID_Rec]
+    FROM [dbo].[V_Tbl_WeekData] AS [V_Tbl_WeekData]</DefiningQuery>
+          </EntitySet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="WarehouseLaborEfficiencyModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="WarehouseLaborEfficiencyEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="sys_user" EntityType="WarehouseLaborEfficiencyModel.sys_user" />
+          <EntitySet Name="tbl_bu" EntityType="WarehouseLaborEfficiencyModel.tbl_bu" />
+          <EntitySet Name="tbl_HCData" EntityType="WarehouseLaborEfficiencyModel.tbl_HCData" />
+          <EntitySet Name="tbl_MonthData" EntityType="WarehouseLaborEfficiencyModel.tbl_MonthData" />
+          <EntitySet Name="tbl_WeekData" EntityType="WarehouseLaborEfficiencyModel.tbl_WeekData" />
+          <EntitySet Name="V_Tbl_HCData" EntityType="WarehouseLaborEfficiencyModel.V_Tbl_HCData" />
+          <EntitySet Name="V_Tbl_MonthData" EntityType="WarehouseLaborEfficiencyModel.V_Tbl_MonthData" />
+          <EntitySet Name="V_Tbl_WeekData" EntityType="WarehouseLaborEfficiencyModel.V_Tbl_WeekData" />
+        </EntityContainer>
+        <EntityType Name="sys_user">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ADAccount" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="FullName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Email" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="LastLogon" Type="DateTime" Precision="3" />
+          <Property Name="IsValid" Type="Boolean" Nullable="false" />
+          <Property Name="IsAdmin" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_bu">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="bu" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="tbl_HCData">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Date" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Warehouse" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Overall" Type="Int32" />
+          <Property Name="System_Clerk" Type="Int32" />
+          <Property Name="Inventory_Control" Type="Int32" />
+          <Property Name="RTV_Scrap" Type="Int32" />
+          <Property Name="Receiving" Type="Int32" />
+          <Property Name="Shipping" Type="Int32" />
+          <Property Name="Forklift_Driver" Type="Int32" />
+          <Property Name="Total" Type="Int32" />
+          <Property Name="UpdateTime" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="tbl_MonthData">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Date" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Warehouse" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="HC_FCST" Type="Int32" />
+          <Property Name="HC_Actual" Type="Int32" />
+          <Property Name="HC_Support" Type="Int32" />
+          <Property Name="HC_Utilization" Type="Single" />
+          <Property Name="Case_ID_in" Type="Int32" />
+          <Property Name="Case_ID_out" Type="Int32" />
+          <Property Name="Pallet_In" Type="Int32" />
+          <Property Name="Pallet_Out" Type="Int32" />
+          <Property Name="Jobs_Rec" Type="Int32" />
+          <Property Name="Jobs_Issue" Type="Int32" />
+          <Property Name="Reel_ID_Rec" Type="Int32" />
+          <Property Name="UpdateTime" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="tbl_WeekData">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Date" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Warehouse" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="HC_FCST" Type="Int32" />
+          <Property Name="HC_Actual" Type="Int32" />
+          <Property Name="HC_Support" Type="Int32" />
+          <Property Name="HC_Utilization" Type="Single" />
+          <Property Name="Case_ID_in" Type="Int32" />
+          <Property Name="Case_ID_out" Type="Int32" />
+          <Property Name="Pallet_In" Type="Int32" />
+          <Property Name="Pallet_Out" Type="Int32" />
+          <Property Name="Jobs_Rec" Type="Int32" />
+          <Property Name="Jobs_Issue" Type="Int32" />
+          <Property Name="Reel_ID_Rec" Type="Int32" />
+          <Property Name="UpdateTime" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="V_Tbl_HCData">
+          <Key>
+            <PropertyRef Name="id" />
+            <PropertyRef Name="Date" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Date" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Warehouse" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Overall" Type="Int32" />
+          <Property Name="System_Clerk" Type="Int32" />
+          <Property Name="Inventory_Control" Type="Int32" />
+          <Property Name="RTV_Scrap" Type="Int32" />
+          <Property Name="Receiving" Type="Int32" />
+          <Property Name="Shipping" Type="Int32" />
+          <Property Name="Forklift_Driver" Type="Int32" />
+          <Property Name="Total" Type="Int32" />
+        </EntityType>
+        <EntityType Name="V_Tbl_MonthData">
+          <Key>
+            <PropertyRef Name="id" />
+            <PropertyRef Name="Date" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Date" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Warehouse" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="HC_FCST" Type="Int32" />
+          <Property Name="HC_Actual" Type="Int32" />
+          <Property Name="HC_Support" Type="Int32" />
+          <Property Name="HC_Utilization" Type="Single" />
+          <Property Name="Case_ID_in" Type="Int32" />
+          <Property Name="Case_ID_out" Type="Int32" />
+          <Property Name="Pallet_In" Type="Int32" />
+          <Property Name="Pallet_Out" Type="Int32" />
+          <Property Name="Jobs_Rec" Type="Int32" />
+          <Property Name="Jobs_Issue" Type="Int32" />
+          <Property Name="Reel_ID_Rec" Type="Int32" />
+        </EntityType>
+        <EntityType Name="V_Tbl_WeekData">
+          <Key>
+            <PropertyRef Name="id" />
+            <PropertyRef Name="Date" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Date" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Warehouse" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="HC_FCST" Type="Int32" />
+          <Property Name="HC_Actual" Type="Int32" />
+          <Property Name="HC_Support" Type="Int32" />
+          <Property Name="HC_Utilization" Type="Single" />
+          <Property Name="Case_ID_in" Type="Int32" />
+          <Property Name="Case_ID_out" Type="Int32" />
+          <Property Name="Pallet_In" Type="Int32" />
+          <Property Name="Pallet_Out" Type="Int32" />
+          <Property Name="Jobs_Rec" Type="Int32" />
+          <Property Name="Jobs_Issue" Type="Int32" />
+          <Property Name="Reel_ID_Rec" Type="Int32" />
+        </EntityType>
+        </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="WarehouseLaborEfficiencyModelStoreContainer" CdmEntityContainer="WarehouseLaborEfficiencyEntities">
+          <EntitySetMapping Name="sys_user">
+            <EntityTypeMapping TypeName="WarehouseLaborEfficiencyModel.sys_user">
+              <MappingFragment StoreEntitySet="sys_user">
+                <ScalarProperty Name="IsAdmin" ColumnName="IsAdmin" />
+                <ScalarProperty Name="IsValid" ColumnName="IsValid" />
+                <ScalarProperty Name="LastLogon" ColumnName="LastLogon" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="FullName" ColumnName="FullName" />
+                <ScalarProperty Name="ADAccount" ColumnName="ADAccount" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_bu">
+            <EntityTypeMapping TypeName="WarehouseLaborEfficiencyModel.tbl_bu">
+              <MappingFragment StoreEntitySet="tbl_bu">
+                <ScalarProperty Name="bu" ColumnName="bu" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_HCData">
+            <EntityTypeMapping TypeName="WarehouseLaborEfficiencyModel.tbl_HCData">
+              <MappingFragment StoreEntitySet="tbl_HCData">
+                <ScalarProperty Name="UpdateTime" ColumnName="UpdateTime" />
+                <ScalarProperty Name="Total" ColumnName="Total" />
+                <ScalarProperty Name="Forklift_Driver" ColumnName="Forklift_Driver" />
+                <ScalarProperty Name="Shipping" ColumnName="Shipping" />
+                <ScalarProperty Name="Receiving" ColumnName="Receiving" />
+                <ScalarProperty Name="RTV_Scrap" ColumnName="RTV_Scrap" />
+                <ScalarProperty Name="Inventory_Control" ColumnName="Inventory_Control" />
+                <ScalarProperty Name="System_Clerk" ColumnName="System_Clerk" />
+                <ScalarProperty Name="Overall" ColumnName="Overall" />
+                <ScalarProperty Name="Warehouse" ColumnName="Warehouse" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_MonthData">
+            <EntityTypeMapping TypeName="WarehouseLaborEfficiencyModel.tbl_MonthData">
+              <MappingFragment StoreEntitySet="tbl_MonthData">
+                <ScalarProperty Name="UpdateTime" ColumnName="UpdateTime" />
+                <ScalarProperty Name="Reel_ID_Rec" ColumnName="Reel_ID_Rec" />
+                <ScalarProperty Name="Jobs_Issue" ColumnName="Jobs_Issue" />
+                <ScalarProperty Name="Jobs_Rec" ColumnName="Jobs_Rec" />
+                <ScalarProperty Name="Pallet_Out" ColumnName="Pallet_Out" />
+                <ScalarProperty Name="Pallet_In" ColumnName="Pallet_In" />
+                <ScalarProperty Name="Case_ID_out" ColumnName="Case_ID_out" />
+                <ScalarProperty Name="Case_ID_in" ColumnName="Case_ID_in" />
+                <ScalarProperty Name="HC_Utilization" ColumnName="HC_Utilization" />
+                <ScalarProperty Name="HC_Support" ColumnName="HC_Support" />
+                <ScalarProperty Name="HC_Actual" ColumnName="HC_Actual" />
+                <ScalarProperty Name="HC_FCST" ColumnName="HC_FCST" />
+                <ScalarProperty Name="Warehouse" ColumnName="Warehouse" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_WeekData">
+            <EntityTypeMapping TypeName="WarehouseLaborEfficiencyModel.tbl_WeekData">
+              <MappingFragment StoreEntitySet="tbl_WeekData">
+                <ScalarProperty Name="UpdateTime" ColumnName="UpdateTime" />
+                <ScalarProperty Name="Reel_ID_Rec" ColumnName="Reel_ID_Rec" />
+                <ScalarProperty Name="Jobs_Issue" ColumnName="Jobs_Issue" />
+                <ScalarProperty Name="Jobs_Rec" ColumnName="Jobs_Rec" />
+                <ScalarProperty Name="Pallet_Out" ColumnName="Pallet_Out" />
+                <ScalarProperty Name="Pallet_In" ColumnName="Pallet_In" />
+                <ScalarProperty Name="Case_ID_out" ColumnName="Case_ID_out" />
+                <ScalarProperty Name="Case_ID_in" ColumnName="Case_ID_in" />
+                <ScalarProperty Name="HC_Utilization" ColumnName="HC_Utilization" />
+                <ScalarProperty Name="HC_Support" ColumnName="HC_Support" />
+                <ScalarProperty Name="HC_Actual" ColumnName="HC_Actual" />
+                <ScalarProperty Name="HC_FCST" ColumnName="HC_FCST" />
+                <ScalarProperty Name="Warehouse" ColumnName="Warehouse" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="V_Tbl_HCData">
+            <EntityTypeMapping TypeName="WarehouseLaborEfficiencyModel.V_Tbl_HCData">
+              <MappingFragment StoreEntitySet="V_Tbl_HCData">
+                <ScalarProperty Name="Total" ColumnName="Total" />
+                <ScalarProperty Name="Forklift_Driver" ColumnName="Forklift_Driver" />
+                <ScalarProperty Name="Shipping" ColumnName="Shipping" />
+                <ScalarProperty Name="Receiving" ColumnName="Receiving" />
+                <ScalarProperty Name="RTV_Scrap" ColumnName="RTV_Scrap" />
+                <ScalarProperty Name="Inventory_Control" ColumnName="Inventory_Control" />
+                <ScalarProperty Name="System_Clerk" ColumnName="System_Clerk" />
+                <ScalarProperty Name="Overall" ColumnName="Overall" />
+                <ScalarProperty Name="Warehouse" ColumnName="Warehouse" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="V_Tbl_MonthData">
+            <EntityTypeMapping TypeName="WarehouseLaborEfficiencyModel.V_Tbl_MonthData">
+              <MappingFragment StoreEntitySet="V_Tbl_MonthData">
+                <ScalarProperty Name="Reel_ID_Rec" ColumnName="Reel_ID_Rec" />
+                <ScalarProperty Name="Jobs_Issue" ColumnName="Jobs_Issue" />
+                <ScalarProperty Name="Jobs_Rec" ColumnName="Jobs_Rec" />
+                <ScalarProperty Name="Pallet_Out" ColumnName="Pallet_Out" />
+                <ScalarProperty Name="Pallet_In" ColumnName="Pallet_In" />
+                <ScalarProperty Name="Case_ID_out" ColumnName="Case_ID_out" />
+                <ScalarProperty Name="Case_ID_in" ColumnName="Case_ID_in" />
+                <ScalarProperty Name="HC_Utilization" ColumnName="HC_Utilization" />
+                <ScalarProperty Name="HC_Support" ColumnName="HC_Support" />
+                <ScalarProperty Name="HC_Actual" ColumnName="HC_Actual" />
+                <ScalarProperty Name="HC_FCST" ColumnName="HC_FCST" />
+                <ScalarProperty Name="Warehouse" ColumnName="Warehouse" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="V_Tbl_WeekData">
+            <EntityTypeMapping TypeName="WarehouseLaborEfficiencyModel.V_Tbl_WeekData">
+              <MappingFragment StoreEntitySet="V_Tbl_WeekData">
+                <ScalarProperty Name="Reel_ID_Rec" ColumnName="Reel_ID_Rec" />
+                <ScalarProperty Name="Jobs_Issue" ColumnName="Jobs_Issue" />
+                <ScalarProperty Name="Jobs_Rec" ColumnName="Jobs_Rec" />
+                <ScalarProperty Name="Pallet_Out" ColumnName="Pallet_Out" />
+                <ScalarProperty Name="Pallet_In" ColumnName="Pallet_In" />
+                <ScalarProperty Name="Case_ID_out" ColumnName="Case_ID_out" />
+                <ScalarProperty Name="Case_ID_in" ColumnName="Case_ID_in" />
+                <ScalarProperty Name="HC_Utilization" ColumnName="HC_Utilization" />
+                <ScalarProperty Name="HC_Support" ColumnName="HC_Support" />
+                <ScalarProperty Name="HC_Actual" ColumnName="HC_Actual" />
+                <ScalarProperty Name="HC_FCST" ColumnName="HC_FCST" />
+                <ScalarProperty Name="Warehouse" ColumnName="Warehouse" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

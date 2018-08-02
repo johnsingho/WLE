@@ -76,7 +76,8 @@ create table tbl_HCData(
 --------------------------
 CREATE VIEW V_Tbl_WeekData
 AS
-SELECT [Date]
+SELECT id
+	  ,[Date]
       ,[Warehouse]
       ,[HC_FCST]
       ,[HC_Actual]
@@ -94,7 +95,8 @@ GO
 
 CREATE VIEW V_Tbl_MonthData
 AS
-SELECT [Date]
+SELECT id
+	  ,[Date]
       ,[Warehouse]
       ,[HC_FCST]
       ,[HC_Actual]
@@ -112,7 +114,8 @@ GO
 
 CREATE VIEW V_Tbl_HCData
 AS
-SELECT [Date]
+SELECT id
+      ,[Date]
       ,[Warehouse]
       ,[Overall]
       ,[System_Clerk]
@@ -125,6 +128,9 @@ SELECT [Date]
   FROM [dbo].[tbl_HCData]
 GO
 
+drop view V_Tbl_WeekData
+drop view V_Tbl_MonthData
+drop view V_Tbl_HCData
 -------------------------------------------------------------------
 truncate table task_log;
 

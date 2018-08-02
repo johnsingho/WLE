@@ -17,9 +17,10 @@ namespace Test
         public void TestImportWeekData()
         {
             var sFile = @"D:\he\Doc\20180724发物流人力计算管控系统Dashboard\testData\WeekData.xlsx";
+            //var sFile = @"D:\he\Doc\20180724发物流人力计算管控系统Dashboard\testData\WeekData1.xlsx";
             var sErr = string.Empty;
-            var bImp = WLE_Data.ImportWeekData(new FileInfo(sFile), out sErr);
-            Assert.IsTrue(bImp);
+            var nImp = WLE_Data.ImportWeekData(new FileInfo(sFile), out sErr);
+            Assert.IsTrue(nImp > 0);
             Assert.AreEqual(string.Empty, sErr);
         }
 
@@ -28,8 +29,8 @@ namespace Test
         {
             var sFile = @"D:\he\Doc\20180724发物流人力计算管控系统Dashboard\testData\MonthData.xlsx";
             var sErr = string.Empty;
-            var bImp = WLE_Data.ImportMonthData(new FileInfo(sFile), out sErr);
-            Assert.IsTrue(bImp);
+            var nImp = WLE_Data.ImportMonthData(new FileInfo(sFile), out sErr);
+            Assert.IsTrue(nImp > 0);
             Assert.AreEqual(string.Empty, sErr);
         }
 
@@ -38,8 +39,8 @@ namespace Test
         {
             var sFile = @"D:\he\Doc\20180724发物流人力计算管控系统Dashboard\testData\HCData.xlsx";
             var sErr = string.Empty;
-            var bImp = WLE_Data.ImportHCData(new FileInfo(sFile), out sErr);
-            Assert.IsTrue(bImp);
+            var nImp = WLE_Data.ImportHCData(new FileInfo(sFile), out sErr);
+            Assert.IsTrue(nImp > 0);
             Assert.AreEqual(string.Empty, sErr);
         }
 

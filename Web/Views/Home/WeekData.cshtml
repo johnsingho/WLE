@@ -1,0 +1,198 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row InfoHead">
+    <div class="col-md-9">
+        <h2>
+            Weekly Trend
+        </h2>
+    </div>
+</div>
+
+<div class="wrapper">
+@using (Html.BeginForm("QueryWeekData", "Query",
+                        FormMethod.Post, new { @id = "frmQueryWeekData" }))
+{
+    <div class="row">
+        <div class="col-md-3">
+            <span>WareHouse</span>
+            <span>
+                <select id="idSelBu" name="bu" required>
+                    <option></option>
+                </select>
+            </span>
+        </div>
+        <div class="col-md-3">
+            <span>Start Week</span>
+            <span>
+                <select id="idSelStartWeek" name="startDate" required>
+                    <option></option>
+                </select>
+            </span>
+        </div>
+        <div class="col-md-3">
+            <span>End Week</span>
+            <span>
+                <select id="idSelEndWeek" name="endDate" required>
+                    <option></option>
+                </select>
+            </span>            
+        </div>
+        <div class="col-md-3">
+            @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+            <button class="btn btn-info" type="submit">Query</button>
+        </div>
+    </div>
+}
+</div>
+
+<div id="gridcontainer" style="overflow-x:scroll">
+    <table id="idTable" class="table table-striped table-bordered table-hover dataTable">
+    </table>
+</div>
+
+
+
+@section Scripts{
+    <script>
+        var oTabLector = null;
+        var selectorBu = null;
+        var selectorStartWeek = null;
+        var selectorEndWeek = null;
+
+        $(function () {
+            InitData();
+        });
+
+        function InitData() {
+            var url = "@Url.Action("GetWeekDataInitInfo", "Query")";
+            AjaxPost(url,
+                "{}",
+                true,
+                function (result) {
+                    var warehouseList = result.data || [];
+                    var weekdateList = result.extra || [];
+                    $("#idSelBu").select2({
+                        data: warehouseList,
+                        placeholder: "choose a warehouse...",
+                        width: "120px"
+                    });
+                    selectorBu = new TSelect2Helper($("#idSelBu"));
+
+                    $("#idSelStartWeek").select2({
+                        data: weekdateList,
+                        placeholder: "choose...",
+                        width:"120px"
+                    });
+                    selectorStartWeek = new TSelect2Helper($("#idSelStartWeek"));
+
+                    $("#idSelEndWeek").select2({
+                        data: weekdateList,
+                        placeholder: "choose...",
+                        width: "120px"
+                    });
+                    selectorEndWeek = new TSelect2Helper($("#idSelEndWeek"));
+
+                });
+
+            $('#frmQueryWeekData').on('submit', function (e) {
+                if (e.isDefaultPrevented()) {
+                    //invalid
+                    return false;
+                } else {
+                    var url = $(this).attr("action");
+                    AjaxPostForm(url, '#frmQueryWeekData', true, function (resp) {
+                        if (resp.bok) {
+                            RefreshTable(resp.data);
+                        } else {
+                            BootstrapDialog.alert("查询失败:<br>" + resp.msg);
+                        }
+                    },
+                    undefined,
+                    function () {
+                        showBusyLoading(true);
+                    },
+                    function () {
+                        showBusyLoading(false);
+                    });
+                }
+                return false;
+            });
+        }
+
+        function RefreshTable(tdata) {
+            $('#idTable').DataTable(json);
+        }
+
+        ///////////////////////////////////////
+        function InitCondTab() {
+            var tabCols = [
+                    { title: "Commodity Code", data: "CommodityCode" },
+                    { title: "Cost Item Number", data: "CostItemNumber" },
+                    { title: "Commodity Code Description", data: "CommodityCodeDescription" },
+                    {
+                        title: "",
+                        render: function (data, type, full, meta) {
+                            var tButton = '&nbsp;&nbsp;<Button onclick="RemoveRow(this)" class="btn btn-warning btn-sm">Remove</button>';
+                            return tButton;
+                        }
+                    }
+            ];
+            var colDefs = [];
+            var idTabLector = "#idTable";
+            var sDom = 'Bfrtip';
+            var $tabLec = $(idTabLector).DataTable({
+                destroy: true,
+                paging: true,
+                processing: true,
+                searching: true,
+                ordering: false,
+                autoWidth: false,
+                select: true,
+                columns: tabCols,
+                columnDefs: colDefs,
+                ajax: {
+                    url: '@Url.Action("GetConditions")'
+                        , type: 'POST'
+                        , dataSrc: ""
+                },
+                dom: sDom,
+                buttons: [
+                    {
+                        text: '上传导入',
+                        action: function (e, dt, node, config) {
+                            ShowUploadDlg(true);
+                        }
+                    },
+                    {
+                        text: '逐个新增',
+                        action: function (e, dt, node, config) {
+                            ShowAddDlg(true);
+                        }
+                    }
+                ]
+            });
+            oTabLector = new TTabHelper($tabLec);
+        }
+
+        function RemoveRow(cell) {
+            var dt = oTabLector.GetDataByCell(cell);
+            if (!dt) { return; }
+
+            BootstrapDialog.confirm("确实要移除？", function (result) {
+                if (!result) { return; }
+                var url = "@Url.Action("DelCondition")";
+                AjaxPost(url, JSON.stringify(dt), true, function (resp) {
+                    if (resp.bok) {
+                        oTabLector.RemoveRow(cell);
+                    } else {
+                        BootstrapDialog.alert("删除失败！");
+                    }
+                });
+            });
+        }
+
+</script>
+}
+

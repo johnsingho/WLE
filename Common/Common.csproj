@@ -79,8 +79,9 @@
     <Compile Include="Authorization\TimeBasedCredential.cs" />
     <Compile Include="Authorization\UserBasicInfo.cs" />
     <Compile Include="Authorization\UserState.cs" />
-    <Compile Include="Data\DataTableHelper.cs" />
-    <Compile Include="Data\SqlServerHelper.cs" />
+    <Compile Include="DotNetCode\DateTimeHelper.cs" />
+    <Compile Include="DotNetData\DataTableHelper.cs" />
+    <Compile Include="DotNetData\SqlServerHelper.cs" />
     <Compile Include="DotNetBean\CookieHelper.cs" />
     <Compile Include="DotNetBean\RequestSession.cs" />
     <Compile Include="DotNetBean\SessionUser.cs" />
@@ -90,7 +91,6 @@
     <Compile Include="Utility\ClientUtility.cs" />
     <Compile Include="Utility\CryptographyUtility.cs" />
     <Compile Include="Utility\EnumExtensions.cs" />
-    <Compile Include="Utility\LocalTimeStr.cs" />
     <Compile Include="Utility\LogHelper.cs" />
     <Compile Include="Utility\SessionHelper.cs" />
     <Compile Include="Utility\StringUtility.cs" />

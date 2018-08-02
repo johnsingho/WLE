@@ -92,9 +92,14 @@ namespace Common.DotNetExcel
             {
                 case CellType.Numeric:
                     {
-                        obj = DateUtil.IsCellDateFormatted(cell)
-                                    ? cell.DateCellValue.ToString()
-                                    : cell.NumericCellValue.ToString();
+                        if(DateUtil.IsCellDateFormatted(cell))
+                        {
+                            obj = cell.DateCellValue;
+                        }
+                        else
+                        {
+                            obj = cell.NumericCellValue;
+                        }
                     }
                     break;
                 case CellType.Formula:
