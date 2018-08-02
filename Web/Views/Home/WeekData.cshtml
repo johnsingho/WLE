@@ -56,7 +56,7 @@
 
 @section Scripts{
     <script>
-        var oTabLector = null;
+        var oidTable = null;
         var selectorBu = null;
         var selectorStartWeek = null;
         var selectorEndWeek = null;
@@ -104,8 +104,10 @@
                     var url = $(this).attr("action");
                     AjaxPostForm(url, '#frmQueryWeekData', true, function (resp) {
                         if (resp.bok) {
+                            EmptyTable();
                             RefreshTable(resp.data);
                         } else {
+                            EmptyTable();
                             BootstrapDialog.alert("查询失败:<br>" + resp.msg);
                         }
                     },
@@ -121,8 +123,28 @@
             });
         }
 
+        function EmptyTable() {
+            if (oidTable) {
+                oidTable.destroy();
+            }
+            $('#idTable').empty();
+        }
         function RefreshTable(tdata) {
-            $('#idTable').DataTable(json);
+            console.log('tdata: ' + tdata);
+            var cols = tdata.columns;
+            var colDefs = [];
+            var rows = JSON.parse(tdata.data);
+            oidTable = $('#idTable').DataTable(
+                                {
+                                    data: rows,
+                                    columns: cols,
+                                    columnDefs: colDefs,
+                                    autoWidth: true,
+                                    destroy: true,
+                                    paging: true,
+                                    ordering: false,
+                                    searching: false
+                                });
         }
 
         ///////////////////////////////////////
@@ -176,22 +198,6 @@
             oTabLector = new TTabHelper($tabLec);
         }
 
-        function RemoveRow(cell) {
-            var dt = oTabLector.GetDataByCell(cell);
-            if (!dt) { return; }
-
-            BootstrapDialog.confirm("确实要移除？", function (result) {
-                if (!result) { return; }
-                var url = "@Url.Action("DelCondition")";
-                AjaxPost(url, JSON.stringify(dt), true, function (resp) {
-                    if (resp.bok) {
-                        oTabLector.RemoveRow(cell);
-                    } else {
-                        BootstrapDialog.alert("删除失败！");
-                    }
-                });
-            });
-        }
 
 </script>
 }

@@ -9,6 +9,7 @@ using System.Data;
 using Common.DotNetData;
 using WarehouseLaborEfficiencyBLL;
 using System.Data.SqlClient;
+using Common.DotNetJson;
 
 namespace WarehouseLaborEfficiencyWeb.DAL
 {
@@ -23,9 +24,18 @@ namespace WarehouseLaborEfficiencyWeb.DAL
         public class TDatatables
         {
             public object data { get; set; }
-            public object columns { get; set; }
+            public List<TColEntry> columns { get; set; }
         }
-
+        public class TColEntry
+        {
+            public TColEntry(string t, string d)
+            {
+                title = t;
+                data = d;
+            }
+            public string title { get; set; }
+            public string data { get; set; }
+        }
         //========================================
 
         internal static List<TSelectOpt> GetWarehouseList()
@@ -118,15 +128,24 @@ namespace WarehouseLaborEfficiencyWeb.DAL
                     .OrderBy(x => x)
                     .ToList();
 
-            var dtNew = DataTableHelper.DataTableRotate(dt);
+            var dtNew = DataTableHelper.DataTableRotateNoLeft(dt);
             dtNew.Columns[0].ColumnName = "Week";
             int nColNew = dtNew.Columns.Count;
-            for (var i = 0; i < nColNew; i++)
+            for (var i = 0; i < nColNew-1; i++)
             {
                 dtNew.Columns[i + 1].ColumnName = cols[i];
             }
 
-            return null;
+            var arrCols = new List<TColEntry>();
+            arrCols.Add(new TColEntry("Week", "Week"));
+            arrCols.AddRange((from x in cols
+                              select new TColEntry(x, x)
+                              ).ToList());
+            res.columns = arrCols;
+
+            var sData = JsonHelper.DataTableToJsonArr(dtNew);
+            res.data = sData;
+            return res;
         }
 
 

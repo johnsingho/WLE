@@ -20,7 +20,7 @@ namespace WarehouseLaborEfficiencyWeb.Database
         public Nullable<int> HC_FCST { get; set; }
         public Nullable<int> HC_Actual { get; set; }
         public Nullable<int> HC_Support { get; set; }
-        public Nullable<float> HC_Utilization { get; set; }
+        public Nullable<decimal> HC_Utilization { get; set; }
         public Nullable<int> Case_ID_in { get; set; }
         public Nullable<int> Case_ID_out { get; set; }
         public Nullable<int> Pallet_In { get; set; }

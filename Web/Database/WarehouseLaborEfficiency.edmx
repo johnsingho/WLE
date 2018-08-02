@@ -113,7 +113,7 @@ warning 6002: The table/view 'WarehouseLaborEfficiency.dbo.V_Tbl_MonthData' does
           <Property Name="HC_FCST" Type="int" />
           <Property Name="HC_Actual" Type="int" />
           <Property Name="HC_Support" Type="int" />
-          <Property Name="HC_Utilization" Type="real" />
+          <Property Name="HC_Utilization" Type="numeric" Precision="18" Scale="2" />
           <Property Name="Case_ID_in" Type="int" />
           <Property Name="Case_ID_out" Type="int" />
           <Property Name="Pallet_In" Type="int" />
@@ -135,7 +135,7 @@ warning 6002: The table/view 'WarehouseLaborEfficiency.dbo.V_Tbl_WeekData' does 
           <Property Name="HC_FCST" Type="int" />
           <Property Name="HC_Actual" Type="int" />
           <Property Name="HC_Support" Type="int" />
-          <Property Name="HC_Utilization" Type="real" />
+          <Property Name="HC_Utilization" Type="numeric" Precision="18" Scale="2" />
           <Property Name="Case_ID_in" Type="int" />
           <Property Name="Case_ID_out" Type="int" />
           <Property Name="Pallet_In" Type="int" />
@@ -320,7 +320,7 @@ warning 6002: The table/view 'WarehouseLaborEfficiency.dbo.V_Tbl_WeekData' does 
           <Property Name="HC_FCST" Type="Int32" />
           <Property Name="HC_Actual" Type="Int32" />
           <Property Name="HC_Support" Type="Int32" />
-          <Property Name="HC_Utilization" Type="Single" />
+          <Property Name="HC_Utilization" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="Case_ID_in" Type="Int32" />
           <Property Name="Case_ID_out" Type="Int32" />
           <Property Name="Pallet_In" Type="Int32" />
@@ -340,7 +340,7 @@ warning 6002: The table/view 'WarehouseLaborEfficiency.dbo.V_Tbl_WeekData' does 
           <Property Name="HC_FCST" Type="Int32" />
           <Property Name="HC_Actual" Type="Int32" />
           <Property Name="HC_Support" Type="Int32" />
-          <Property Name="HC_Utilization" Type="Single" />
+          <Property Name="HC_Utilization" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="Case_ID_in" Type="Int32" />
           <Property Name="Case_ID_out" Type="Int32" />
           <Property Name="Pallet_In" Type="Int32" />

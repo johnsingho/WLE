@@ -92,5 +92,13 @@ namespace Common.DotNetData
             }
             return dtNew;
         }
+
+        //原dt的最左列不转换为第一行
+        public static DataTable DataTableRotateNoLeft(DataTable dt, Type dtVal = null)
+        {
+            DataTable dtNew = DataTableRotate(dt, dtVal);
+            dtNew.Rows.RemoveAt(0);
+            return dtNew;
+        }
     }
 }

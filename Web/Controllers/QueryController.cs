@@ -21,12 +21,19 @@ namespace WarehouseLaborEfficiencyWeb.Controllers
         [HttpPost]
         public ActionResult GetWeekDataInitInfo()
         {
+            var lstData = QueryHelper.GetWarehouseList();
             var obj = new TRes
             {
                 bok = true,
-                data = QueryHelper.GetWarehouseList(),
+                data = lstData,
                 extra = QueryHelper.GetWeekdateList(),
             };
+
+            if(null==lstData || 0 == lstData.Count)
+            {
+                obj.bok = false;
+                obj.msg = "没有查询到数据";
+            }
             return Json(obj);
         }
 
@@ -36,9 +43,14 @@ namespace WarehouseLaborEfficiencyWeb.Controllers
             var datWeek = QueryHelper.GetWeekData(bu, startDate, endDate);
             var obj = new TRes
             {
-                bok = null != datWeek,
+                bok = true,
                 data = datWeek
             };
+            if (null==datWeek.data || 0==datWeek.columns.Count)
+            {
+                obj.bok = false;
+                obj.msg = "没有查询到数据";
+            }
             return Json(obj);
         }
         

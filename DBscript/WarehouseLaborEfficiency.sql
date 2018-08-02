@@ -18,7 +18,7 @@ drop table tbl_WeekData;
 
 create table tbl_WeekData(
 	id int identity primary key,
-	[Date] date,
+	[Date] date NOT NULL,
 	Warehouse nvarchar(50),
 	HC_FCST int,
 	HC_Actual int,
@@ -39,7 +39,7 @@ drop table tbl_MonthData;
 
 create table tbl_MonthData(
 	id int identity primary key,
-	[Date] date,
+	[Date] date NOT NULL,
 	Warehouse nvarchar(50),
 	HC_FCST int,
 	HC_Actual int,
@@ -60,7 +60,7 @@ drop table tbl_HCData;
 
 create table tbl_HCData(
 	id int identity primary key,
-	[Date] date,
+	[Date] date NOT NULL,
 	Warehouse nvarchar(50),
 	Overall int default(0),
 	System_Clerk int default(0),
@@ -73,6 +73,15 @@ create table tbl_HCData(
 	UpdateTime datetime default(GetDate())
 );
 
+
+--------------
+alter table tbl_WeekData
+	alter column [Date] date not null;
+alter table tbl_MonthData
+	alter column [Date] date not null;
+alter table tbl_HCData
+	alter column [Date] date not null;
+
 --------------------------
 CREATE VIEW V_Tbl_WeekData
 AS
@@ -82,7 +91,7 @@ SELECT id
       ,[HC_FCST]
       ,[HC_Actual]
       ,[HC_Support]
-      ,[HC_Utilization]
+      ,CAST([HC_Utilization]*100 AS NUMERIC(18,2)) as [HC_Utilization]
       ,[Case_ID_in]
       ,[Case_ID_out]
       ,[Pallet_In]
@@ -101,7 +110,7 @@ SELECT id
       ,[HC_FCST]
       ,[HC_Actual]
       ,[HC_Support]
-      ,[HC_Utilization]
+      ,CAST([HC_Utilization]*100 AS NUMERIC(18,2))  as [HC_Utilization]
       ,[Case_ID_in]
       ,[Case_ID_out]
       ,[Pallet_In]
