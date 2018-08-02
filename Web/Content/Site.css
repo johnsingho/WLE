@@ -15,6 +15,14 @@ header, footer, nav, section {
     display: block;
 }
 
+footer.sticky-footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    z-index: 99;
+    color:#fff;
+    background-color:#424f63;
+}
 
 /* Styles for basic forms
 -----------------------------------------------------------*/

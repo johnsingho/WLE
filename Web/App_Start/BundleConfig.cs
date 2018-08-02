@@ -30,7 +30,9 @@ namespace WarehouseLaborEfficiencyWeb
             bundles.Add(new ScriptBundle("~/bundles/bs")
                 .Include("~/Scripts/bootstrap.min.js")
                 .Include("~/Scripts/bootstrap-dialog.min.js")
+                .Include("~/Scripts/datatables.min.js")
                 .Include("~/Scripts/select2.min.js")
+                .Include("~/Scripts/echarts.js") //for test
                 );
             bundles.Add(new StyleBundle("~/Content/bs")
                         .Include("~/Content/bootstrap.min.css")
@@ -42,7 +44,7 @@ namespace WarehouseLaborEfficiencyWeb
 
             bundles.Add(new ScriptBundle("~/bundles/main")
                         .Include("~/Scripts/main.js")
-                        .Include("~/Scripts/datatables.min.js")
+                        .Include("~/Scripts/wle.js")
                         );
 
         }

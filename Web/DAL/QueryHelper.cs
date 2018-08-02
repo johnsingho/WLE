@@ -23,8 +23,9 @@ namespace WarehouseLaborEfficiencyWeb.DAL
         
         public class TDatatables
         {
-            public object data { get; set; }
             public List<TColEntry> columns { get; set; }
+            public object data { get; set; }            
+            public List<string> kinds { get; set; }
         }
         public class TColEntry
         {
@@ -145,6 +146,7 @@ namespace WarehouseLaborEfficiencyWeb.DAL
 
             var sData = JsonHelper.DataTableToJsonArr(dtNew);
             res.data = sData;
+            res.kinds = GetKinds();
             return res;
         }
 

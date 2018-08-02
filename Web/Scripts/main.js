@@ -140,5 +140,9 @@ function TSelect2Helper($sel2) {
     }
 }
 
+//object value to []
+function MakeValueArr(obj) {
+    return Object.values(obj);
+}
 
 
