@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Common.DotNetExcel;
+using System;
 using System.Web;
 using System.Web.Mvc;
+using WarehouseLaborEfficiencyBLL;
 using WarehouseLaborEfficiencyWeb.DAL;
 
 namespace WarehouseLaborEfficiencyWeb.Controllers
@@ -94,6 +96,25 @@ namespace WarehouseLaborEfficiencyWeb.Controllers
         }
         #endregion
 
+        #region HCData        
+        [HttpPost]
+        public ActionResult QueryHCData(string bu)
+        {
+            var dat = QueryHelper.GetHCData(bu);
+            var obj = new TRes
+            {
+                bok = true,
+                data = dat
+            };
+            if (null == dat.data || 0 == dat.columns.Count)
+            {
+                obj.bok = false;
+                obj.msg = "没有查询到数据";
+            }
+            return Json(obj);
+        }
+        #endregion
+
         [HttpPost]
         public ActionResult UploadData(HttpPostedFileBase file)
         {
@@ -127,6 +148,40 @@ namespace WarehouseLaborEfficiencyWeb.Controllers
             return Json(res, JsonRequestBehavior.AllowGet);
         }
 
+
+        [HttpGet]
+        public ActionResult DownloadData(string dType, string bu, string startWeek, string endWeek)
+        {
+            switch (dType)
+            {
+                case "WeekData":
+                    return DownloadData_WeekData(bu, startWeek, endWeek);
+                case "MonthData":
+                    return DownloadData_MonthData(bu, startWeek, endWeek);
+                case "HCData":
+                    return DownloadData_HCData(bu, startWeek, endWeek);
+            }
+            return new EmptyResult();
+        }
+
+        private ActionResult DownloadData_WeekData(string bu, string startWeek, string endWeek)
+        {
+            var fn = string.Format("{0}_{1}_{2}.xlsx", "WeekData", startWeek, endWeek);
+            var bys = WLE_Data.GetWeekData_Down(bu, startWeek, endWeek);
+            return File(bys, ExcelType.XLSX_MIME, fn);
+        }
+
+        private ActionResult DownloadData_MonthData(string bu, string startWeek, string endWeek)
+        {
+            var fn = string.Format("{0}_{1}_{2}.xlsx", "MonthData", startWeek, endWeek);
+            var bys = WLE_Data.GetMonthData_Down(bu, startWeek, endWeek);
+            return File(bys, ExcelType.XLSX_MIME, fn);
+        }
+
+        private ActionResult DownloadData_HCData(string bu, string startWeek, string endWeek)
+        {
+            return null;
+        }
 
     }
 }

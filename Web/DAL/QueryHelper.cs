@@ -87,7 +87,7 @@ namespace WarehouseLaborEfficiencyWeb.DAL
                 return qry.ToList();
             }
         }
-
+        
         private static List<string> GetKinds()
         {
             var lst = new List<string>();
@@ -230,93 +230,18 @@ namespace WarehouseLaborEfficiencyWeb.DAL
             return res;
         }
 
-        //internal static List<v_CommodityRecvCmp> GetCompResult()
-        //{
-        //    using (var context = new CommodityRecv_DashboardEntities())
-        //    {
-        //        var qry = from c in context.v_CommodityRecvCmp.AsNoTracking()
-        //                  orderby c.ITEM, c.RECEIVEDATE
-        //                  select c;
-        //        return qry.ToList();
-        //    }
-        //}
-        //internal static List<tbl_cr_Condition> GetConditions()
-        //{
-        //    using (var context = new CommodityRecv_DashboardEntities())
-        //    {
-        //        var qry = from c in context.tbl_cr_Condition
-        //                  orderby c.CostItemNumber
-        //                  select c;
-        //        return qry.ToList();
-        //    }
-        //}
+        public static Dictionary<string, object> GetHCData(string bu)
+        {
+            if(string.IsNullOrEmpty(bu) || 0==string.Compare("all", bu, true))
+            {
+                return GetHCDataMulti();
+            }
 
-        //internal static object GetAllMails()
-        //{
-        //    using (var context = new CommodityRecv_DashboardEntities())
-        //    {
-        //        var qry = from c in context.tbl_cr_mailReceiver
-        //                  orderby c.enName
-        //                  select c;
-        //        return qry.ToList();
-        //    }
-        //}
+        }
 
-        //internal static bool DelCondition(int id, string costItemNumber)
-        //{
-        //    using (var context = new CommodityRecv_DashboardEntities())
-        //    {
-        //        var its = from p in context.tbl_cr_Condition
-        //                  where p.CostItemNumber.Equals(costItemNumber)
-        //                  select p;
-        //        if (!its.Any())
-        //        {
-        //            return false;
-        //        }
-        //        context.tbl_cr_Condition.Remove(its.First());
-        //        try
-        //        {
-        //            context.SaveChanges();
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            LogHelper.WriteError(typeof(QueryHelper), ex);
-        //            return false;
-        //        }
-        //        return true;
-        //    }
-        //}
-
-        //internal static bool SingleCondAdd(string txtCommodityCode,
-        //                                   string txtCostItemNumber,
-        //                                   string txtCommodityCodeDesc,
-        //                                   out string sErr)
-        //{
-        //    sErr = string.Empty;
-        //    bool bOk = false;
-        //    using (var context = new CommodityRecv_DashboardEntities())
-        //    {
-        //        insert
-        //        var entity = new tbl_cr_Condition()
-        //        {
-        //            CommodityCode = txtCommodityCode.Trim(),
-        //            CostItemNumber = txtCostItemNumber.Trim(),
-        //            CommodityCodeDescription = txtCommodityCodeDesc.Trim()
-        //        };
-        //        try
-        //        {
-        //            context.tbl_cr_Condition.Add(entity);
-        //            context.SaveChanges();
-        //            bOk = true;
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            sErr = ex.Message
-        //            sErr = string.Format("{0} 可能已存在", txtCostItemNumber);
-        //        }
-        //    }
-        //    return bOk;
-        //}
-
+        private static Dictionary<string, object> GetHCDataMulti()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

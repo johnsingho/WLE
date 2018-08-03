@@ -43,6 +43,7 @@
             <div class="col-md-3">
                 @Html.ValidationSummary(false, "", new { @class = "text-danger" })
                 <button class="btn btn-info" type="submit">Query</button>
+                <button class="btn btn-info" type="button" id="btnDownload">Download</button>
             </div>
         </div>
     }
@@ -67,6 +68,10 @@
         });
 
         function InitData() {
+            $("#frmQueryMonthData").validate();
+            $("#btnDownload").click(function () {
+                DownloadData('MonthData', $("#frmQueryMonthData"));
+            });
             var url = "@Url.Action("GetMonthDataInitInfo", "Query")";
             AjaxPost(url,
                 "{}",
@@ -127,25 +132,7 @@
                 return false;
             });
         }
-
-        function RefreshTable(tdata) {
-            //console.log('tdata: ' + tdata);
-            var cols = tdata.columns;
-            var colDefs = [];
-            var rows = tdata.data;
-            oidTable = $('#idTable').DataTable(
-                                {
-                                    data: rows,
-                                    columns: cols,
-                                    columnDefs: colDefs,
-                                    autoWidth: true,
-                                    destroy: true,
-                                    paging: true,
-                                    ordering: false,
-                                    searching: false
-                                });
-        }
-
+        
         function MakexAxis(cols) {
             var xCols = [];
             $.each(cols, function (index, value) {
@@ -195,29 +182,6 @@
                         fontWeight: 'bold'
                     },
                 },
-                dataZoom: [
-                    {
-                        type: 'slider',
-                        show: true,
-                        xAxisIndex: [0],
-                        start: 1,
-                        end: 35
-                    },
-                    {
-                        type: 'slider',
-                        show: true,
-                        yAxisIndex: [0],
-                        left: '93%',
-                        start: 29,
-                        end: 36
-                    },
-                    {
-                        type: 'inside',
-                        xAxisIndex: [0],
-                        start: 1,
-                        end: 35
-                    }
-                ],
                 grid: {
                     left: '2%',
                     right: '11%',

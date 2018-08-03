@@ -85,6 +85,7 @@
     <Compile Include="DotNetBean\CookieHelper.cs" />
     <Compile Include="DotNetBean\RequestSession.cs" />
     <Compile Include="DotNetBean\SessionUser.cs" />
+    <Compile Include="DotNetExcel\ExcelType.cs" />
     <Compile Include="DotNetExcel\NPOIExcelHelper.cs" />
     <Compile Include="DotNetJson\JsonHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
