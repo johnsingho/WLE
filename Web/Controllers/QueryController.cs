@@ -17,7 +17,7 @@ namespace WarehouseLaborEfficiencyWeb.Controllers
             return spath;
         }
 
-
+        #region WeekData
         [HttpPost]
         public ActionResult GetWeekDataInitInfo()
         {
@@ -54,6 +54,45 @@ namespace WarehouseLaborEfficiencyWeb.Controllers
             return Json(obj);
         }
         
+        #endregion
+
+        #region Month Data
+        [HttpPost]
+        public ActionResult GetMonthDataInitInfo()
+        {
+            var lstData = QueryHelper.GetWarehouseList();
+            var obj = new TRes
+            {
+                bok = true,
+                data = lstData,
+                extra = QueryHelper.GetMonthdateList(),
+            };
+
+            if (null == lstData || 0 == lstData.Count)
+            {
+                obj.bok = false;
+                obj.msg = "没有查询到数据";
+            }
+            return Json(obj);
+        }
+
+        [HttpPost]
+        public ActionResult QueryMonthData(string bu, string startDate, string endDate)
+        {
+            var dat = QueryHelper.GetMonthData(bu, startDate, endDate);
+            var obj = new TRes
+            {
+                bok = true,
+                data = dat
+            };
+            if (null == dat.data || 0 == dat.columns.Count)
+            {
+                obj.bok = false;
+                obj.msg = "没有查询到数据";
+            }
+            return Json(obj);
+        }
+        #endregion
 
         [HttpPost]
         public ActionResult UploadData(HttpPostedFileBase file)

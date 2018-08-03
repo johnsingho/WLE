@@ -32,7 +32,7 @@ namespace WarehouseLaborEfficiencyWeb
                 .Include("~/Scripts/bootstrap-dialog.min.js")
                 .Include("~/Scripts/datatables.min.js")
                 .Include("~/Scripts/select2.min.js")
-                .Include("~/Scripts/echarts.js") //for test
+                .Include("~/Scripts/echarts.min.js")
                 );
             bundles.Add(new StyleBundle("~/Content/bs")
                         .Include("~/Content/bootstrap.min.css")

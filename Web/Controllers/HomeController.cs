@@ -21,18 +21,18 @@ namespace WarehouseLaborEfficiencyWeb.Controllers
         }
         public ActionResult MonthData()
         {
-            if (!CommonInfo.IsLogin())
-            {
-                return RedirectToAction("Signin", "Login");
-            }
+            //if (!CommonInfo.IsLogin())
+            //{
+            //    return RedirectToAction("Signin", "Login");
+            //}
             return View();
         }
         public ActionResult HCData()
         {
-            if (!CommonInfo.IsLogin())
-            {
-                return RedirectToAction("Signin", "Login");
-            }
+            //if (!CommonInfo.IsLogin())
+            //{
+            //    return RedirectToAction("Signin", "Login");
+            //}
             return View();
         }
         #endregion

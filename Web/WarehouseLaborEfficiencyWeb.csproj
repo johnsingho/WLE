@@ -252,6 +252,7 @@
     <Content Include="Database\WarehouseLaborEfficiency.edmx.diagram">
       <DependentUpon>WarehouseLaborEfficiency.edmx</DependentUpon>
     </Content>
+    <None Include="Properties\PublishProfiles\WareHouseLaborEff.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\datatables.min.js" />
     <Content Include="Scripts\echarts.js" />
@@ -285,10 +286,11 @@
     <Content Include="Views\Login\Signin.cshtml" />
     <Content Include="Views\Login\UserMng.cshtml" />
     <Content Include="Views\Home\WeekData.cshtml" />
+    <Content Include="Views\Home\MonthData.cshtml" />
+    <Content Include="Views\Home\HCData.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Properties\PublishProfiles\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

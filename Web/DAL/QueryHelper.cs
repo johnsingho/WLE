@@ -71,13 +71,30 @@ namespace WarehouseLaborEfficiencyWeb.DAL
             }
         }
 
+        internal static object GetMonthdateList()
+        {
+            using (var context = new WarehouseLaborEfficiencyEntities())
+            {
+                var qry = (from c in context.V_Tbl_MonthData
+                           group c by c.Date into g
+                           orderby g.Key
+                           select g.FirstOrDefault()
+                          ).ToList().Select(x => new TSelectOpt
+                          {
+                              id = DateTimeHelper.GetLocalDateStrNull(x.Date),
+                              text = DateTimeHelper.GetLocalDateStrNull(x.Date)
+                          });
+                return qry.ToList();
+            }
+        }
+
         private static List<string> GetKinds()
         {
             var lst = new List<string>();
             lst.Add("HC_FCST");
             lst.Add("HC_Actual");
             lst.Add("HC_Support");
-            lst.Add("HC_Utilization");
+            lst.Add("HC_Utilization(%)");
             lst.Add("Case_ID_in");
             lst.Add("Case_ID_out");
             lst.Add("Pallet_In");
@@ -150,6 +167,68 @@ namespace WarehouseLaborEfficiencyWeb.DAL
             return res;
         }
 
+        
+        internal static TDatatables GetMonthData(string bu, string startDate, string endDate)
+        {
+            var res = new TDatatables();
+            var sql = string.Format(@"select [Date]
+                                              ,[HC_FCST]
+                                              ,[HC_Actual]
+                                              ,[HC_Support]
+                                              ,[HC_Utilization]
+                                              ,[Case_ID_in]
+                                              ,[Case_ID_out]
+                                              ,[Pallet_In]
+                                              ,[Pallet_Out]
+                                              ,[Jobs_Rec]
+                                              ,[Jobs_Issue]
+                                              ,[Reel_ID_Rec] 
+                                      from V_Tbl_MonthData
+                                      where Warehouse= @Warehouse and ( @StartDate<=[Date] and [Date]<= @EndDate)
+                                      order by [Date]
+                                    "
+                                    );
+            var parameter = new SqlParameter[]
+            {
+                    new SqlParameter("@Warehouse", bu),
+                    new SqlParameter("@StartDate", startDate),
+                    new SqlParameter("@EndDate", endDate)
+            };
+            var ds = SqlServerHelper.ExecuteQuery(CustomConfig.ConnStrMain, sql, parameter);
+            if (DataTableHelper.IsEmptyDataSet(ds))
+            {
+                return res;
+            }
+            var dt = DataTableHelper.GetDataTable0(ds);
+
+            var qry = dt.AsEnumerable();
+            //var lstRows = GetKinds();
+
+            var cols = qry.Select(x => DateTimeHelper.GetLocalDateStrNull(x["Date"]))
+                    .Distinct()
+                    .OrderBy(x => x)
+                    .ToList();
+
+            var dtNew = DataTableHelper.DataTableRotateNoLeft(dt);
+            dtNew.Columns[0].ColumnName = "Week";
+            int nColNew = dtNew.Columns.Count;
+            for (var i = 0; i < nColNew - 1; i++)
+            {
+                dtNew.Columns[i + 1].ColumnName = cols[i];
+            }
+
+            var arrCols = new List<TColEntry>();
+            arrCols.Add(new TColEntry("Week", "Week"));
+            arrCols.AddRange((from x in cols
+                              select new TColEntry(x, x)
+                              ).ToList());
+            res.columns = arrCols;
+
+            var sData = JsonHelper.DataTableToJsonArr(dtNew);
+            res.data = sData;
+            res.kinds = GetKinds();
+            return res;
+        }
 
         //internal static List<v_CommodityRecvCmp> GetCompResult()
         //{

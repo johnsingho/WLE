@@ -142,7 +142,14 @@ function TSelect2Helper($sel2) {
 
 //object value to []
 function MakeValueArr(obj) {
-    return Object.values(obj);
+    //return Object.values(obj);
+    var res = [];
+    for (var i in obj) {
+        if (obj.hasOwnProperty(i)) {
+            res.push(obj[i]);
+        }
+    }
+    return res;
 }
 
 
