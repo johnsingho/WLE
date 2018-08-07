@@ -1,6 +1,7 @@
 ﻿using Common.DotNetCode;
 using Common.DotNetExcel;
 using System;
+using System.Collections.Generic;
 using System.Web;
 using System.Web.Mvc;
 using WarehouseLaborEfficiencyBLL;
@@ -116,9 +117,9 @@ namespace WarehouseLaborEfficiencyWeb.Controllers
 
         #region HCData        
         [HttpPost]
-        public ActionResult QueryHCData(string bu)
+        public ActionResult QueryHCData(string warehouses)
         {
-            var dat = QueryHelper.GetHCData(bu);
+            var dat = QueryHelper.GetHCData(warehouses);
             var obj = new TRes
             {
                 bok = true,
@@ -135,7 +136,7 @@ namespace WarehouseLaborEfficiencyWeb.Controllers
         #endregion
 
         [HttpPost]
-        public ActionResult UploadData(HttpPostedFileBase file)
+        public ActionResult UploadData(string dataType, HttpPostedFileBase file)
         {
             var res = new TRes
             {
@@ -148,7 +149,12 @@ namespace WarehouseLaborEfficiencyWeb.Controllers
                 ModelState.AddModelError("", res.msg);
                 return Json(res, JsonRequestBehavior.AllowGet);
             }
-
+            if (string.IsNullOrEmpty(dataType))
+            {
+                res.msg = "请选择数据类型";
+                ModelState.AddModelError("", res.msg);
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
             if (file == null || file.ContentLength == 0)
             {
                 res.msg = "文件有问题";
@@ -157,7 +163,7 @@ namespace WarehouseLaborEfficiencyWeb.Controllers
             }
 
             var sErrImp = string.Empty;
-            bool bImp = BLLHelper.ImpUpload(file, out sErrImp);
+            bool bImp = BLLHelper.ImpUpload(dataType, file, out sErrImp);
             res.bok = bImp;
             if (!bImp)
             {
@@ -187,6 +193,7 @@ namespace WarehouseLaborEfficiencyWeb.Controllers
         {
             var fn = string.Format("{0}_{1}_{2}.xlsx", "WeekData", startWeek, endWeek);
             var bys = WLE_Data.GetWeekData_Down(bu, startWeek, endWeek);
+            if (null == bys) { return new EmptyResult(); }
             return File(bys, ExcelType.XLSX_MIME, fn);
         }
 
@@ -194,13 +201,15 @@ namespace WarehouseLaborEfficiencyWeb.Controllers
         {
             var fn = string.Format("{0}_{1}_{2}.xlsx", "MonthData", startWeek, endWeek);
             var bys = WLE_Data.GetMonthData_Down(bu, startWeek, endWeek);
+            if (null == bys) { return new EmptyResult(); }
             return File(bys, ExcelType.XLSX_MIME, fn);
         }
 
         private ActionResult DownloadData_HCData(string bu)
         {
-            var fn = string.Format("{0}_{1}.xlsx", "MonthData", DateTimeHelper.GetToday());
+            var fn = string.Format("{0}_{1}.xlsx", "HCData", DateTimeHelper.GetToday());
             var bys = WLE_Data.GetHCData_Down(bu);
+            if (null == bys) { return new EmptyResult(); }
             return File(bys, ExcelType.XLSX_MIME, fn);
         }
 

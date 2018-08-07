@@ -246,15 +246,16 @@ namespace WarehouseLaborEfficiencyBLL
             }
         }
 
-        public static byte[] GetHCData_Down(string bu)
+        public static byte[] GetHCData_Down(string bus)
         {
             byte[] bys = null;
             SqlParameter[] parameter = null;
             string sql = string.Empty;
-            if (string.IsNullOrEmpty(bu) || 0 == string.Compare("all", bu, true))
+            if (string.IsNullOrEmpty(bus) || 0 == string.Compare("all", bus, true))
             {
                 sql = string.Format(@"SELECT 
                                           cast([Date] as char(10)) as [Date]
+                                          ,[Warehouse]
                                           ,[Overall]
                                           ,[System_Clerk]
                                           ,[Inventory_Control]
@@ -270,8 +271,19 @@ namespace WarehouseLaborEfficiencyBLL
             }
             else
             {
+                var whList = bus.Split(new char[] { ',' });
+                var sb = new StringBuilder();
+                foreach(var bu in whList)
+                {
+                    sb.AppendFormat("'{0}',", bu);
+                }
+                if (sb.Length > 0)
+                {
+                    sb.Remove(sb.Length - 1, 1);
+                }
                 sql = string.Format(@"SELECT 
                                         cast([Date] as char(10)) as [Date]
+                                          ,[Warehouse]
                                           ,[Overall]
                                           ,[System_Clerk]
                                           ,[Inventory_Control]
@@ -281,14 +293,11 @@ namespace WarehouseLaborEfficiencyBLL
                                           ,[Forklift_Driver]
                                           ,[Total]
                                     FROM [dbo].[V_Tbl_HCData]
-                                    where Warehouse=@Warehouse
+                                    where Warehouse in ({0})
                                     order by Date
-                                    "
+                                    ",
+                                    sb.ToString()
                                     );
-                parameter = new SqlParameter[]
-                {
-                    new SqlParameter("@Warehouse", bu)
-                };
             }
             
             var ds = SqlServerHelper.ExecuteQuery(CustomConfig.ConnStrMain, sql, parameter);

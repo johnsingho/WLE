@@ -19,9 +19,21 @@ function GetMyChartColors() {
 
 function GetSelect2Sel($id) {
     var sels = $id.select2('data');
-    return sels ? sels[0] : null;
+    return sels ? sels[0].id : null;
 }
 
+function GetSelect2SelMulti($id) {
+    var sels = $id.select2('data');
+    var sAll = '';
+    $.each(sels, function (ind, val) {
+        sAll += val.id;
+        sAll += ',';
+    });
+    if (sAll.length>0) {
+        sAll = sAll.slice(0, -1);
+    }
+    return sAll;
+}
 
 function DownloadData(dType, $frm) {
     $frm.validate();
@@ -31,9 +43,9 @@ function DownloadData(dType, $frm) {
         var url = "/Query/DownloadData";
         var para = {
             dType: dType,
-            bu: GetSelect2Sel($('#idSelBu')).text,
-            startWeek: startW ? startW.text : null,
-            endWeek: endWeek ? endWeek.text : null
+            bu: GetSelect2SelMulti($('#idSelBu')),
+            startWeek: startW ? startW : null,
+            endWeek: endWeek ? endWeek : null
         };
         url += '?';
         url += $.param(para);

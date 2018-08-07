@@ -31,7 +31,8 @@ create table tbl_WeekData(
 	Jobs_Rec int,
 	Jobs_Issue int,
 	Reel_ID_Rec int,
-	UpdateTime datetime default(GetDate())
+	UpdateTime datetime default(GetDate()),
+	constraint unq_tbl_WeekData unique([Date],Warehouse)
 );
 
 
@@ -52,7 +53,8 @@ create table tbl_MonthData(
 	Jobs_Rec int,
 	Jobs_Issue int,
 	Reel_ID_Rec int,
-	UpdateTime datetime default(GetDate())
+	UpdateTime datetime default(GetDate()),
+	constraint unq_tbl_MonthData unique([Date],Warehouse)
 );
 
 
@@ -70,7 +72,8 @@ create table tbl_HCData(
 	Shipping int  default(0),
 	Forklift_Driver int default(0),
 	Total int default(0),
-	UpdateTime datetime default(GetDate())
+	UpdateTime datetime default(GetDate()),
+	constraint unq_tbl_HCData unique([Date],Warehouse)
 );
 
 

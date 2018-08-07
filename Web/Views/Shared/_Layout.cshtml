@@ -94,7 +94,7 @@
     </div>
 
     @*上传数据*@
-    @using (Html.BeginForm("UploadData", "Home",
+    @using (Html.BeginForm("UploadData", "Query",
                             FormMethod.Post, new { @id = "frmUploadData" }))
     {
         <div class="modal fade" id="dlgUploadData" tabindex="-1" role="dialog" aria-labelledby="dlgUploadData" aria-hidden="true">
@@ -105,7 +105,17 @@
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
-                            <label class="control-label">上传要导入的对比条件：</label>
+                            <label class="control-label">数据类型：</label>
+                            <select id="idDatatype" name="dataType" required>
+                                <option></option>
+                                <option value="WeekData">Week Data</option>
+                                <option value="MonthData">Month Data</option>
+                                <option value="HCData">HC Data</option>
+                            </select>
+                            <div class="help-block with-errors"></div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">上传要导入的数据：</label>
                             <input type="file" id="file" name="file"
                                    data-error="请选择要上传的excel文件!" required
                                    pattern=".+xls(x)?">
@@ -151,7 +161,7 @@
                         ShowUploadDlg(false);
                         if (resp.bok) {
                             BootstrapDialog.alert("上传成功");
-                            reload();
+                            //reload();
                         } else {
                             BootstrapDialog.alert("上传失败:<br>" + resp.msg);
                         }

@@ -251,28 +251,22 @@ namespace WarehouseLaborEfficiencyWeb.DAL
             return lst;
         }
 
-        public static List<TMapDatatables> GetHCData(string bu)
+        public static List<TMapDatatables> GetHCData(string bus)
         {
-            if(string.IsNullOrEmpty(bu) || 0==string.Compare("all", bu, true))
-            {
-                var buList = GetWarehouseList();
-                return GetHCDataAll(buList);
-            }
-            var items = new List<TMapDatatables>();
-            items.Add(new TMapDatatables { name = bu, entry = GetHCDataBu(bu) });
-            return items;
+            var buList = bus.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            return GetHCDataAll(buList);
         }
 
-        private static List<TMapDatatables> GetHCDataAll(List<TSelectOpt> buList)
+        private static List<TMapDatatables> GetHCDataAll(string[] buList)
         {
             var items = new List<TMapDatatables>();
-            var lstBu = GetWarehouseList();
-            foreach(var bu in lstBu)
+            if(null==buList || 0 == buList.Length) { return items; }
+            foreach(var bu in buList)
             {
                 items.Add(new TMapDatatables
                     {
-                        name = bu.text,
-                        entry = GetHCDataBu(bu.text)
+                        name = bu,
+                        entry = GetHCDataBu(bu)
                     }
                 );
             }
