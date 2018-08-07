@@ -17,16 +17,16 @@
                            FormMethod.Post, new { @id = "frmQueryHCData" }))
     {
         <div class="row">
-            <div class="col-md-3">
+            <div class="col-md-8">
                 <span>WareHouse</span>
                 <span>
-                    <select id="idSelBu" name="bu" required>
+                    <select id="idSelBu" name="bu" required multiple>
                         <option></option>
                         <option>All</option>
                     </select>
                 </span>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-4">
                 @Html.ValidationSummary(false, "", new { @class = "text-danger" })
                 <button class="btn btn-info" type="submit">Query</button>
                 <button class="btn btn-info" type="button" id="btnDownload">Download</button>
@@ -35,12 +35,9 @@
     }
 </div>
 
-
-<div class="wrapper">
-    <div class="row">
-        <div id="idChart" style="height:520px;"></div>
-    </div>
+<div class="container" id="idChartCont">
 </div>
+
 
 
 @section Scripts{
@@ -50,42 +47,26 @@
 
         $(function () {
             InitData();
-            weekChart = echarts.init(document.getElementById("idChart"));
+            
         });
 
         function InitData() {
             $("#frmQueryHCData").validate();
             $("#btnDownload").click(function () {
-                DownloadData('MonthData', $("#frmQueryHCData"));
+                DownloadData('HCData', $("#frmQueryHCData"));
             });
-            var url = "@Url.Action("GetMonthDataInitInfo", "Query")";
+            var url = "@Url.Action("GetWarehouseInfo", "Query")";
             AjaxPost(url,
                 "{}",
                 true,
                 function (result) {
                     var warehouseList = result.data || [];
-                    var weekdateList = result.extra || [];
                     $("#idSelBu").select2({
                         data: warehouseList,
                         placeholder: "choose a warehouse...",
-                        width: "120px"
+                        width: "55%"
                     });
-                    //selectorBu = new TSelect2Helper($("#idSelBu"));
-
-                    $("#idSelStartWeek").select2({
-                        data: weekdateList,
-                        placeholder: "choose...",
-                        width: "120px"
-                    });
-                    //selectorStartWeek = new TSelect2Helper($("#idSelStartWeek"));
-
-                    $("#idSelEndWeek").select2({
-                        data: weekdateList,
-                        placeholder: "choose...",
-                        width: "120px"
-                    });
-                    //selectorEndWeek = new TSelect2Helper($("#idSelEndWeek"));
-
+                    
                 });
 
             $('#frmQueryHCData').on('submit', function (e) {
@@ -96,14 +77,8 @@
                     var url = $(this).attr("action");
                     AjaxPostForm(url, '#frmQueryHCData', true, function (resp) {
                         if (resp.bok) {
-                            weekData = {
-                                'columns': resp.data.columns,
-                                'kinds': resp.data.kinds,
-                                'data': JSON.parse(resp.data.data)
-                            };
-                            RefreshChart();
+                            ViewCharts(resp.data);
                         } else {
-                            EmptyTable();
                             BootstrapDialog.alert("查询失败:<br>" + resp.msg);
                         }
                     },
@@ -119,37 +94,61 @@
             });
         }
 
+        function CreateAChart(name) {
+            var chartHead = '<div class="wrapper" style="margin-top:10px;"><div class="row"><div id="idChart_';
+            var charTail = '" style="height:520px;"></div></div></div>';
+            return chartHead + name + charTail;
+        }
+        function ViewCharts(items) {
+            if (!items || 0 == items.Length) {
+                return;
+            }            
+            var $cont = $('#idChartCont');
+            $cont.empty();
+            //chartHead += name;
+            $.each(items, function (ind, val) {
+                var name = val.name;
+                $cont.append(CreateAChart(name));
+            });
+
+            $.each(items, function (ind, val) {
+                RefreshChart(val.name, val.entry);
+            });
+        }
+
         function MakexAxis(cols) {
             var xCols = [];
             $.each(cols, function (index, value) {
                 var tVal = value.data;
-                if (tVal == 'HC_Utilization') {
-                    tVal = 'HC_Utilization(%)';
-                }
                 xCols.push(value.data);
             });
             return xCols.slice(1);
         }
-        function MakeChartData() {
+        function MakeChartData(itemData) {
             var chartData = [];
-            $.each(weekData.data, function (index, value) {
+            var cols = [];
+            var details = itemData.data;
+            $.each(details, function (index, value) {
                 var vArr = MakeValueArr(value);
+                var item = vArr[0];
+                cols.push(item)
                 var objChart = {
-                    'name': vArr[0],
+                    'name': item,
                     'type': 'bar',
                     'barGap': '0',
                     'data': vArr.slice(1)
                 };
-                if (objChart.name == 'HC_Utilization') {
-                    objChart.name = 'HC_Utilization(%)';
-                }
                 chartData.push(objChart);
             });
-            return chartData;
+            return {
+                'cols': cols,
+                'kinds': itemData.kinds,
+                'charData': chartData
+            }
         }
-        function RefreshChart() {
-            var chartData = MakeChartData();
-            var xCols = MakexAxis(weekData.columns);
+        function RefreshChart(name, itemData) {
+            var cd = MakeChartData(itemData);
+            //var xCols = MakexAxis(cd.cols);
             var option = {
                 tooltip: {
                     trigger: 'axis',
@@ -157,9 +156,13 @@
                         type: 'shadow'
                     }
                 },
-                color:GetMyChartColors(),
+                color: GetMyChartColors(),
+                title: {
+                    text: name,
+                    left: 'center'                
+                },
                 legend: {
-                    data: weekData.kinds,
+                    data: cd.cols,
                     right: '20px',
                     align: 'right',
                     orient: 'vertical',
@@ -177,7 +180,7 @@
                 xAxis: [
                     {
                         type: 'category',
-                        data: xCols
+                        data: cd.kinds
                     }
                 ],
                 yAxis: [
@@ -185,9 +188,10 @@
                         type: 'value'
                     }
                 ],
-                series: chartData
+                series: cd.charData
             };
 
+            var weekChart = echarts.init(document.getElementById("idChart_"+name));
             weekChart.setOption(option);
 
         }

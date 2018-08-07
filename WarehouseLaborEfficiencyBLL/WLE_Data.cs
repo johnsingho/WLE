@@ -72,6 +72,45 @@ namespace WarehouseLaborEfficiencyBLL
                 return nWritten;
             }
         }
+
+
+        public static byte[] GetWeekData_Down(string bu, string startWeek, string endWeek)
+        {
+            byte[] bys = null;
+            var sql = string.Format(@"select 
+                                          cast([Date] as char(10)) as [Date]
+                                          ,[Warehouse]
+                                          ,[HC_FCST]
+                                          ,[HC_Actual]
+                                          ,[HC_Support]
+                                          , ([HC_Utilization] /100.0) as HC_Utilization
+                                          ,[Case_ID_in]
+                                          ,[Case_ID_out]
+                                          ,[Pallet_In]
+                                          ,[Pallet_Out]
+                                          ,[Jobs_Rec]
+                                          ,[Jobs_Issue]
+                                          ,[Reel_ID_Rec]
+                                      from V_Tbl_WeekData
+                                      where Warehouse= @Warehouse and ( @StartDate<=[Date] and [Date]<= @EndDate)
+                                      order by [Date]
+                                    "
+                                    );
+            var parameter = new SqlParameter[]
+            {
+                    new SqlParameter("@Warehouse", bu),
+                    new SqlParameter("@StartDate", startWeek),
+                    new SqlParameter("@EndDate", endWeek)
+            };
+            var ds = SqlServerHelper.ExecuteQuery(CustomConfig.ConnStrMain, sql, parameter);
+            if (DataTableHelper.IsEmptyDataSet(ds))
+            {
+                return bys;
+            }
+            var dt = DataTableHelper.GetDataTable0(ds);
+            bys = NPOIExcelHelper.BuilderExcel(dt);
+            return bys;
+        }
         #endregion
 
         #region Month Data
@@ -120,92 +159,7 @@ namespace WarehouseLaborEfficiencyBLL
                 return nWritten;
             }
         }
-        #endregion
 
-        #region HCData
-        private static DataTable ReadHCData(FileInfo xlsxFile)
-        {
-            var dtNew = NPOIExcelHelper.ReadExcel(xlsxFile);
-            if (dtNew == null)
-            {
-                return null;
-            }
-
-            //convert 
-            dtNew.Columns.Add("UpdateTime", typeof(DateTime));
-            dtNew.Columns["Warehouse"].ColumnName = "Warehouse";
-            dtNew.Columns["System Clerk"].ColumnName = "System_Clerk";
-            dtNew.Columns["Inventory Control"].ColumnName = "Inventory_Control";
-            dtNew.Columns["RTV & Scrap"].ColumnName = "RTV_Scrap";
-            dtNew.Columns["Receiving"].ColumnName = "Receiving";
-            dtNew.Columns["Shipping"].ColumnName = "Shipping";
-            dtNew.Columns["Forklift Driver"].ColumnName = "Forklift_Driver";
-            dtNew.Columns["Total"].ColumnName = "Total";
-
-            return dtNew;
-        }
-
-        public static long ImportHCData(FileInfo xlsxFile, out string sErr)
-        {
-            sErr = string.Empty;
-            DataTable dtRead = ReadHCData(xlsxFile);
-            var timNow = DateTime.Now;
-            foreach (DataRow r in dtRead.Rows)
-            {
-                var sDate = r["Date"];
-                r["Date"] = Convert.ToDateTime(sDate); //转换日期
-                r["UpdateTime"] = timNow;
-            }
-
-            using (var conn = new SqlConnection(CustomConfig.ConnStrMain))
-            {
-                conn.Open();
-                WriteDBLog(conn, "start Upload HCData");
-                var nWritten = SqlServerHelper.BulkToDB(conn, dtRead, TBL_HCDATA, out sErr);
-                WriteDBLog(conn, string.Format("end Upload HCData:{0}", nWritten));
-                return nWritten;
-            }
-        }
-        #endregion
-
-
-        public static byte[] GetWeekData_Down(string bu, string startWeek, string endWeek)
-        {
-            byte[] bys = null;
-            var sql = string.Format(@"select 
-                                          cast([Date] as char(10)) as [Date]
-                                          ,[Warehouse]
-                                          ,[HC_FCST]
-                                          ,[HC_Actual]
-                                          ,[HC_Support]
-                                          , ([HC_Utilization] /100.0) as HC_Utilization
-                                          ,[Case_ID_in]
-                                          ,[Case_ID_out]
-                                          ,[Pallet_In]
-                                          ,[Pallet_Out]
-                                          ,[Jobs_Rec]
-                                          ,[Jobs_Issue]
-                                          ,[Reel_ID_Rec]
-                                      from V_Tbl_WeekData
-                                      where Warehouse= @Warehouse and ( @StartDate<=[Date] and [Date]<= @EndDate)
-                                      order by [Date]
-                                    "
-                                    );
-            var parameter = new SqlParameter[]
-            {
-                    new SqlParameter("@Warehouse", bu),
-                    new SqlParameter("@StartDate", startWeek),
-                    new SqlParameter("@EndDate", endWeek)
-            };
-            var ds = SqlServerHelper.ExecuteQuery(CustomConfig.ConnStrMain, sql, parameter);
-            if (DataTableHelper.IsEmptyDataSet(ds))
-            {
-                return bys;
-            }
-            var dt = DataTableHelper.GetDataTable0(ds);
-            bys = NPOIExcelHelper.BuilderExcel(dt);
-            return bys;
-        }
 
         public static byte[] GetMonthData_Down(string bu, string startWeek, string endWeek)
         {
@@ -245,6 +199,108 @@ namespace WarehouseLaborEfficiencyBLL
             return bys;
         }
 
+        #endregion
+
+        #region HCData
+        private static DataTable ReadHCData(FileInfo xlsxFile)
+        {
+            var dtNew = NPOIExcelHelper.ReadExcel(xlsxFile);
+            if (dtNew == null)
+            {
+                return null;
+            }
+
+            //convert 
+            dtNew.Columns.Add("UpdateTime", typeof(DateTime));
+            dtNew.Columns["Warehouse"].ColumnName = "Warehouse";
+            dtNew.Columns["System Clerk"].ColumnName = "System_Clerk";
+            dtNew.Columns["Inventory Control"].ColumnName = "Inventory_Control";
+            dtNew.Columns["RTV & Scrap"].ColumnName = "RTV_Scrap";
+            dtNew.Columns["Receiving"].ColumnName = "Receiving";
+            dtNew.Columns["Shipping"].ColumnName = "Shipping";
+            dtNew.Columns["Forklift Driver"].ColumnName = "Forklift_Driver";
+            dtNew.Columns["Total"].ColumnName = "Total";
+
+            return dtNew;
+        }
+        
+        public static long ImportHCData(FileInfo xlsxFile, out string sErr)
+        {
+            sErr = string.Empty;
+            DataTable dtRead = ReadHCData(xlsxFile);
+            var timNow = DateTime.Now;
+            foreach (DataRow r in dtRead.Rows)
+            {
+                var sDate = r["Date"];
+                r["Date"] = Convert.ToDateTime(sDate); //转换日期
+                r["UpdateTime"] = timNow;
+            }
+
+            using (var conn = new SqlConnection(CustomConfig.ConnStrMain))
+            {
+                conn.Open();
+                WriteDBLog(conn, "start Upload HCData");
+                var nWritten = SqlServerHelper.BulkToDB(conn, dtRead, TBL_HCDATA, out sErr);
+                WriteDBLog(conn, string.Format("end Upload HCData:{0}", nWritten));
+                return nWritten;
+            }
+        }
+
+        public static byte[] GetHCData_Down(string bu)
+        {
+            byte[] bys = null;
+            SqlParameter[] parameter = null;
+            string sql = string.Empty;
+            if (string.IsNullOrEmpty(bu) || 0 == string.Compare("all", bu, true))
+            {
+                sql = string.Format(@"SELECT 
+                                          cast([Date] as char(10)) as [Date]
+                                          ,[Overall]
+                                          ,[System_Clerk]
+                                          ,[Inventory_Control]
+                                          ,[RTV_Scrap]
+                                          ,[Receiving]
+                                          ,[Shipping]
+                                          ,[Forklift_Driver]
+                                          ,[Total]
+                                    FROM [dbo].[V_Tbl_HCData]
+                                    order by Date
+                                    "
+                                    );
+            }
+            else
+            {
+                sql = string.Format(@"SELECT 
+                                        cast([Date] as char(10)) as [Date]
+                                          ,[Overall]
+                                          ,[System_Clerk]
+                                          ,[Inventory_Control]
+                                          ,[RTV_Scrap]
+                                          ,[Receiving]
+                                          ,[Shipping]
+                                          ,[Forklift_Driver]
+                                          ,[Total]
+                                    FROM [dbo].[V_Tbl_HCData]
+                                    where Warehouse=@Warehouse
+                                    order by Date
+                                    "
+                                    );
+                parameter = new SqlParameter[]
+                {
+                    new SqlParameter("@Warehouse", bu)
+                };
+            }
+            
+            var ds = SqlServerHelper.ExecuteQuery(CustomConfig.ConnStrMain, sql, parameter);
+            if (DataTableHelper.IsEmptyDataSet(ds))
+            {
+                return bys;
+            }
+            var dt = DataTableHelper.GetDataTable0(ds);
+            bys = NPOIExcelHelper.BuilderExcel(dt);
+            return bys;
+        }
+        #endregion
 
     }
 }

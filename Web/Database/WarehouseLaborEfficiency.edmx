@@ -86,10 +86,9 @@ warning 6002: The table/view 'WarehouseLaborEfficiency.dbo.V_Tbl_HCData' does no
         <EntityType Name="V_Tbl_HCData">
           <Key>
             <PropertyRef Name="id" />
-            <PropertyRef Name="Date" />
           </Key>
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Date" Type="date" Nullable="false" />
+          <Property Name="Date" Type="date" />
           <Property Name="Warehouse" Type="nvarchar" MaxLength="50" />
           <Property Name="Overall" Type="int" />
           <Property Name="System_Clerk" Type="int" />
@@ -295,10 +294,9 @@ warning 6002: The table/view 'WarehouseLaborEfficiency.dbo.V_Tbl_WeekData' does 
         <EntityType Name="V_Tbl_HCData">
           <Key>
             <PropertyRef Name="id" />
-            <PropertyRef Name="Date" />
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Date" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Date" Type="DateTime" Precision="0" />
           <Property Name="Warehouse" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Overall" Type="Int32" />
           <Property Name="System_Clerk" Type="Int32" />

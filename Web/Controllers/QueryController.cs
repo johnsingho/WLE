@@ -1,4 +1,5 @@
-﻿using Common.DotNetExcel;
+﻿using Common.DotNetCode;
+using Common.DotNetExcel;
 using System;
 using System.Web;
 using System.Web.Mvc;
@@ -17,6 +18,23 @@ namespace WarehouseLaborEfficiencyWeb.Controllers
                 System.IO.Directory.CreateDirectory(spath);
             }
             return spath;
+        }
+
+        public ActionResult GetWarehouseInfo()
+        {
+            var lstData = QueryHelper.GetWarehouseList();
+            var obj = new TRes
+            {
+                bok = true,
+                data = lstData
+            };
+
+            if (null == lstData || 0 == lstData.Count)
+            {
+                obj.bok = false;
+                obj.msg = "没有查询到数据";
+            }
+            return Json(obj);
         }
 
         #region WeekData
@@ -106,7 +124,8 @@ namespace WarehouseLaborEfficiencyWeb.Controllers
                 bok = true,
                 data = dat
             };
-            if (null == dat.data || 0 == dat.columns.Count)
+
+            if (0==dat.Count)
             {
                 obj.bok = false;
                 obj.msg = "没有查询到数据";
@@ -159,7 +178,7 @@ namespace WarehouseLaborEfficiencyWeb.Controllers
                 case "MonthData":
                     return DownloadData_MonthData(bu, startWeek, endWeek);
                 case "HCData":
-                    return DownloadData_HCData(bu, startWeek, endWeek);
+                    return DownloadData_HCData(bu);
             }
             return new EmptyResult();
         }
@@ -178,9 +197,11 @@ namespace WarehouseLaborEfficiencyWeb.Controllers
             return File(bys, ExcelType.XLSX_MIME, fn);
         }
 
-        private ActionResult DownloadData_HCData(string bu, string startWeek, string endWeek)
+        private ActionResult DownloadData_HCData(string bu)
         {
-            return null;
+            var fn = string.Format("{0}_{1}.xlsx", "MonthData", DateTimeHelper.GetToday());
+            var bys = WLE_Data.GetHCData_Down(bu);
+            return File(bys, ExcelType.XLSX_MIME, fn);
         }
 
     }

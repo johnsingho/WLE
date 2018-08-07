@@ -121,6 +121,7 @@ SELECT id
   FROM [dbo].[tbl_MonthData]
 GO
 
+
 CREATE VIEW V_Tbl_HCData
 AS
 SELECT id

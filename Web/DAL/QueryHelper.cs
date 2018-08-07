@@ -37,8 +37,14 @@ namespace WarehouseLaborEfficiencyWeb.DAL
             public string title { get; set; }
             public string data { get; set; }
         }
-        //========================================
+        public class TMapDatatables
+        {
+            public string name { get; set; }
+            public TDatatables entry { get; set; }
+        }
 
+        //========================================
+        
         internal static List<TSelectOpt> GetWarehouseList()
         {
             using (var context = new WarehouseLaborEfficiencyEntities())
@@ -71,7 +77,7 @@ namespace WarehouseLaborEfficiencyWeb.DAL
             }
         }
 
-        internal static object GetMonthdateList()
+        internal static List<TSelectOpt> GetMonthdateList()
         {
             using (var context = new WarehouseLaborEfficiencyEntities())
             {
@@ -230,18 +236,78 @@ namespace WarehouseLaborEfficiencyWeb.DAL
             return res;
         }
 
-        public static Dictionary<string, object> GetHCData(string bu)
+        #region HCData
+        private static List<string> GetHCRows()
+        {
+            var lst = new List<string>();
+            lst.Add("Overall");
+            lst.Add("System_Clerk");
+            lst.Add("Inventory_Control");
+            lst.Add("RTV_Scrap");
+            lst.Add("Receiving");
+            lst.Add("Shipping");
+            lst.Add("Forklift_Driver");
+            lst.Add("Total");            
+            return lst;
+        }
+
+        public static List<TMapDatatables> GetHCData(string bu)
         {
             if(string.IsNullOrEmpty(bu) || 0==string.Compare("all", bu, true))
             {
-                return GetHCDataMulti();
+                var buList = GetWarehouseList();
+                return GetHCDataAll(buList);
             }
-
+            var items = new List<TMapDatatables>();
+            items.Add(new TMapDatatables { name = bu, entry = GetHCDataBu(bu) });
+            return items;
         }
 
-        private static Dictionary<string, object> GetHCDataMulti()
+        private static List<TMapDatatables> GetHCDataAll(List<TSelectOpt> buList)
         {
-            throw new NotImplementedException();
+            var items = new List<TMapDatatables>();
+            var lstBu = GetWarehouseList();
+            foreach(var bu in lstBu)
+            {
+                items.Add(new TMapDatatables
+                    {
+                        name = bu.text,
+                        entry = GetHCDataBu(bu.text)
+                    }
+                );
+            }
+            return items;
         }
+
+        private static TDatatables GetHCDataBu(string bu)
+        {
+            var res = new TDatatables();
+            res.kinds = GetHCRows();
+
+            using (var context = new WarehouseLaborEfficiencyEntities())
+            {
+                var qry = (from c in context.V_Tbl_HCData
+                           where 0==string.Compare(c.Warehouse,bu,true)
+                           orderby c.Date
+                           select c
+                           ).ToList().Select(c=>new
+                           {
+                               Date=DateTimeHelper.GetLocalDateStr(c.Date.Value),
+                               Overall=c.Overall,
+                               c.System_Clerk,
+                               c.Inventory_Control,
+                               c.RTV_Scrap,
+                               c.Receiving,
+                               c.Shipping,
+                               c.Forklift_Driver,
+                               c.Total
+                           });
+                res.data = qry.ToList();
+            }
+         
+            return res;
+        }
+        #endregion
+
     }
 }

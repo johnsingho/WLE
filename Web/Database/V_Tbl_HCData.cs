@@ -15,7 +15,7 @@ namespace WarehouseLaborEfficiencyWeb.Database
     public partial class V_Tbl_HCData
     {
         public int id { get; set; }
-        public System.DateTime Date { get; set; }
+        public Nullable<System.DateTime> Date { get; set; }
         public string Warehouse { get; set; }
         public Nullable<int> Overall { get; set; }
         public Nullable<int> System_Clerk { get; set; }

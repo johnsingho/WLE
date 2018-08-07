@@ -26,12 +26,14 @@ function GetSelect2Sel($id) {
 function DownloadData(dType, $frm) {
     $frm.validate();
     if ($frm.valid()) {
+        var startW = GetSelect2Sel($('#idSelStartWeek'));
+        var endWeek = GetSelect2Sel($('#idSelEndWeek'));
         var url = "/Query/DownloadData";
         var para = {
             dType: dType,
             bu: GetSelect2Sel($('#idSelBu')).text,
-            startWeek: GetSelect2Sel($('#idSelStartWeek')).text,
-            endWeek: GetSelect2Sel($('#idSelEndWeek')).text,
+            startWeek: startW ? startW.text : null,
+            endWeek: endWeek ? endWeek.text : null
         };
         url += '?';
         url += $.param(para);
