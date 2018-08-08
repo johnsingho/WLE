@@ -75,8 +75,8 @@
         </div>
         <div class="col-md-3">
             @Html.ValidationSummary(false, "", new { @class = "text-danger" })
-            <button class="btn btn-info" type="submit" id="btnQuery">Query</button>
-            <button class="btn btn-info" type="button" id="btnDownload">Download</button>
+            <button class="btn btn-info btn-sm" type="submit" id="btnQuery">Query</button>
+            <button class="btn btn-info btn-sm" type="button" id="btnDownload">Download</button>
         </div>
     </div>
 }
@@ -206,9 +206,6 @@
             var xCols = [];
             $.each(cols, function (index, value) {
                 var tVal = value.data;
-                if (tVal == 'HC_Utilization') {
-                    tVal = 'HC_Utilization(%)';
-                }
                 xCols.push(value.data);
             });
             return xCols.slice(1);
@@ -219,8 +216,7 @@
             $.each(weekData.data, function (index, value) {
                 var vArr = MakeValueArr(value);
                 var objChart = { 'name': vArr[0], 'type': 'line', 'data': vArr.slice(1) };
-                if (objChart.name == 'HC_Utilization') {
-                    objChart.name = 'HC_Utilization(%)';
+                if (objChart.name == 'HC_Utilization(%)') {
                     objChart.yAxisIndex = 1;
                 }
                 chartData.push(objChart);
@@ -236,6 +232,7 @@
             var objSels = {};
             $.each(kinds, function (ind, val) {
                 objSels[val] = false;
+                //默认显示
                 if (val == 'HC_Utilization(%)') {
                     objSels[val] = true;
                 }

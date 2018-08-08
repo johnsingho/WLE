@@ -160,35 +160,24 @@ namespace WarehouseLaborEfficiencyBLL
             }
         }
 
-
-        public static byte[] GetMonthData_Down(string bu, string startWeek, string endWeek)
+        public static byte[] GetMonthData_Down(string selKind)
         {
             byte[] bys = null;
-            var sql = string.Format(@"select 
-                                     cast([Date] as char(10)) as [Date]
-                                          ,[Warehouse]
-                                          ,[HC_FCST]
-                                          ,[HC_Actual]
-                                          ,[HC_Support]
-                                          , ([HC_Utilization] /100.0) as HC_Utilization
-                                          ,[Case_ID_in]
-                                          ,[Case_ID_out]
-                                          ,[Pallet_In]
-                                          ,[Pallet_Out]
-                                          ,[Jobs_Rec]
-                                          ,[Jobs_Issue]
-                                          ,[Reel_ID_Rec]
-                                      from V_Tbl_MonthData
-                                      where Warehouse= @Warehouse and ( @StartDate<=[Date] and [Date]<= @EndDate)
-                                      order by [Date]
-                                    "
-                                    );
-            var parameter = new SqlParameter[]
+            var sCol = selKind;
+            if(0==string.Compare("HC_Utilization", selKind, true))
             {
-                    new SqlParameter("@Warehouse", bu),
-                    new SqlParameter("@StartDate", startWeek),
-                    new SqlParameter("@EndDate", endWeek)
-            };
+                sCol = "([HC_Utilization] / 100.0) as HC_Utilization";
+            }
+            var sql = string.Format(@"select 
+                                        cast([Date] as char(10)) as [Date],
+                                        Warehouse,
+                                        {0} 
+                                        from V_Tbl_MonthData
+                                      order by [Date],Warehouse
+                                      "
+                                    , sCol
+                                    );
+            SqlParameter[] parameter = null;
             var ds = SqlServerHelper.ExecuteQuery(CustomConfig.ConnStrMain, sql, parameter);
             if (DataTableHelper.IsEmptyDataSet(ds))
             {
@@ -198,7 +187,7 @@ namespace WarehouseLaborEfficiencyBLL
             bys = NPOIExcelHelper.BuilderExcel(dt);
             return bys;
         }
-
+        
         #endregion
 
         #region HCData

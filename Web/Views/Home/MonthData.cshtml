@@ -10,153 +10,161 @@
     </div>
 </div>
 
-
 <div class="wrapper">
-    @using (Html.BeginForm("QueryMonthData", "Query",
-                           FormMethod.Post, new { @id = "frmQueryMonthData" }))
-    {
-        <div class="row">
-            <div class="col-md-3">
-                <span>WareHouse</span>
-                <span>
-                    <select id="idSelBu" name="bu" required>
-                        <option></option>
-                    </select>
-                </span>
-            </div>
-            <div class="col-md-3">
-                <span>Start Week</span>
-                <span>
-                    <select id="idSelStartWeek" name="startDate" required>
-                        <option></option>
-                    </select>
-                </span>
-            </div>
-            <div class="col-md-3">
-                <span>End Week</span>
-                <span>
-                    <select id="idSelEndWeek" name="endDate" required>
-                        <option></option>
-                    </select>
-                </span>
-            </div>
-            <div class="col-md-3">
-                @Html.ValidationSummary(false, "", new { @class = "text-danger" })
-                <button class="btn btn-info" type="submit">Query</button>
-                <button class="btn btn-info" type="button" id="btnDownload">Download</button>
+    <div class="col-md-10">
+        <div class="wrapper">
+            <div class="row">
+                <div id="idChart" style="height:520px;"></div>
             </div>
         </div>
-    }
-</div>
-
-
-<div class="wrapper">
-    <div class="row">
-        <div id="idChart" style="height:520px;"></div>
+    </div>
+    <div class="col-md-2">
+        <ul class="list-unstyled">
+            <li>
+                <label>
+                    <input type="radio" class="myRadio" name="selKind" value="HC_FCST">
+                    <span class="label-radio">HC_FCST</span>
+                </label>
+            </li>
+            <li>
+                <label>
+                    <input type="radio" class="myRadio" name="selKind" value="HC_Actual">
+                    <span class="label-radio">HC_Actual</span>
+                </label>
+            </li>
+            <li>
+                <label>
+                    <input type="radio" class="myRadio" name="selKind" value="HC_Support">
+                    <span class="label-radio">HC_Support</span>
+                </label>
+            </li>
+            <li>
+                <label>
+                    <input type="radio" class="myRadio" name="selKind" value="HC_Utilization">
+                    <span class="label-radio">HC_Utilization(%)</span>
+                </label>
+            </li>
+            <li>
+                <label>
+                    <input type="radio" class="myRadio" name="selKind" value="Case_ID_in">
+                    <span class="label-radio">Case_ID_in</span>
+                </label>
+            </li>
+            <li>
+                <label>
+                    <input type="radio" class="myRadio" name="selKind" value="Case_ID_out">
+                    <span class="label-radio">Case_ID_out</span>
+                </label>
+            </li>
+            <li>
+                <label>
+                    <input type="radio" class="myRadio" name="selKind" value="Pallet_In">
+                    <span class="label-radio">Pallet_In</span>
+                </label>
+            </li>
+            <li>
+                <label>
+                    <input type="radio" class="myRadio" name="selKind" value="Pallet_Out">
+                    <span class="label-radio">Pallet_Out</span>
+                </label>
+            </li>
+            <li>
+                <label>
+                    <input type="radio" class="myRadio" name="selKind" value="Jobs_Rec">
+                    <span class="label-radio">Jobs_Rec</span>
+                </label>
+            </li>
+            <li>
+                <label>
+                    <input type="radio" class="myRadio" name="selKind" value="Jobs_Issue">
+                    <span class="label-radio">Jobs_Issue</span>
+                </label>
+            </li>
+            <li>
+                <label>
+                    <input type="radio" class="myRadio" name="selKind" value="Reel_ID_Rec">
+                    <span class="label-radio">Reel_ID_Rec</span>
+                </label>
+            </li>
+            <li>
+                <button id="btnDownload" class="btn btn-info btn-sm">Download</button>
+            </li>
+        </ul>
     </div>
 </div>
 
-
 @section Scripts{
     <script>
-        var weekChart=null;
-        var weekData =null;
+        var weekChart = null;
+        var weekData = null;
 
         $(function () {
             InitData();
             weekChart = echarts.init(document.getElementById("idChart"));
+            $('input:radio[name="selKind"][value="HC_FCST"]').click();
         });
 
         function InitData() {
-            $("#frmQueryMonthData").validate();
+            //$("#frmQueryMonthData").validate();
             $("#btnDownload").click(function () {
-                DownloadData('MonthData', $("#frmQueryMonthData"));
+                var selKind = $('input[name="selKind"]:checked').val();
+                DownloadMonthData(selKind);
             });
-            var url = "@Url.Action("GetMonthDataInitInfo", "Query")";
-            AjaxPost(url,
-                "{}",
-                true,
-                function (result) {
-                    var warehouseList = result.data || [];
-                    var weekdateList = result.extra || [];
-                    $("#idSelBu").select2({
-                        data: warehouseList,
-                        placeholder: "choose a warehouse...",
-                        width: "120px"
-                    });
-                    //selectorBu = new TSelect2Helper($("#idSelBu"));
 
-                    $("#idSelStartWeek").select2({
-                        data: weekdateList,
-                        placeholder: "choose...",
-                        width: "120px"
-                    });
-                    //selectorStartWeek = new TSelect2Helper($("#idSelStartWeek"));
+            $('input[name="selKind"]').on('change', function () {
+                var $sel = $(this);
+                if ($sel.is(":checked")) {
+                    var url = "@Url.Action("QueryMonthData", "Query")";
+                    var para = {
+                        'selKind': $sel.val()
+                    };
 
-                    $("#idSelEndWeek").select2({
-                        data: weekdateList,
-                        placeholder: "choose...",
-                        width: "120px"
-                    });
-                    //selectorEndWeek = new TSelect2Helper($("#idSelEndWeek"));
-
-                });
-
-            $('#frmQueryMonthData').on('submit', function (e) {
-                if (e.isDefaultPrevented()) {
-                    //invalid
-                    return false;
-                } else {
-                    var url = $(this).attr("action");
-                    AjaxPostForm(url, '#frmQueryMonthData', true, function (resp) {
-                        if (resp.bok) {
-                            weekData = {
-                                'columns': resp.data.columns,
-                                'kinds': resp.data.kinds,
-                                'data': JSON.parse(resp.data.data)
-                            };
-                            RefreshChart();
-                        } else {
-                            EmptyChart(weekChart);
-                            BootstrapDialog.alert("查询失败:<br>" + resp.msg);
-                        }
-                    },
-                    undefined,
-                    function () {
-                        showBusyLoading(true);
-                    },
-                    function () {
-                        showBusyLoading(false);
-                    });
+                    AjaxPost(url,
+                        JSON.stringify(para),
+                        true,
+                        function (resp) {
+                            if (resp.bok) {
+                                var dt = resp.data;
+                                weekData = {
+                                    'columns': dt.columns,
+                                    'kinds': dt.kinds,
+                                    'data': dt.data
+                                };
+                                RefreshChart();
+                            } else {
+                                EmptyChart(weekChart);
+                                BootstrapDialog.alert("查询失败:<br>" + resp.msg);
+                            }
+                        },
+                        undefined,
+                        function () {
+                            showBusyLoading(true);
+                        },
+                        function () {
+                            showBusyLoading(false);
+                        });
                 }
-                return false;
             });
         }
-        
+
+        /////////////////////////////////////////////////////
         function MakexAxis(cols) {
             var xCols = [];
             $.each(cols, function (index, value) {
                 var tVal = value.data;
-                if (tVal == 'HC_Utilization') {
-                    tVal = 'HC_Utilization(%)';
-                }
                 xCols.push(value.data);
             });
-            return xCols.slice(1);
+            return xCols;
         }
         function MakeChartData() {
             var chartData = [];
-            $.each(weekData.data, function (index, value) {
-                var vArr = MakeValueArr(value);
+            $.each(weekData.data, function (index, value) {                
                 var objChart = {
-                    'name': vArr[0],
+                    'name': value.name,
                     'type': 'bar',
                     'barGap': '0',
-                    'data': vArr.slice(1)
+                    'data': value.items
                 };
-                if (objChart.name == 'HC_Utilization') {
-                    objChart.name = 'HC_Utilization(%)';
-                }
                 chartData.push(objChart);
             });
             return chartData;
@@ -171,27 +179,30 @@
                         type: 'shadow'
                     }
                 },
-                color:GetMyChartColors(),
+                color: GetMyChartColors(),
                 legend: {
                     data: weekData.kinds,
-                    right: '20px',
-                    align: 'right',
-                    orient: 'vertical',
-                    x: 'right', y: 'center',
                     textStyle: {
                         fontWeight: 'bold'
                     },
                 },
                 grid: {
-                    left: '2%',
-                    right: '11%',
+                    left: '1%',
+                    right: '1%',
                     bottom: '2%',
                     containLabel: true
                 },
                 xAxis: [
                     {
                         type: 'category',
-                        data: xCols
+                        data: xCols,
+                        axisLabel: {
+                            position: 'insideBottomLeft',
+                            distance: 3,
+                            align: 'right',
+                            verticalAlign: 'top',
+                            rotate: 40,
+                        }
                     }
                 ],
                 yAxis: [

@@ -60,3 +60,12 @@ function DownloadData(dType, $frm) {
     }
 }
 
+function DownloadMonthData(selKind) {
+    var url = "/Query/DownloadMonthData";
+    var para = {
+        'selKind': selKind
+    };
+    url += '?';
+    url += $.param(para);
+    parent.location.href = url;
+}

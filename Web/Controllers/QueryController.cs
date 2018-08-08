@@ -98,9 +98,9 @@ namespace WarehouseLaborEfficiencyWeb.Controllers
         }
 
         [HttpPost]
-        public ActionResult QueryMonthData(string bu, string startDate, string endDate)
+        public ActionResult QueryMonthData(string selKind)
         {
-            var dat = QueryHelper.GetMonthData(bu, startDate, endDate);
+            var dat = QueryHelper.GetMonthData(selKind);
             var obj = new TRes
             {
                 bok = true,
@@ -181,13 +181,23 @@ namespace WarehouseLaborEfficiencyWeb.Controllers
             {
                 case "WeekData":
                     return DownloadData_WeekData(bu, startWeek, endWeek);
-                case "MonthData":
-                    return DownloadData_MonthData(bu, startWeek, endWeek);
+                //case "MonthData":
+                //    return DownloadData_MonthData(bu, startWeek, endWeek);
                 case "HCData":
                     return DownloadData_HCData(bu);
             }
             return new EmptyResult();
         }
+
+        [HttpGet]
+        public ActionResult DownloadMonthData(string selKind)
+        {
+            var fn = string.Format("{0}_{1}.xlsx", "MonthData", selKind);
+            var bys = WLE_Data.GetMonthData_Down(selKind);
+            if (null == bys) { return new EmptyResult(); }
+            return File(bys, ExcelType.XLSX_MIME, fn);
+        }
+
 
         private ActionResult DownloadData_WeekData(string bu, string startWeek, string endWeek)
         {
@@ -196,15 +206,7 @@ namespace WarehouseLaborEfficiencyWeb.Controllers
             if (null == bys) { return new EmptyResult(); }
             return File(bys, ExcelType.XLSX_MIME, fn);
         }
-
-        private ActionResult DownloadData_MonthData(string bu, string startWeek, string endWeek)
-        {
-            var fn = string.Format("{0}_{1}_{2}.xlsx", "MonthData", startWeek, endWeek);
-            var bys = WLE_Data.GetMonthData_Down(bu, startWeek, endWeek);
-            if (null == bys) { return new EmptyResult(); }
-            return File(bys, ExcelType.XLSX_MIME, fn);
-        }
-
+        
         private ActionResult DownloadData_HCData(string bu)
         {
             var fn = string.Format("{0}_{1}.xlsx", "HCData", DateTimeHelper.GetToday());

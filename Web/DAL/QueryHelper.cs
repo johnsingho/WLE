@@ -118,7 +118,7 @@ namespace WarehouseLaborEfficiencyWeb.DAL
                                               ,[HC_FCST]
                                               ,[HC_Actual]
                                               ,[HC_Support]
-                                              ,[HC_Utilization]
+                                              ,[HC_Utilization] as [HC_Utilization(%)]
                                               ,[Case_ID_in]
                                               ,[Case_ID_out]
                                               ,[Pallet_In]
@@ -174,32 +174,23 @@ namespace WarehouseLaborEfficiencyWeb.DAL
         }
 
         
-        internal static TDatatables GetMonthData(string bu, string startDate, string endDate)
+        internal static TDatatables GetMonthData(string selKind)
         {
             var res = new TDatatables();
-            var sql = string.Format(@"select [Date]
-                                              ,[HC_FCST]
-                                              ,[HC_Actual]
-                                              ,[HC_Support]
-                                              ,[HC_Utilization]
-                                              ,[Case_ID_in]
-                                              ,[Case_ID_out]
-                                              ,[Pallet_In]
-                                              ,[Pallet_Out]
-                                              ,[Jobs_Rec]
-                                              ,[Jobs_Issue]
-                                              ,[Reel_ID_Rec] 
-                                      from V_Tbl_MonthData
-                                      where Warehouse= @Warehouse and ( @StartDate<=[Date] and [Date]<= @EndDate)
-                                      order by [Date]
-                                    "
-                                    );
-            var parameter = new SqlParameter[]
+            if (string.IsNullOrEmpty(selKind))
             {
-                    new SqlParameter("@Warehouse", bu),
-                    new SqlParameter("@StartDate", startDate),
-                    new SqlParameter("@EndDate", endDate)
-            };
+                return res;
+            }
+
+            var sql = string.Format(@"select cast([Date] as char(10)) as [Date]
+                                              ,[Warehouse]
+                                              ,{0}
+                                      from V_Tbl_MonthData
+                                      order by [Date],Warehouse
+                                    "
+                                    , selKind
+                                    );
+            SqlParameter[] parameter = null;
             var ds = SqlServerHelper.ExecuteQuery(CustomConfig.ConnStrMain, sql, parameter);
             if (DataTableHelper.IsEmptyDataSet(ds))
             {
@@ -207,32 +198,34 @@ namespace WarehouseLaborEfficiencyWeb.DAL
             }
             var dt = DataTableHelper.GetDataTable0(ds);
 
-            var qry = dt.AsEnumerable();
+            var qry = dt.AsEnumerable().Select(x=>new
+            {
+                Date = x["Date"].ToString(),
+                Warehouse = x["Warehouse"].ToString(),
+                Item = x[selKind].ToString()
+            });
             //var lstRows = GetKinds();
 
-            var cols = qry.Select(x => DateTimeHelper.GetLocalDateStrNull(x["Date"]))
+            var kinds = qry.Select(x => x.Warehouse)
                     .Distinct()
                     .OrderBy(x => x)
                     .ToList();
+            var cols = qry.Select(x => x.Date)
+                    .Distinct()
+                    .OrderBy(x => x)
+                    .Select(y=>new TColEntry(y, y)).ToList();
 
-            var dtNew = DataTableHelper.DataTableRotateNoLeft(dt);
-            dtNew.Columns[0].ColumnName = "Week";
-            int nColNew = dtNew.Columns.Count;
-            for (var i = 0; i < nColNew - 1; i++)
-            {
-                dtNew.Columns[i + 1].ColumnName = cols[i];
-            }
-
-            var arrCols = new List<TColEntry>();
-            arrCols.Add(new TColEntry("Week", "Week"));
-            arrCols.AddRange((from x in cols
-                              select new TColEntry(x, x)
-                              ).ToList());
-            res.columns = arrCols;
-
-            var sData = JsonHelper.DataTableToJsonArr(dtNew);
-            res.data = sData;
-            res.kinds = GetKinds();
+            var qry2 = from x in qry
+                       group x by x.Warehouse into g
+                       select new
+                       {
+                           name = g.Key,
+                           items = g.Select(x =>x.Item).ToList()
+                       };
+                        
+            res.data = qry2.ToList();
+            res.columns = cols;
+            res.kinds = kinds;
             return res;
         }
 
