@@ -9,11 +9,18 @@ function EmptyTable() {
     $('#idTable').empty();
 }
 
+function EmptyChart(chartObj) {
+    if (chartObj) {
+        chartObj.clear();
+    }
+}
+
 function GetMyChartColors() {
-    return ['#00AA00', '#CC0033', '#FF3300',
-            'purple', '#99FF00', '#0033CC',
-            '#CC0066', '#33CCFF', '#007777',
-            '#CCFF99', '#CCFF00'
+    return ['#00AA00', '#0033CC', '#99FF00',
+            '#FF3300', '#33CCFF', '#007777',
+            '#FF00CC', '#DD6633', 'purple',
+            '#330099', '#FFEE00', '#CCCC66',
+            '#9999FF'
     ];
 }
 
