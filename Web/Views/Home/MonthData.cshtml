@@ -148,6 +148,11 @@
         }
 
         /////////////////////////////////////////////////////
+        function GetBarColors() {
+            return ['#5197D7', '#ACACAC', '#2D60AC',
+                    '#134975', '#33CCFF', '#007777',
+            ];
+        }
         function MakexAxis(cols) {
             var xCols = [];
             $.each(cols, function (index, value) {
@@ -179,7 +184,7 @@
                         type: 'shadow'
                     }
                 },
-                color: GetMyChartColors(),
+                color: GetBarColors(),
                 legend: {
                     data: weekData.kinds,
                     textStyle: {

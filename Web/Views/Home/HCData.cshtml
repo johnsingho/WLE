@@ -113,6 +113,14 @@
             });
         }
 
+        function GetBarColors() {
+            return ['#5D9EDB', '#F57E2F', '#A5A5A5',
+                    '#FFC60E', '#4373CA', '#6BAD3E',
+                    '#FF00CC', '#DD6633', 'purple',
+                    '#330099', '#FFEE00', '#CCCC66',
+                    '#9999FF'
+            ];
+        }
         function MakexAxis(cols) {
             var xCols = [];
             $.each(cols, function (index, value) {
@@ -153,7 +161,7 @@
                         type: 'shadow'
                     }
                 },
-                color: GetMyChartColors(),
+                color: GetBarColors(),
                 title: {
                     text: name,
                     left: 'center'                
