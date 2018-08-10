@@ -215,9 +215,21 @@
 
             $.each(weekData.data, function (index, value) {
                 var vArr = MakeValueArr(value);
-                var objChart = { 'name': vArr[0], 'type': 'line', 'data': vArr.slice(1) };
+                var objChart = { 'name': vArr[0], 'type': 'line', symbol:'circle', 'data': vArr.slice(1) };
                 if (objChart.name == 'HC_Utilization(%)') {
                     objChart.yAxisIndex = 1;
+                    objChart.markLine = {
+                        label:{
+                            show:false
+                        },
+                        data: [
+                        {
+                            yAxis: 100
+                        }],
+                        lineStyle: {
+                            color: '#2248FB'
+                        }
+                    };
                 }
                 chartData.push(objChart);
             });

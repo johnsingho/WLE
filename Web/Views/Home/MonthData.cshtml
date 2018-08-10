@@ -10,14 +10,14 @@
     </div>
 </div>
 
-<div class="wrapper">
+<div class="wrapper" style="width: 1200px;margin-left: -40px;">
     <div class="col-md-10">
-        <div class="wrapper">
-            <div class="row">
-                <div id="idChart" style="height:520px;"></div>
+            <div class="wrapper">
+                <div class="row">
+                    <div id="idChart" style="height:520px;"></div>
+                </div>
             </div>
         </div>
-    </div>
     <div class="col-md-2">
         <ul class="list-unstyled">
             <li>
@@ -161,22 +161,41 @@
             });
             return xCols;
         }
-        function MakeChartData() {
+        function MakeChartData(markline) {
             var chartData = [];
             $.each(weekData.data, function (index, value) {                
                 var objChart = {
                     'name': value.name,
                     'type': 'bar',
                     'barGap': '0',
-                    'data': value.items
+                    'data': value.items,
+                    'markLine': markline
                 };
                 chartData.push(objChart);
             });
             return chartData;
         }
-        function RefreshChart() {
-            var chartData = MakeChartData();
+        function RefreshChart() {            
             var xCols = MakexAxis(weekData.columns);
+            var selKind = $('input[name="selKind"]:checked').val();
+            var markline = null;
+            if ('HC_Utilization' == selKind) {
+                markline = {
+                    label: {
+                        show: true,
+                        position: 'left'
+                    },
+                    data: [
+                    {
+                        yAxis: 100
+                    }],
+                    lineStyle: {
+                        color: '#FFC613'
+                    }
+                };
+            }
+            var chartData = MakeChartData(markline);
+
             var option = {
                 tooltip: {
                     trigger: 'axis',

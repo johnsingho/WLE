@@ -21,21 +21,22 @@
                 <span>WareHouse</span>
                 <span>
                     <select id="idSelBu" required multiple>
-                        <option></option>
+                        @*<option></option>*@
                     </select>
                     @Html.Hidden("warehouses")
                 </span>
             </div>
             <div class="col-md-4">
                 @Html.ValidationSummary(false, "", new { @class = "text-danger" })
-                <button class="btn btn-info btn-sm" type="submit">Query</button>
+                <button class="btn btn-info btn-sm" type="submit" id="btnQuery">Query</button>
+                <button class="btn btn-info btn-sm" type="button" id="btnQueryAll">Query All</button>
                 <button class="btn btn-info btn-sm" type="button" id="btnDownload">Download</button>
             </div>
         </div>
     }
 </div>
 
-<div class="container" id="idChartCont">
+<div class="container" id="idChartCont" style="width: 1200px;margin-left: -40px;">
 </div>
 
 
@@ -43,7 +44,10 @@
 @section Scripts{
     <script>
         $(function () {
-            InitData();            
+            InitData();
+            setTimeout(function () {
+                DoQueryAll();
+            }, 800);
         });
 
         function InitData() {
@@ -51,6 +55,10 @@
             $("#btnDownload").click(function () {
                 DownloadData('HCData', $("#frmQueryHCData"));
             });
+            $("#btnQueryAll").click(function () {
+                DoQueryAll();
+            });
+
             var url = "@Url.Action("GetWarehouseInfo", "Query")";
             AjaxPost(url,
                 "{}",
@@ -91,6 +99,12 @@
             });
         }
 
+        function DoQueryAll() {
+            var $ctlSelBu = $('#idSelBu');
+            $ctlSelBu.find('option').prop('selected', 'selected');
+            $ctlSelBu.trigger('change');
+            $("#btnQuery").click();
+        }
         function CreateAChart(name) {
             var chartHead = '<div class="wrapper" style="margin-top:18px;"><div class="row"><div id="idChart_';
             var charTail = '" style="height:520px;"></div></div></div>';
@@ -133,6 +147,23 @@
             var chartData = [];
             var cols = [];
             var details = itemData.data;
+            var labelOption = {
+                normal: {
+                    show: true,
+                    position: 'top',
+                    distance: 15,
+                    verticalAlign: 'middle',
+                    rotate: 90,
+                    fontSize: 10,
+                    formatter: function (ser) {
+                        if (!ser.data) {
+                            return '';
+                        }
+                        return ser.data;
+                    }
+                }
+            };
+
             $.each(details, function (index, value) {
                 var vArr = MakeValueArr(value);
                 var item = vArr[0];
@@ -141,7 +172,8 @@
                     'name': item,
                     'type': 'bar',
                     'barGap': '0',
-                    'data': vArr.slice(1)
+                    'data': vArr.slice(1),
+                    'label': labelOption
                 };
                 chartData.push(objChart);
             });
@@ -177,8 +209,8 @@
                     },
                 },
                 grid: {
-                    left: '2%',
-                    right: '10%',
+                    left: '0%',
+                    right: '9.5%',
                     bottom: '2%',
                     containLabel: true
                 },
