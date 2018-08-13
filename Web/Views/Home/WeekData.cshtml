@@ -220,14 +220,17 @@
                     objChart.yAxisIndex = 1;
                     objChart.markLine = {
                         label:{
-                            show:false
+                            show: true,
+                            formatter: '{c}%',
+                            position: 'middle'
                         },
                         data: [
                         {
                             yAxis: 100
                         }],
                         lineStyle: {
-                            color: '#2248FB'
+                            color: '#FFC613',
+                            width:2
                         }
                     };
                 }
@@ -279,8 +282,8 @@
                     selected: selKinds
                 },
                 grid: {
-                    left: '2%',
-                    right: '11%',
+                    left: '1%',
+                    right: '12%',
                     bottom: '2%',
                     containLabel: true
                 },

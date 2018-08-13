@@ -233,14 +233,15 @@ namespace WarehouseLaborEfficiencyWeb.DAL
         private static List<string> GetHCRows()
         {
             var lst = new List<string>();
-            lst.Add("Overall");
             lst.Add("System_Clerk");
-            lst.Add("Inventory_Control");
-            lst.Add("RTV_Scrap");
             lst.Add("Receiving");
             lst.Add("Shipping");
+            lst.Add("RTV_Scrap");
+            lst.Add("Inventory_Control");
+            lst.Add("Overall");
             lst.Add("Forklift_Driver");
-            lst.Add("Total");            
+            lst.Add("Total");
+
             return lst;
         }
 

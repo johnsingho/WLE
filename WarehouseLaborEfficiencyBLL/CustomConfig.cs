@@ -9,9 +9,11 @@ namespace WarehouseLaborEfficiencyBLL
 
         static CustomConfig()
         {
+#if true //false for test
             ConnStrMain = ConfigurationManager.ConnectionStrings["main_ConnStr"].ConnectionString;
             var sTemp = ConfigurationManager.AppSettings["DeleteTempFile"].Trim();
             bool.TryParse(sTemp, out bDeleteTempFile);
+#endif
         }
     }
 }
