@@ -163,12 +163,29 @@
         }
         function MakeChartData(markline) {
             var chartData = [];
+            var labelOption = {
+                normal: {
+                    show: true,
+                    position: 'top',
+                    distance: 20,
+                    verticalAlign: 'middle',
+                    rotate: 90,
+                    fontSize: 11,
+                    formatter: function (ser) {
+                        if (!ser.data || 0==ser.data) {
+                            return '';
+                        }
+                        return ser.data;
+                    }
+                }
+            };
             $.each(weekData.data, function (index, value) {                
                 var objChart = {
                     'name': value.name,
                     'type': 'bar',
                     'barGap': '0',
                     'data': value.items,
+                    'label': labelOption,
                     'markLine': markline
                 };
                 chartData.push(objChart);

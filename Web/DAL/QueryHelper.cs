@@ -275,18 +275,18 @@ namespace WarehouseLaborEfficiencyWeb.DAL
             using (var context = new WarehouseLaborEfficiencyEntities())
             {
                 var qry = (from c in context.V_Tbl_HCData
-                           where 0==string.Compare(c.Warehouse,bu,true)
+                           where 0 == string.Compare(c.Warehouse, bu, true)
                            orderby c.Date
                            select c
-                           ).ToList().Select(c=>new
+                           ).ToList().Select(c => new
                            {
-                               Date=DateTimeHelper.GetLocalDateStr(c.Date.Value),
-                               Overall=c.Overall,
+                               Date = DateTimeHelper.GetLocalDateStr(c.Date.Value),
                                c.System_Clerk,
-                               c.Inventory_Control,
-                               c.RTV_Scrap,
                                c.Receiving,
                                c.Shipping,
+                               c.RTV_Scrap,
+                               c.Inventory_Control,
+                               c.Overall,
                                c.Forklift_Driver,
                                c.Total
                            });
