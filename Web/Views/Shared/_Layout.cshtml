@@ -39,7 +39,10 @@
                         <li>@Html.ActionLink("Weekly Trend", "WeekData", "Home")</li>
                         <li>@Html.ActionLink("Monthly Trend", "MonthData", "Home")</li>
                         <li>@Html.ActionLink("HC & Position", "HCData", "Home")</li>
-                        <li><a href="#" onclick="DoUpload()"><i class="fa fa-upload fa-fw"></i>上传数据</a></li>
+                        if (CommonInfo.HasRight(TRightID.UPLOAD))
+                        {
+                            <li><a href="#" onclick="DoUpload()"><i class="fa fa-upload fa-fw"></i>上传数据</a></li>
+                        }
                     }
                 </ul>
                 @*启用登录限制*@
@@ -59,7 +62,10 @@
                                 <b class="caret"></b>
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a href="@Url.Action("UserMng","Login")"><i class="fa fa-asterisk fa-fw"></i>Login User Manage</a></li>
+                                @if (CommonInfo.HasRight(TRightID.ADMIN))
+                                {
+                                    <li><a href="@Url.Action("UserMng","Login")"><i class="fa fa-asterisk fa-fw"></i>Login User Manage</a></li>
+                                }                                
                                 <li><a href="@Url.Action("Signout","Login")"><i class="fa fa-sign-out fa-fw"></i>Logout</a></li>
                             </ul>
                         </li>

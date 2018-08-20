@@ -149,6 +149,12 @@ namespace WarehouseLaborEfficiencyWeb.Controllers
                 ModelState.AddModelError("", res.msg);
                 return Json(res, JsonRequestBehavior.AllowGet);
             }
+            if (!CommonInfo.HasRight(TRightID.UPLOAD))
+            {
+                res.msg = "没有上传权限";
+                ModelState.AddModelError("", res.msg);
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
             if (string.IsNullOrEmpty(dataType))
             {
                 res.msg = "请选择数据类型";
@@ -177,6 +183,10 @@ namespace WarehouseLaborEfficiencyWeb.Controllers
         [HttpGet]
         public ActionResult DownloadData(string dType, string bu, string startWeek, string endWeek)
         {
+            if (!CommonInfo.HasRight(TRightID.DOWNLOAD))
+            {
+                return new HttpUnauthorizedResult();
+            }
             switch (dType)
             {
                 case "WeekData":
@@ -192,6 +202,10 @@ namespace WarehouseLaborEfficiencyWeb.Controllers
         [HttpGet]
         public ActionResult DownloadMonthData(string selKind)
         {
+            if (!CommonInfo.HasRight(TRightID.DOWNLOAD))
+            {
+                return new HttpUnauthorizedResult();
+            }
             var fn = string.Format("{0}_{1}.xlsx", "MonthData", selKind);
             var bys = WLE_Data.GetMonthData_Down(selKind);
             if (null == bys) { return new EmptyResult(); }

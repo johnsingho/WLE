@@ -5,6 +5,22 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="WarehouseLaborEfficiencyModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="sys_role_rights">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RefRoleID" Type="varchar" MaxLength="50" />
+          <Property Name="RightName" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="RightContent" Type="varchar" MaxLength="300" />
+        </EntityType>
+        <EntityType Name="sys_roles">
+          <Key>
+            <PropertyRef Name="RoleID" />
+          </Key>
+          <Property Name="RoleID" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="RoleName" Type="nvarchar" MaxLength="20" Nullable="false" />
+        </EntityType>
         <EntityType Name="sys_user">
           <Key>
             <PropertyRef Name="id" />
@@ -16,6 +32,14 @@
           <Property Name="LastLogon" Type="datetime" />
           <Property Name="IsValid" Type="bit" Nullable="false" />
           <Property Name="IsAdmin" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="sys_user_role_conn">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RefUserID" Type="int" Nullable="false" />
+          <Property Name="RefRoleID" Type="varchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="tbl_bu">
           <Key>
@@ -86,9 +110,10 @@ warning 6002: The table/view 'WarehouseLaborEfficiency.dbo.V_Tbl_HCData' does no
         <EntityType Name="V_Tbl_HCData">
           <Key>
             <PropertyRef Name="id" />
+            <PropertyRef Name="Date" />
           </Key>
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Date" Type="date" />
+          <Property Name="Date" Type="date" Nullable="false" />
           <Property Name="Warehouse" Type="nvarchar" MaxLength="50" />
           <Property Name="Overall" Type="int" />
           <Property Name="System_Clerk" Type="int" />
@@ -143,8 +168,36 @@ warning 6002: The table/view 'WarehouseLaborEfficiency.dbo.V_Tbl_WeekData' does 
           <Property Name="Jobs_Issue" Type="int" />
           <Property Name="Reel_ID_Rec" Type="int" />
         </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'WarehouseLaborEfficiency.dbo.V_USER_RIGHTS' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="V_USER_RIGHTS">
+          <Key>
+            <PropertyRef Name="UserID" />
+            <PropertyRef Name="ADAccount" />
+            <PropertyRef Name="FullName" />
+            <PropertyRef Name="Email" />
+            <PropertyRef Name="IsAdmin" />
+            <PropertyRef Name="RightID" />
+            <PropertyRef Name="RightName" />
+          </Key>
+          <Property Name="UserID" Type="int" Nullable="false" />
+          <Property Name="ADAccount" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="FullName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Email" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="IsAdmin" Type="bit" Nullable="false" />
+          <Property Name="RightID" Type="int" Nullable="false" />
+          <Property Name="RightName" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="RightContent" Type="varchar" MaxLength="300" />
+        </EntityType>
+        <Function Name="FN_Check_UserRight" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="int">
+          <Parameter Name="userAd" Type="varchar" Mode="In" />
+          <Parameter Name="rightID" Type="int" Mode="In" />
+        </Function>
         <EntityContainer Name="WarehouseLaborEfficiencyModelStoreContainer">
+          <EntitySet Name="sys_role_rights" EntityType="Self.sys_role_rights" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sys_roles" EntityType="Self.sys_roles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="sys_user" EntityType="Self.sys_user" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sys_user_role_conn" EntityType="Self.sys_user_role_conn" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_bu" EntityType="Self.tbl_bu" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_HCData" EntityType="Self.tbl_HCData" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_MonthData" EntityType="Self.tbl_MonthData" Schema="dbo" store:Type="Tables" />
@@ -200,13 +253,286 @@ warning 6002: The table/view 'WarehouseLaborEfficiency.dbo.V_Tbl_WeekData' does 
     [V_Tbl_WeekData].[Reel_ID_Rec] AS [Reel_ID_Rec]
     FROM [dbo].[V_Tbl_WeekData] AS [V_Tbl_WeekData]</DefiningQuery>
           </EntitySet>
+          <EntitySet Name="V_USER_RIGHTS" EntityType="Self.V_USER_RIGHTS" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [V_USER_RIGHTS].[UserID] AS [UserID], 
+    [V_USER_RIGHTS].[ADAccount] AS [ADAccount], 
+    [V_USER_RIGHTS].[FullName] AS [FullName], 
+    [V_USER_RIGHTS].[Email] AS [Email], 
+    [V_USER_RIGHTS].[IsAdmin] AS [IsAdmin], 
+    [V_USER_RIGHTS].[RightID] AS [RightID], 
+    [V_USER_RIGHTS].[RightName] AS [RightName], 
+    [V_USER_RIGHTS].[RightContent] AS [RightContent]
+    FROM [dbo].[V_USER_RIGHTS] AS [V_USER_RIGHTS]</DefiningQuery>
+          </EntitySet>
+        </EntityContainer>
+      </Schema><Schema Namespace="WarehouseLaborEfficiencyModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="sys_role_rights">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RefRoleID" Type="varchar" MaxLength="50" />
+          <Property Name="RightName" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="RightContent" Type="varchar" MaxLength="300" />
+        </EntityType>
+        <EntityType Name="sys_roles">
+          <Key>
+            <PropertyRef Name="RoleID" />
+          </Key>
+          <Property Name="RoleID" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="RoleName" Type="nvarchar" MaxLength="20" Nullable="false" />
+        </EntityType>
+        <EntityType Name="sys_user">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ADAccount" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="FullName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Email" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="LastLogon" Type="datetime" />
+          <Property Name="IsValid" Type="bit" Nullable="false" />
+          <Property Name="IsAdmin" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="sys_user_role_conn">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RefUserID" Type="int" Nullable="false" />
+          <Property Name="RefRoleID" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_bu">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="bu" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="tbl_HCData">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Date" Type="date" Nullable="false" />
+          <Property Name="Warehouse" Type="nvarchar" MaxLength="50" />
+          <Property Name="Overall" Type="int" />
+          <Property Name="System_Clerk" Type="int" />
+          <Property Name="Inventory_Control" Type="int" />
+          <Property Name="RTV_Scrap" Type="int" />
+          <Property Name="Receiving" Type="int" />
+          <Property Name="Shipping" Type="int" />
+          <Property Name="Forklift_Driver" Type="int" />
+          <Property Name="Total" Type="int" />
+          <Property Name="UpdateTime" Type="datetime" />
+        </EntityType>
+        <EntityType Name="tbl_MonthData">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Date" Type="date" Nullable="false" />
+          <Property Name="Warehouse" Type="nvarchar" MaxLength="50" />
+          <Property Name="HC_FCST" Type="int" />
+          <Property Name="HC_Actual" Type="int" />
+          <Property Name="HC_Support" Type="int" />
+          <Property Name="HC_Utilization" Type="real" />
+          <Property Name="Case_ID_in" Type="int" />
+          <Property Name="Case_ID_out" Type="int" />
+          <Property Name="Pallet_In" Type="int" />
+          <Property Name="Pallet_Out" Type="int" />
+          <Property Name="Jobs_Rec" Type="int" />
+          <Property Name="Jobs_Issue" Type="int" />
+          <Property Name="Reel_ID_Rec" Type="int" />
+          <Property Name="UpdateTime" Type="datetime" />
+        </EntityType>
+        <EntityType Name="tbl_WeekData">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Date" Type="date" Nullable="false" />
+          <Property Name="Warehouse" Type="nvarchar" MaxLength="50" />
+          <Property Name="HC_FCST" Type="int" />
+          <Property Name="HC_Actual" Type="int" />
+          <Property Name="HC_Support" Type="int" />
+          <Property Name="HC_Utilization" Type="real" />
+          <Property Name="Case_ID_in" Type="int" />
+          <Property Name="Case_ID_out" Type="int" />
+          <Property Name="Pallet_In" Type="int" />
+          <Property Name="Pallet_Out" Type="int" />
+          <Property Name="Jobs_Rec" Type="int" />
+          <Property Name="Jobs_Issue" Type="int" />
+          <Property Name="Reel_ID_Rec" Type="int" />
+          <Property Name="UpdateTime" Type="datetime" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'WarehouseLaborEfficiency.dbo.V_Tbl_HCData' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="V_Tbl_HCData">
+          <Key>
+            <PropertyRef Name="id" />
+            <PropertyRef Name="Date" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Date" Type="date" Nullable="false" />
+          <Property Name="Warehouse" Type="nvarchar" MaxLength="50" />
+          <Property Name="Overall" Type="int" />
+          <Property Name="System_Clerk" Type="int" />
+          <Property Name="Inventory_Control" Type="int" />
+          <Property Name="RTV_Scrap" Type="int" />
+          <Property Name="Receiving" Type="int" />
+          <Property Name="Shipping" Type="int" />
+          <Property Name="Forklift_Driver" Type="int" />
+          <Property Name="Total" Type="int" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'WarehouseLaborEfficiency.dbo.V_Tbl_MonthData' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="V_Tbl_MonthData">
+          <Key>
+            <PropertyRef Name="id" />
+            <PropertyRef Name="Date" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Date" Type="date" Nullable="false" />
+          <Property Name="Warehouse" Type="nvarchar" MaxLength="50" />
+          <Property Name="HC_FCST" Type="int" />
+          <Property Name="HC_Actual" Type="int" />
+          <Property Name="HC_Support" Type="int" />
+          <Property Name="HC_Utilization" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="Case_ID_in" Type="int" />
+          <Property Name="Case_ID_out" Type="int" />
+          <Property Name="Pallet_In" Type="int" />
+          <Property Name="Pallet_Out" Type="int" />
+          <Property Name="Jobs_Rec" Type="int" />
+          <Property Name="Jobs_Issue" Type="int" />
+          <Property Name="Reel_ID_Rec" Type="int" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'WarehouseLaborEfficiency.dbo.V_Tbl_WeekData' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="V_Tbl_WeekData">
+          <Key>
+            <PropertyRef Name="id" />
+            <PropertyRef Name="Date" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Date" Type="date" Nullable="false" />
+          <Property Name="Warehouse" Type="nvarchar" MaxLength="50" />
+          <Property Name="HC_FCST" Type="int" />
+          <Property Name="HC_Actual" Type="int" />
+          <Property Name="HC_Support" Type="int" />
+          <Property Name="HC_Utilization" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="Case_ID_in" Type="int" />
+          <Property Name="Case_ID_out" Type="int" />
+          <Property Name="Pallet_In" Type="int" />
+          <Property Name="Pallet_Out" Type="int" />
+          <Property Name="Jobs_Rec" Type="int" />
+          <Property Name="Jobs_Issue" Type="int" />
+          <Property Name="Reel_ID_Rec" Type="int" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'WarehouseLaborEfficiency.dbo.V_USER_RIGHTS' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="V_USER_RIGHTS">
+          <Key>
+            <PropertyRef Name="UserID" />
+            <PropertyRef Name="ADAccount" />
+            <PropertyRef Name="FullName" />
+            <PropertyRef Name="Email" />
+            <PropertyRef Name="IsAdmin" />
+            <PropertyRef Name="RightID" />
+            <PropertyRef Name="RightName" />
+          </Key>
+          <Property Name="UserID" Type="int" Nullable="false" />
+          <Property Name="ADAccount" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="FullName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Email" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="IsAdmin" Type="bit" Nullable="false" />
+          <Property Name="RightID" Type="int" Nullable="false" />
+          <Property Name="RightName" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="RightContent" Type="varchar" MaxLength="300" />
+        </EntityType>
+        <EntityContainer Name="WarehouseLaborEfficiencyModelStoreContainer">
+          <EntitySet Name="sys_role_rights" EntityType="Self.sys_role_rights" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sys_roles" EntityType="Self.sys_roles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sys_user" EntityType="Self.sys_user" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sys_user_role_conn" EntityType="Self.sys_user_role_conn" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_bu" EntityType="Self.tbl_bu" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_HCData" EntityType="Self.tbl_HCData" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_MonthData" EntityType="Self.tbl_MonthData" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_WeekData" EntityType="Self.tbl_WeekData" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="V_Tbl_HCData" EntityType="Self.V_Tbl_HCData" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [V_Tbl_HCData].[id] AS [id], 
+    [V_Tbl_HCData].[Date] AS [Date], 
+    [V_Tbl_HCData].[Warehouse] AS [Warehouse], 
+    [V_Tbl_HCData].[Overall] AS [Overall], 
+    [V_Tbl_HCData].[System_Clerk] AS [System_Clerk], 
+    [V_Tbl_HCData].[Inventory_Control] AS [Inventory_Control], 
+    [V_Tbl_HCData].[RTV_Scrap] AS [RTV_Scrap], 
+    [V_Tbl_HCData].[Receiving] AS [Receiving], 
+    [V_Tbl_HCData].[Shipping] AS [Shipping], 
+    [V_Tbl_HCData].[Forklift_Driver] AS [Forklift_Driver], 
+    [V_Tbl_HCData].[Total] AS [Total]
+    FROM [dbo].[V_Tbl_HCData] AS [V_Tbl_HCData]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="V_Tbl_MonthData" EntityType="Self.V_Tbl_MonthData" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [V_Tbl_MonthData].[id] AS [id], 
+    [V_Tbl_MonthData].[Date] AS [Date], 
+    [V_Tbl_MonthData].[Warehouse] AS [Warehouse], 
+    [V_Tbl_MonthData].[HC_FCST] AS [HC_FCST], 
+    [V_Tbl_MonthData].[HC_Actual] AS [HC_Actual], 
+    [V_Tbl_MonthData].[HC_Support] AS [HC_Support], 
+    [V_Tbl_MonthData].[HC_Utilization] AS [HC_Utilization], 
+    [V_Tbl_MonthData].[Case_ID_in] AS [Case_ID_in], 
+    [V_Tbl_MonthData].[Case_ID_out] AS [Case_ID_out], 
+    [V_Tbl_MonthData].[Pallet_In] AS [Pallet_In], 
+    [V_Tbl_MonthData].[Pallet_Out] AS [Pallet_Out], 
+    [V_Tbl_MonthData].[Jobs_Rec] AS [Jobs_Rec], 
+    [V_Tbl_MonthData].[Jobs_Issue] AS [Jobs_Issue], 
+    [V_Tbl_MonthData].[Reel_ID_Rec] AS [Reel_ID_Rec]
+    FROM [dbo].[V_Tbl_MonthData] AS [V_Tbl_MonthData]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="V_Tbl_WeekData" EntityType="Self.V_Tbl_WeekData" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [V_Tbl_WeekData].[id] AS [id], 
+    [V_Tbl_WeekData].[Date] AS [Date], 
+    [V_Tbl_WeekData].[Warehouse] AS [Warehouse], 
+    [V_Tbl_WeekData].[HC_FCST] AS [HC_FCST], 
+    [V_Tbl_WeekData].[HC_Actual] AS [HC_Actual], 
+    [V_Tbl_WeekData].[HC_Support] AS [HC_Support], 
+    [V_Tbl_WeekData].[HC_Utilization] AS [HC_Utilization], 
+    [V_Tbl_WeekData].[Case_ID_in] AS [Case_ID_in], 
+    [V_Tbl_WeekData].[Case_ID_out] AS [Case_ID_out], 
+    [V_Tbl_WeekData].[Pallet_In] AS [Pallet_In], 
+    [V_Tbl_WeekData].[Pallet_Out] AS [Pallet_Out], 
+    [V_Tbl_WeekData].[Jobs_Rec] AS [Jobs_Rec], 
+    [V_Tbl_WeekData].[Jobs_Issue] AS [Jobs_Issue], 
+    [V_Tbl_WeekData].[Reel_ID_Rec] AS [Reel_ID_Rec]
+    FROM [dbo].[V_Tbl_WeekData] AS [V_Tbl_WeekData]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="V_USER_RIGHTS" EntityType="Self.V_USER_RIGHTS" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [V_USER_RIGHTS].[UserID] AS [UserID], 
+    [V_USER_RIGHTS].[ADAccount] AS [ADAccount], 
+    [V_USER_RIGHTS].[FullName] AS [FullName], 
+    [V_USER_RIGHTS].[Email] AS [Email], 
+    [V_USER_RIGHTS].[IsAdmin] AS [IsAdmin], 
+    [V_USER_RIGHTS].[RightID] AS [RightID], 
+    [V_USER_RIGHTS].[RightName] AS [RightName], 
+    [V_USER_RIGHTS].[RightContent] AS [RightContent]
+    FROM [dbo].[V_USER_RIGHTS] AS [V_USER_RIGHTS]</DefiningQuery>
+          </EntitySet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="WarehouseLaborEfficiencyModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityContainer Name="WarehouseLaborEfficiencyEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="sys_role_rights" EntityType="WarehouseLaborEfficiencyModel.sys_role_rights" />
+          <EntitySet Name="sys_roles" EntityType="WarehouseLaborEfficiencyModel.sys_roles" />
           <EntitySet Name="sys_user" EntityType="WarehouseLaborEfficiencyModel.sys_user" />
+          <EntitySet Name="sys_user_role_conn" EntityType="WarehouseLaborEfficiencyModel.sys_user_role_conn" />
           <EntitySet Name="tbl_bu" EntityType="WarehouseLaborEfficiencyModel.tbl_bu" />
           <EntitySet Name="tbl_HCData" EntityType="WarehouseLaborEfficiencyModel.tbl_HCData" />
           <EntitySet Name="tbl_MonthData" EntityType="WarehouseLaborEfficiencyModel.tbl_MonthData" />
@@ -214,7 +540,24 @@ warning 6002: The table/view 'WarehouseLaborEfficiency.dbo.V_Tbl_WeekData' does 
           <EntitySet Name="V_Tbl_HCData" EntityType="WarehouseLaborEfficiencyModel.V_Tbl_HCData" />
           <EntitySet Name="V_Tbl_MonthData" EntityType="WarehouseLaborEfficiencyModel.V_Tbl_MonthData" />
           <EntitySet Name="V_Tbl_WeekData" EntityType="WarehouseLaborEfficiencyModel.V_Tbl_WeekData" />
+          <EntitySet Name="V_USER_RIGHTS" EntityType="WarehouseLaborEfficiencyModel.V_USER_RIGHTS" />
         </EntityContainer>
+        <EntityType Name="sys_role_rights">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RefRoleID" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="RightName" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="RightContent" Type="String" MaxLength="300" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="sys_roles">
+          <Key>
+            <PropertyRef Name="RoleID" />
+          </Key>
+          <Property Name="RoleID" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="RoleName" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
         <EntityType Name="sys_user">
           <Key>
             <PropertyRef Name="id" />
@@ -226,6 +569,14 @@ warning 6002: The table/view 'WarehouseLaborEfficiency.dbo.V_Tbl_WeekData' does 
           <Property Name="LastLogon" Type="DateTime" Precision="3" />
           <Property Name="IsValid" Type="Boolean" Nullable="false" />
           <Property Name="IsAdmin" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="sys_user_role_conn">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RefUserID" Type="Int32" Nullable="false" />
+          <Property Name="RefRoleID" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="tbl_bu">
           <Key>
@@ -294,9 +645,10 @@ warning 6002: The table/view 'WarehouseLaborEfficiency.dbo.V_Tbl_WeekData' does 
         <EntityType Name="V_Tbl_HCData">
           <Key>
             <PropertyRef Name="id" />
+            <PropertyRef Name="Date" />
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Date" Type="DateTime" Precision="0" />
+          <Property Name="Date" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="Warehouse" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Overall" Type="Int32" />
           <Property Name="System_Clerk" Type="Int32" />
@@ -347,12 +699,49 @@ warning 6002: The table/view 'WarehouseLaborEfficiency.dbo.V_Tbl_WeekData' does 
           <Property Name="Jobs_Issue" Type="Int32" />
           <Property Name="Reel_ID_Rec" Type="Int32" />
         </EntityType>
+        <EntityType Name="V_USER_RIGHTS">
+          <Key>
+            <PropertyRef Name="UserID" />
+            <PropertyRef Name="ADAccount" />
+            <PropertyRef Name="FullName" />
+            <PropertyRef Name="Email" />
+            <PropertyRef Name="IsAdmin" />
+            <PropertyRef Name="RightID" />
+            <PropertyRef Name="RightName" />
+          </Key>
+          <Property Name="UserID" Type="Int32" Nullable="false" />
+          <Property Name="ADAccount" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="FullName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Email" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="IsAdmin" Type="Boolean" Nullable="false" />
+          <Property Name="RightID" Type="Int32" Nullable="false" />
+          <Property Name="RightName" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="RightContent" Type="String" MaxLength="300" FixedLength="false" Unicode="false" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="WarehouseLaborEfficiencyModelStoreContainer" CdmEntityContainer="WarehouseLaborEfficiencyEntities">
+          <EntitySetMapping Name="sys_role_rights">
+            <EntityTypeMapping TypeName="WarehouseLaborEfficiencyModel.sys_role_rights">
+              <MappingFragment StoreEntitySet="sys_role_rights">
+                <ScalarProperty Name="RightContent" ColumnName="RightContent" />
+                <ScalarProperty Name="RightName" ColumnName="RightName" />
+                <ScalarProperty Name="RefRoleID" ColumnName="RefRoleID" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sys_roles">
+            <EntityTypeMapping TypeName="WarehouseLaborEfficiencyModel.sys_roles">
+              <MappingFragment StoreEntitySet="sys_roles">
+                <ScalarProperty Name="RoleName" ColumnName="RoleName" />
+                <ScalarProperty Name="RoleID" ColumnName="RoleID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="sys_user">
             <EntityTypeMapping TypeName="WarehouseLaborEfficiencyModel.sys_user">
               <MappingFragment StoreEntitySet="sys_user">
@@ -362,6 +751,15 @@ warning 6002: The table/view 'WarehouseLaborEfficiency.dbo.V_Tbl_WeekData' does 
                 <ScalarProperty Name="Email" ColumnName="Email" />
                 <ScalarProperty Name="FullName" ColumnName="FullName" />
                 <ScalarProperty Name="ADAccount" ColumnName="ADAccount" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sys_user_role_conn">
+            <EntityTypeMapping TypeName="WarehouseLaborEfficiencyModel.sys_user_role_conn">
+              <MappingFragment StoreEntitySet="sys_user_role_conn">
+                <ScalarProperty Name="RefRoleID" ColumnName="RefRoleID" />
+                <ScalarProperty Name="RefUserID" ColumnName="RefUserID" />
                 <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -488,6 +886,20 @@ warning 6002: The table/view 'WarehouseLaborEfficiency.dbo.V_Tbl_WeekData' does 
                 <ScalarProperty Name="Warehouse" ColumnName="Warehouse" />
                 <ScalarProperty Name="Date" ColumnName="Date" />
                 <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="V_USER_RIGHTS">
+            <EntityTypeMapping TypeName="WarehouseLaborEfficiencyModel.V_USER_RIGHTS">
+              <MappingFragment StoreEntitySet="V_USER_RIGHTS">
+                <ScalarProperty Name="RightContent" ColumnName="RightContent" />
+                <ScalarProperty Name="RightName" ColumnName="RightName" />
+                <ScalarProperty Name="RightID" ColumnName="RightID" />
+                <ScalarProperty Name="IsAdmin" ColumnName="IsAdmin" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="FullName" ColumnName="FullName" />
+                <ScalarProperty Name="ADAccount" ColumnName="ADAccount" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

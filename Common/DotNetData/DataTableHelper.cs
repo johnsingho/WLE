@@ -132,7 +132,7 @@ namespace Common.DotNetData
             {
                 tran.Rollback();
                 LogHelper.WriteError(conn.GetType(), ex);
-                serr = "部分课程编号有重复，无法导入";
+                serr = ex.Message;
             }
             return bRet;
         }

@@ -2,6 +2,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@using WarehouseLaborEfficiencyWeb.DAL
 
 <div class="row InfoHead">
     <div class="col-md-9">
@@ -30,7 +31,10 @@
                 @Html.ValidationSummary(false, "", new { @class = "text-danger" })
                 <button class="btn btn-info btn-sm" type="submit" id="btnQuery">Query</button>
                 <button class="btn btn-info btn-sm" type="button" id="btnQueryAll">Query All</button>
-                <button class="btn btn-info btn-sm" type="button" id="btnDownload">Download</button>
+                @if (CommonInfo.HasRight(TRightID.DOWNLOAD))
+                {
+                    <button class="btn btn-info btn-sm" type="button" id="btnDownload">Download</button>
+                }                
             </div>
         </div>
     }

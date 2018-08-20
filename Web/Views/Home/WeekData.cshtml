@@ -2,6 +2,8 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@using WarehouseLaborEfficiencyWeb.DAL
+
 @section Styles{ 
     <style>
         table.dataTable.compact thead th,
@@ -76,7 +78,10 @@
         <div class="col-md-3">
             @Html.ValidationSummary(false, "", new { @class = "text-danger" })
             <button class="btn btn-info btn-sm" type="submit" id="btnQuery">Query</button>
-            <button class="btn btn-info btn-sm" type="button" id="btnDownload">Download</button>
+            @if (CommonInfo.HasRight(TRightID.DOWNLOAD))
+            {
+                <button class="btn btn-info btn-sm" type="button" id="btnDownload">Download</button>
+            }            
         </div>
     </div>
 }

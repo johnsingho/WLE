@@ -2,6 +2,8 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@using WarehouseLaborEfficiencyWeb.DAL
+
 <div class="row InfoHead">
     <div class="col-md-9">
         <h2>
@@ -87,7 +89,10 @@
                 </label>
             </li>
             <li>
+            @if (CommonInfo.HasRight(TRightID.DOWNLOAD))
+            {
                 <button id="btnDownload" class="btn btn-info btn-sm">Download</button>
+            }
             </li>
         </ul>
     </div>

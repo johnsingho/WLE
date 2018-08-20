@@ -169,7 +169,131 @@ create table sys_user (
 )
 go
 
+---------------------
+drop table sys_roles;
+drop table sys_rights;
+drop table sys_user_role_conn;
+drop table sys_role_right_conn;
+drop table sys_role_right_conn;
+----------------------
+
+
+create table sys_roles(
+	id varchar(50) primary key,
+	RoleName NVARCHAR(20) NOT NULL
+);
+
+create table sys_rights(
+	id int identity primary key,
+	RightName NVARCHAR(20) NOT NULL,	
+	RightContent varchar(300)
+);
+
+create table sys_user_role_conn(
+	id int identity primary key,
+	RefUserID int not null, --sys_user
+	RefRoleID varchar(50) not null, --sys_roles
+	constraint unq_sys_user_role_conn unique(RefUserID,RefRoleID)
+);
+
+create table sys_role_right_conn(
+	id int identity primary key,
+	RefRoleID varchar(50) not null, --sys_roles
+	RefRightID int not null, -- sys_rights
+	constraint unq_sys_role_right_conn unique(RefRoleID,RefRightID)
+);
+
+drop VIEW V_USER_RIGHTS;
+
+CREATE VIEW V_USER_RIGHTS
+AS
+	select u.id as UserID,u.ADAccount,u.FullName,u.Email,u.IsAdmin,ri.id as RightID,ri.RightName,ri.RightContent 
+	from  sys_user u
+	join sys_user_role_conn ur_conn
+	on u.id=ur_conn.RefUserID
+	join sys_roles r
+	on ur_conn.RefRoleID=r.id
+	join sys_role_right_conn rr_conn
+	on r.id = rr_conn.RefRoleID
+	join sys_rights ri
+	on rr_conn.RefRightID=ri.id;
+
+
+DROP FUNCTION dbo.FN_Check_UserRight;
+CREATE FUNCTION dbo.FN_Check_UserRight(@userAd varchar(50), @rightID int)
+RETURNS int
+AS
+BEGIN
+	IF EXISTS( 
+		select top 1 *
+		from V_USER_RIGHTS v
+		where v.ADAccount=@userAd
+		and (v.RightID=@rightID or v.IsAdmin>0)
+	)
+	return 1;
+
+	return 0;
+END;
+GO
+
+insert into sys_roles
+values ('admin',
+N'admin'
+);
+insert into sys_roles
+values ('B87251FE-847F-433D-99C8-8B1216BE3CC4',
+N'只读浏览'
+);
+insert into sys_roles
+values ('CD1E2D21-3441-4C81-9133-D31086A3CC7F',
+N'数据维护'
+);
+
+-- 权限
+insert into sys_rights
+values(
+N'只读浏览',
+null
+);
+insert into sys_rights
+values(
+N'下载数据',
+null
+);
+insert into sys_rights
+values(
+N'上传数据',
+null
+);
+
+-- 角色权限关联
+insert into sys_role_right_conn
+values (
+'B87251FE-847F-433D-99C8-8B1216BE3CC4',
+1
+);
+
+insert into sys_role_right_conn
+values (
+'CD1E2D21-3441-4C81-9133-D31086A3CC7F',
+1
+);
+insert into sys_role_right_conn
+values (
+'CD1E2D21-3441-4C81-9133-D31086A3CC7F',
+2
+);
+insert into sys_role_right_conn
+values (
+'CD1E2D21-3441-4C81-9133-D31086A3CC7F',
+3
+);
+
+
 -------------------------------------------------------------------
 
+truncate table sys_roles
+truncate table sys_role_rights
 
+select newid();
 

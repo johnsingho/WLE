@@ -280,7 +280,7 @@ namespace WarehouseLaborEfficiencyWeb.DAL
                            select c
                            ).ToList().Select(c => new
                            {
-                               Date = DateTimeHelper.GetLocalDateStr(c.Date.Value),
+                               Date = DateTimeHelper.GetLocalDateStr(c.Date),
                                c.System_Clerk,
                                c.Receiving,
                                c.Shipping,

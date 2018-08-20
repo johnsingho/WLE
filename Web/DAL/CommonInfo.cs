@@ -7,7 +7,6 @@ namespace WarehouseLaborEfficiencyWeb.DAL
 {
     public class CommonInfo
     {
-        private static UserBasicInfo _currentUser = null;
         private static CookieKey _cook = new CookieKey()
         {
             skUser = "FLEXUSERKEY_2018WLE",
@@ -28,19 +27,16 @@ namespace WarehouseLaborEfficiencyWeb.DAL
                     return null;
                 else
                 {
-                    if (_currentUser == null)
-                    {
-                        var vUserState = UserState.GetInstance(_cook);
-                        _currentUser = vUserState.GetLoginUser();
-                    }
-                    return _currentUser;
+                    var vUserState = UserState.GetInstance(_cook);
+                    var userInfo = vUserState.GetLoginUser();
+                    return userInfo;
                 }
             }
         }
 
         public static bool IsLogin()
         {
-            var vUserState = UserState.GetInstance(_cook);
+            var vUserState = UserState.GetInstance(_cook);            
             return vUserState.IsLogin;
         }
 
@@ -54,6 +50,17 @@ namespace WarehouseLaborEfficiencyWeb.DAL
         {
             var vUserState = UserState.GetInstance(_cook);
             vUserState.Login(domainUser);
+        }
+
+        public static bool HasRight(int nRightID)
+        {
+            var vUserState = UserState.GetInstance(_cook);
+            if (!vUserState.IsLogin)
+            {
+                return false; ;
+            }
+            var loginUser = vUserState.GetLoginUser();
+            return SysUserInfo.HasRight(loginUser.AdName, nRightID);
         }
     }
 }

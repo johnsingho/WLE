@@ -5,6 +5,7 @@ using System.Text;
 using System.Data.Entity;
 using WarehouseLaborEfficiencyWeb.Database;
 using Common.Authorization;
+using System.Data.SqlClient;
 
 namespace WarehouseLaborEfficiencyWeb.DAL
 {
@@ -51,6 +52,8 @@ namespace WarehouseLaborEfficiencyWeb.DAL
             }
             return user;
         }
+
+
 
         public static bool HasOtherUsers()
         {
@@ -192,5 +195,19 @@ namespace WarehouseLaborEfficiencyWeb.DAL
                 context.SaveChanges();
             }
         }
+
+        public static bool HasRight(string sAD, int nRightID)
+        {
+            using (var context = new WarehouseLaborEfficiencyEntities())
+            {
+                var qry = context.Database.SqlQuery<int>("select dbo.FN_Check_UserRight(@ad, @rightID)",
+                                                        new SqlParameter("@ad", sAD),
+                                                        new SqlParameter("@rightID", nRightID)
+                                                        );
+                return qry.FirstOrDefault() > 0;
+            }
+        }
+
+
     }
 }

@@ -4,6 +4,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
 using Common;
+using System.Net;
 
 namespace WarehouseLaborEfficiencyWeb.Controllers
 {
@@ -25,7 +26,10 @@ namespace WarehouseLaborEfficiencyWeb.Controllers
     {
         public ActionResult UserMng()
         {
-            //TODO
+            if (!CommonInfo.HasRight(TRightID.ADMIN))
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.Unauthorized);
+            }
             return View();
         }
 
@@ -86,30 +90,29 @@ namespace WarehouseLaborEfficiencyWeb.Controllers
                     }
 
                     //验证域密码
-                    if (user != null)
+                    domainUser = new ActiveDirectoryHelper().GetDomainUser(ad, pwd, out msg);
+//for debug only                    
+#if false
+                    domainUser = new UserBasicInfo(user.id, user.ADAccount, user.Email, user.FullName, user.IsAdmin);
+#endif
+
+                    if (domainUser == null)
                     {
-                        domainUser = new UserBasicInfo(user.id, user.ADAccount, user.Email, user.FullName, user.IsAdmin);
+                        ModelState.AddModelError("", msg);
+                        return View();
                     }
-                    if (user == null /*|| false == ConfigInfo.DebugRun*/)
+
+                    domainUser.UserID = user.id;
+                    domainUser.IsAdmin = user.IsAdmin;
+                    // 更新用户邮箱
+                    if ( !string.IsNullOrEmpty(domainUser.Email) && 
+                        0!=string.Compare(domainUser.Email, user.Email, true)
+                       )
                     {
-                        domainUser = new ActiveDirectoryHelper().GetDomainUser(ad, pwd, out msg);
-                        if (domainUser == null)
-                        {
-                            ModelState.AddModelError("", msg);
-                            return View();
-                        }
-                        if (user != null)
-                        {
-                            domainUser = new UserBasicInfo(user.id, user.ADAccount, user.Email, user.FullName, user.IsAdmin);
-                        }
-                        // 更新用户邮箱
-                        if (user != null && string.IsNullOrEmpty(domainUser.Email) == false &&
-                            domainUser.Email != user.Email)
-                        {
-                            user.Email = domainUser.Email;
-                            SysUserInfo.Update(user);
-                        }
+                        user.Email = domainUser.Email;
+                        SysUserInfo.Update(user);
                     }
+
                     // 帐号被停用
                     if (!user.IsValid)
                     {

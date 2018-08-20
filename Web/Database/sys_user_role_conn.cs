@@ -12,18 +12,10 @@ namespace WarehouseLaborEfficiencyWeb.Database
     using System;
     using System.Collections.Generic;
     
-    public partial class V_Tbl_HCData
+    public partial class sys_user_role_conn
     {
         public int id { get; set; }
-        public System.DateTime Date { get; set; }
-        public string Warehouse { get; set; }
-        public Nullable<int> Overall { get; set; }
-        public Nullable<int> System_Clerk { get; set; }
-        public Nullable<int> Inventory_Control { get; set; }
-        public Nullable<int> RTV_Scrap { get; set; }
-        public Nullable<int> Receiving { get; set; }
-        public Nullable<int> Shipping { get; set; }
-        public Nullable<int> Forklift_Driver { get; set; }
-        public Nullable<int> Total { get; set; }
+        public int RefUserID { get; set; }
+        public string RefRoleID { get; set; }
     }
 }

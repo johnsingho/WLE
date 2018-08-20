@@ -166,7 +166,17 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="DAL\CommodityRecvHelper.cs" />
     <Compile Include="DAL\TRes.cs" />
+    <Compile Include="DAL\TRightID.cs" />
+    <Compile Include="Database\sys_roles.cs">
+      <DependentUpon>WarehouseLaborEfficiency.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\sys_role_rights.cs">
+      <DependentUpon>WarehouseLaborEfficiency.tt</DependentUpon>
+    </Compile>
     <Compile Include="Database\sys_user.cs">
+      <DependentUpon>WarehouseLaborEfficiency.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\sys_user_role_conn.cs">
       <DependentUpon>WarehouseLaborEfficiency.tt</DependentUpon>
     </Compile>
     <Compile Include="Database\tbl_bu.cs">
@@ -188,6 +198,9 @@
       <DependentUpon>WarehouseLaborEfficiency.tt</DependentUpon>
     </Compile>
     <Compile Include="Database\V_Tbl_WeekData.cs">
+      <DependentUpon>WarehouseLaborEfficiency.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\V_USER_RIGHTS.cs">
       <DependentUpon>WarehouseLaborEfficiency.tt</DependentUpon>
     </Compile>
     <Compile Include="Database\WarehouseLaborEfficiency.Context.cs">
