@@ -12,9 +12,10 @@ namespace WarehouseLaborEfficiencyWeb.Database
     using System;
     using System.Collections.Generic;
     
-    public partial class sys_roles
+    public partial class sys_rights
     {
-        public string id { get; set; }
-        public string RoleName { get; set; }
+        public int id { get; set; }
+        public string RightName { get; set; }
+        public string RightContent { get; set; }
     }
 }

@@ -6,6 +6,7 @@ using System.Data.Entity;
 using WarehouseLaborEfficiencyWeb.Database;
 using Common.Authorization;
 using System.Data.SqlClient;
+using System.Web.Mvc;
 
 namespace WarehouseLaborEfficiencyWeb.DAL
 {
@@ -34,6 +35,98 @@ namespace WarehouseLaborEfficiencyWeb.DAL
                                 IsValid = x.IsValid
                             };
                 return users.ToList();
+            }
+        }
+        
+        //取用户的roleID
+        public static string GetUserRoleID(string sAd)
+        {
+            //var userInfo = CommonInfo.CurrentUser;
+            if (string.IsNullOrEmpty(sAd)) { return string.Empty; }
+            using (var context = new WarehouseLaborEfficiencyEntities())
+            {
+                //admin特殊处理
+                var bIsAdmin = (from r in context.sys_user
+                                where r.ADAccount == sAd
+                                      && r.IsAdmin
+                                select r
+                          ).Any();
+                if (bIsAdmin)
+                {
+                    return "admin";
+                }
+
+                var roleIDs = from r in context.sys_user
+                              join ur in context.sys_user_role_conn
+                              on r.id equals ur.RefUserID
+                              where r.ADAccount==sAd
+                              select ur.RefRoleID;
+                if(roleIDs.Count() > 0)
+                {
+                    return roleIDs.FirstOrDefault();
+                }
+                return string.Empty;
+            }
+        }
+
+        internal static List<SelectListItem> LoadRoles()
+        {
+            using (var context = new WarehouseLaborEfficiencyEntities())
+            {
+                var users = from r in context.sys_roles
+                            select new SelectListItem
+                            {
+                                Text = r.RoleName,
+                                Value = r.id,
+                                Selected = false
+                            };
+                var ret = users.ToList();
+                return ret;
+            }
+        }
+        
+        public static bool ChangeRole(string userAD, string roleID)
+        {
+            var bChangeToAdmin = string.Equals(roleID, "admin", StringComparison.InvariantCultureIgnoreCase);
+            using (var context = new WarehouseLaborEfficiencyEntities())
+            {
+                var items = from u in context.sys_user
+                            where (0 == String.Compare(u.ADAccount, userAD, StringComparison.InvariantCultureIgnoreCase))
+                            select u;
+                if (items.Any())
+                {
+                    var item = items.First();
+                    item.IsAdmin = bChangeToAdmin;
+                    context.Entry(item).State = EntityState.Modified;
+                    context.SaveChanges();
+                    if (bChangeToAdmin)
+                    {
+                        return true;
+                    }
+                }
+                else
+                {
+                    //用户不存在?
+                    return false;
+                }                
+            }
+
+            using (var context = new WarehouseLaborEfficiencyEntities())
+            {
+                var items = from u in context.sys_user
+                            from ur in context.sys_user_role_conn
+                            where u.id == ur.RefUserID
+                                  && (0 == String.Compare(u.ADAccount, userAD, StringComparison.InvariantCultureIgnoreCase))
+                            select ur;
+                if (items.Any())
+                {
+                    var item = items.First();
+                    item.RefRoleID = roleID;
+                    context.Entry(item).State = EntityState.Modified;
+                    context.SaveChanges();
+                    return true;
+                }
+                return false;
             }
         }
 
@@ -207,7 +300,6 @@ namespace WarehouseLaborEfficiencyWeb.DAL
                 return qry.FirstOrDefault() > 0;
             }
         }
-
 
     }
 }

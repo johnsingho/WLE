@@ -21,7 +21,7 @@
 </head>
 
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar navbar-default navbar-my navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -86,6 +86,7 @@
     </div>
     <footer class="sticky-footer">
         &copy; @DateTime.Now.Year - Flex
+        <span style="position:absolute;right:2px;color:darkgray;font-style:italic">User keyed data manually</span>
     </footer>
 
     <div class="busyLoading" style="display: none">
@@ -104,7 +105,7 @@
                             FormMethod.Post, new { @id = "frmUploadData" }))
     {
         <div class="modal fade" id="dlgUploadData" tabindex="-1" role="dialog" aria-labelledby="dlgUploadData" aria-hidden="true">
-            <div class="modal-dialog" style="width: 640px;">
+            <div class="modal-dialog" style="width: 400px;">
                 <div class="modal-content">
                     <div class="modal-header" style="padding: 5px">
                         <label style="font-size: 12px; font-weight: 600; margin: 0;">上传数据</label>

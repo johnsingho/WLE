@@ -25,6 +25,8 @@ namespace WarehouseLaborEfficiencyWeb.Database
             throw new UnintentionalCodeFirstException();
         }
     
+        public virtual DbSet<sys_rights> sys_rights { get; set; }
+        public virtual DbSet<sys_role_right_conn> sys_role_right_conn { get; set; }
         public virtual DbSet<sys_role_rights> sys_role_rights { get; set; }
         public virtual DbSet<sys_roles> sys_roles { get; set; }
         public virtual DbSet<sys_user> sys_user { get; set; }

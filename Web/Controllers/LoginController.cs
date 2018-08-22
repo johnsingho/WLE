@@ -30,6 +30,8 @@ namespace WarehouseLaborEfficiencyWeb.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.Unauthorized);
             }
+            
+            ViewBag.rolesList = SysUserInfo.LoadRoles();
             return View();
         }
 
@@ -203,6 +205,46 @@ namespace WarehouseLaborEfficiencyWeb.Controllers
             bool bRet = SysUserInfo.EnableUser(id, enable, out errmsg);
             res.bok = bRet;
             res.msg = errmsg;
+            return Json(res);
+        }
+
+        [HttpPost]
+        public ActionResult ChangeRole(string userAD, string ddlRole)
+        {
+            var res = new TRes
+            {
+                bok = false
+            };
+            if(string.IsNullOrEmpty(userAD) || string.IsNullOrEmpty(ddlRole))
+            {
+                res.msg = "参数有误";
+                return Json(res);
+            }
+            if (!CommonInfo.HasRight(TRightID.ADMIN))
+            {
+                res.msg = "只有管理员才可以修改权限";
+                return Json(res);
+            }
+
+            string errmsg = string.Empty;
+            var sRoleID = SysUserInfo.ChangeRole(userAD, ddlRole);
+            res.bok = true;
+            res.data = sRoleID;
+            return Json(res);
+        }
+
+        [HttpPost]
+        public ActionResult GetUserRole(string adName)
+        {
+            var res = new TRes
+            {
+                bok = false
+            };
+
+            string errmsg = string.Empty;
+            var sRoleID = SysUserInfo.GetUserRoleID(adName);
+            res.bok = true;
+            res.data = sRoleID;
             return Json(res);
         }
     }

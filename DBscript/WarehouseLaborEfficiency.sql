@@ -236,18 +236,23 @@ BEGIN
 END;
 GO
 
-insert into sys_roles
-values ('admin',
-N'admin'
-);
+
 insert into sys_roles
 values ('B87251FE-847F-433D-99C8-8B1216BE3CC4',
 N'只读浏览'
 );
 insert into sys_roles
 values ('CD1E2D21-3441-4C81-9133-D31086A3CC7F',
-N'数据维护'
+N'下载数据'
 );
+insert into sys_roles
+values ('90D1D346-A8F6-43D2-9F12-53FA3B5A8D4F',
+N'上传数据'
+);
+
+select * from sys_roles
+select * from sys_rights
+select * from sys_role_right_conn
 
 -- 权限
 insert into sys_rights
@@ -272,12 +277,6 @@ values (
 'B87251FE-847F-433D-99C8-8B1216BE3CC4',
 1
 );
-
-insert into sys_role_right_conn
-values (
-'CD1E2D21-3441-4C81-9133-D31086A3CC7F',
-1
-);
 insert into sys_role_right_conn
 values (
 'CD1E2D21-3441-4C81-9133-D31086A3CC7F',
@@ -285,7 +284,7 @@ values (
 );
 insert into sys_role_right_conn
 values (
-'CD1E2D21-3441-4C81-9133-D31086A3CC7F',
+'90D1D346-A8F6-43D2-9F12-53FA3B5A8D4F',
 3
 );
 

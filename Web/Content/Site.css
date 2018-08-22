@@ -6,9 +6,10 @@
 }*/
 
 .headTitle{
-    color: #d2deec;
+    color: #2aabd2 !important;
     font-size: 22px;
     font-family: 'Microsoft YaHei','Segoe UI', Tahoma, sans-serif;
+    font-weight: 800;
 }
 
 header, footer, nav, section {
@@ -237,12 +238,14 @@ input:checked + .slider:before {
   border-radius: 50%;
 }
 
-input[type="radio"].myRadio {
+input[type="radio"].myRadio,
+input[type="checkbox"].myCheck {
     position: absolute;
     right: 9000px;
 }
 
-input[type="radio"].myRadio + .label-radio:before{
+input[type="radio"].myRadio + .label-radio:before,
+input[type="checkbox"].myCheck + .label-check:before{
 	content: "\e157";
 	font-family: "Glyphicons Halflings";
 	font-style: normal;
@@ -255,16 +258,32 @@ input[type="radio"].myRadio + .label-radio:before{
 	display: inline-block;
 	margin-right: 5px;
 }
-input[type="radio"].myRadio:checked + .label-radio:before{
+input[type="radio"].myRadio:checked + .label-radio:before,
+input[type="checkbox"].myCheck:checked + .label-check:before{
 	content: "\e067";
 	color: red;
 	animation: effect 250ms ease-in;
 }
-input[type="radio"].myRadio:disabled + .label-radio{
+input[type="radio"].myRadio:disabled + .label-radio,
+input[type="checkbox"].myCheck:disabled + .label-check{
 	color: #aaa;
 }
-input[type="radio"].myRadio:disabled + .label-radio:before{
+input[type="radio"].myRadio:disabled + .label-radio:before,
+input[type="checkbox"].myCheck:disabled + .label-check{
 	content: "\e074";
 	color: #ccc;
 }
+
+/*my background*/
+@media (min-width: 768px) {
+    .navbar-my>.container .navbar-brand {
+        margin-left: -60px;
+    }
+}
+.navbar-my .navbar-nav>li>a:focus, 
+.navbar-my .navbar-nav>li>a:hover {
+    color: #ffffff;
+    background-color: #5197D7;
+}
+
 

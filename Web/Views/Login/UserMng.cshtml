@@ -41,30 +41,41 @@
         FormMethod.Post, new { @id = "frmModiPriv" }))
 {
     <div class="modal fade" id="dlgModiPriv" tabindex="-1" role="dialog" aria-labelledby="dlgModiPriv" aria-hidden="true">
-        <div class="modal-dialog" style="width: 640px;">
+        <div class="modal-dialog" style="width: 400px;">
             <div class="modal-content">
                 <div class="modal-header" style="padding: 5px">
                     <label style="font-size: 12px; font-weight: 600; margin: 0;">修改用户权限</label>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label class="control-label">数据类型：</label>
-                        <select id="idDatatype" name="dataType" required>
-                            <option></option>
-                            <option value="WeekData">Week Data</option>
-                            <option value="MonthData">Month Data</option>
-                            <option value="HCData">HC Data</option>
-                        </select>
-                        <div class="help-block with-errors"></div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label">上传要导入的数据：</label>
-                        <input type="file" id="file" name="file"
-                               data-error="请选择要上传的excel文件!" required
-                               pattern=".+xls(x)?">
-                        <div class="help-block with-errors"></div>
+                        <label class="control-label">用户角色：</label>
+                        <ul class="list-unstyled">
+                            @{
+                                foreach (var r in (IEnumerable<SelectListItem>)ViewBag.rolesList)
+                                {
+                                    <li>
+                                        <label>
+                                            <input class="myCheck" id="selRole" name="selRole" required
+                                                   type="checkbox" 
+                                                   value="@r.Value" 
+                                                   checked="@r.Selected"/>
+                                            <span class="label-check">@r.Text</span>
+                                        </label>
+                                    </li>
+                                }
+                                <li>
+                                    <label>
+                                        <input class="myCheck" id="selRole" name="selRole" required="true" type="checkbox" value="90D1D346-A8F6-43D2-9F12-53FA3B5A8D4F" />
+                                        <span class="label-check">上传数据</span>
+                                    </label>
+
+                                </li>
+                            }
+                            </ul>
+                            <div class="help-block with-errors"></div>
                     </div>
                 </div>
+                <input id="userAD" name="userAD" type="hidden" />
                 <div class="modal-footer" style="padding: 5px">
                     @Html.ValidationSummary(false, "", new { @class = "text-danger" })
                     <input type="submit" class="btn btn-info btn-sm" value="确认 Confirm" />
@@ -171,6 +182,25 @@
                 }
                 return false;
             });
+
+            var idFrmModiPriv = '#frmModiPriv';
+            $(idFrmModiPriv).on('submit', function (e) {
+                if (e.isDefaultPrevented()) {
+                    //invalid
+                    return false;
+                } else {
+                    var url = $(this).attr("action");
+                    AjaxPostForm(url, idFrmModiPriv, true, function (resp) {
+                        ShowDlgModiPriv(false);
+                        if (resp.bok) {
+                            BootstrapDialog.alert("修改成功");
+                        } else {
+                            BootstrapDialog.alert("修改失败:<br>" + resp.msg);
+                        }
+                    });
+                }
+                return false;
+            });
         }
         function BindCheckbox() {
             $("#tblUsers").on('change', "input[type='checkbox']", function () {
@@ -210,26 +240,22 @@
             });
         }
 
+        function ShowDlgModiPriv(bshow) {
+            ShowModalDlg('#dlgModiPriv', bshow);
+        }
         function ModifyPrivi(cell) {
             var dt = oTabLector.GetDataByCell(cell);
             if (!dt) { return; }
-            //TODO
 
-            @*var str = "确定要删除此用户["+dt.FullName+"]吗?"
-        BootstrapDialog.confirm(str, function (result) {
-            if (!result) {
-                return;
-            }
-            var url = "@Url.Action("DelRegister")";
-            var para = { "id": dt.id };
+            var url = "@Url.Action("GetUserRole")";
+            var para = { "adName": dt.ADAccount };
             AjaxPost(url, JSON.stringify(para), true, function (resp) {
                 if (resp.bok) {
-                    oTabLector.RemoveRow(cell);
-                } else {
-                    BootstrapDialog.alert("删除失败！" + resp.msg);
+                    $('#ddlRole').val(resp.data);
                 }
             });
-        });*@
+            $('#userAD').val(dt.ADAccount);
+            ShowDlgModiPriv(true);
         }
     </script>
 }

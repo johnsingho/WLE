@@ -167,10 +167,16 @@
     <Compile Include="DAL\CommodityRecvHelper.cs" />
     <Compile Include="DAL\TRes.cs" />
     <Compile Include="DAL\TRightID.cs" />
+    <Compile Include="Database\sys_rights.cs">
+      <DependentUpon>WarehouseLaborEfficiency.tt</DependentUpon>
+    </Compile>
     <Compile Include="Database\sys_roles.cs">
       <DependentUpon>WarehouseLaborEfficiency.tt</DependentUpon>
     </Compile>
     <Compile Include="Database\sys_role_rights.cs">
+      <DependentUpon>WarehouseLaborEfficiency.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\sys_role_right_conn.cs">
       <DependentUpon>WarehouseLaborEfficiency.tt</DependentUpon>
     </Compile>
     <Compile Include="Database\sys_user.cs">

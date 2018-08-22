@@ -5,6 +5,22 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="WarehouseLaborEfficiencyModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="sys_rights">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RightName" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="RightContent" Type="varchar" MaxLength="300" />
+        </EntityType>
+        <EntityType Name="sys_role_right_conn">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RefRoleID" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="RefRightID" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="sys_role_rights">
           <Key>
             <PropertyRef Name="id" />
@@ -16,9 +32,9 @@
         </EntityType>
         <EntityType Name="sys_roles">
           <Key>
-            <PropertyRef Name="RoleID" />
+            <PropertyRef Name="id" />
           </Key>
-          <Property Name="RoleID" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="id" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="RoleName" Type="nvarchar" MaxLength="20" Nullable="false" />
         </EntityType>
         <EntityType Name="sys_user">
@@ -194,6 +210,8 @@ warning 6002: The table/view 'WarehouseLaborEfficiency.dbo.V_USER_RIGHTS' does n
           <Parameter Name="rightID" Type="int" Mode="In" />
         </Function>
         <EntityContainer Name="WarehouseLaborEfficiencyModelStoreContainer">
+          <EntitySet Name="sys_rights" EntityType="Self.sys_rights" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sys_role_right_conn" EntityType="Self.sys_role_right_conn" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="sys_role_rights" EntityType="Self.sys_role_rights" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="sys_roles" EntityType="Self.sys_roles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="sys_user" EntityType="Self.sys_user" Schema="dbo" store:Type="Tables" />
@@ -267,6 +285,22 @@ warning 6002: The table/view 'WarehouseLaborEfficiency.dbo.V_USER_RIGHTS' does n
           </EntitySet>
         </EntityContainer>
       </Schema><Schema Namespace="WarehouseLaborEfficiencyModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="sys_rights">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RightName" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="RightContent" Type="varchar" MaxLength="300" />
+        </EntityType>
+        <EntityType Name="sys_role_right_conn">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RefRoleID" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="RefRightID" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="sys_role_rights">
           <Key>
             <PropertyRef Name="id" />
@@ -278,9 +312,9 @@ warning 6002: The table/view 'WarehouseLaborEfficiency.dbo.V_USER_RIGHTS' does n
         </EntityType>
         <EntityType Name="sys_roles">
           <Key>
-            <PropertyRef Name="RoleID" />
+            <PropertyRef Name="id" />
           </Key>
-          <Property Name="RoleID" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="id" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="RoleName" Type="nvarchar" MaxLength="20" Nullable="false" />
         </EntityType>
         <EntityType Name="sys_user">
@@ -452,6 +486,8 @@ warning 6002: The table/view 'WarehouseLaborEfficiency.dbo.V_USER_RIGHTS' does n
           <Property Name="RightContent" Type="varchar" MaxLength="300" />
         </EntityType>
         <EntityContainer Name="WarehouseLaborEfficiencyModelStoreContainer">
+          <EntitySet Name="sys_rights" EntityType="Self.sys_rights" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sys_role_right_conn" EntityType="Self.sys_role_right_conn" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="sys_role_rights" EntityType="Self.sys_role_rights" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="sys_roles" EntityType="Self.sys_roles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="sys_user" EntityType="Self.sys_user" Schema="dbo" store:Type="Tables" />
@@ -529,6 +565,8 @@ warning 6002: The table/view 'WarehouseLaborEfficiency.dbo.V_USER_RIGHTS' does n
     <edmx:ConceptualModels>
       <Schema Namespace="WarehouseLaborEfficiencyModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityContainer Name="WarehouseLaborEfficiencyEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="sys_rights" EntityType="WarehouseLaborEfficiencyModel.sys_rights" />
+          <EntitySet Name="sys_role_right_conn" EntityType="WarehouseLaborEfficiencyModel.sys_role_right_conn" />
           <EntitySet Name="sys_role_rights" EntityType="WarehouseLaborEfficiencyModel.sys_role_rights" />
           <EntitySet Name="sys_roles" EntityType="WarehouseLaborEfficiencyModel.sys_roles" />
           <EntitySet Name="sys_user" EntityType="WarehouseLaborEfficiencyModel.sys_user" />
@@ -542,6 +580,22 @@ warning 6002: The table/view 'WarehouseLaborEfficiency.dbo.V_USER_RIGHTS' does n
           <EntitySet Name="V_Tbl_WeekData" EntityType="WarehouseLaborEfficiencyModel.V_Tbl_WeekData" />
           <EntitySet Name="V_USER_RIGHTS" EntityType="WarehouseLaborEfficiencyModel.V_USER_RIGHTS" />
         </EntityContainer>
+        <EntityType Name="sys_rights">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RightName" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="RightContent" Type="String" MaxLength="300" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="sys_role_right_conn">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RefRoleID" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="RefRightID" Type="Int32" Nullable="false" />
+        </EntityType>
         <EntityType Name="sys_role_rights">
           <Key>
             <PropertyRef Name="id" />
@@ -553,9 +607,9 @@ warning 6002: The table/view 'WarehouseLaborEfficiency.dbo.V_USER_RIGHTS' does n
         </EntityType>
         <EntityType Name="sys_roles">
           <Key>
-            <PropertyRef Name="RoleID" />
+            <PropertyRef Name="id" />
           </Key>
-          <Property Name="RoleID" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="id" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="RoleName" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="sys_user">
@@ -724,6 +778,24 @@ warning 6002: The table/view 'WarehouseLaborEfficiency.dbo.V_USER_RIGHTS' does n
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="WarehouseLaborEfficiencyModelStoreContainer" CdmEntityContainer="WarehouseLaborEfficiencyEntities">
+          <EntitySetMapping Name="sys_rights">
+            <EntityTypeMapping TypeName="WarehouseLaborEfficiencyModel.sys_rights">
+              <MappingFragment StoreEntitySet="sys_rights">
+                <ScalarProperty Name="RightContent" ColumnName="RightContent" />
+                <ScalarProperty Name="RightName" ColumnName="RightName" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sys_role_right_conn">
+            <EntityTypeMapping TypeName="WarehouseLaborEfficiencyModel.sys_role_right_conn">
+              <MappingFragment StoreEntitySet="sys_role_right_conn">
+                <ScalarProperty Name="RefRightID" ColumnName="RefRightID" />
+                <ScalarProperty Name="RefRoleID" ColumnName="RefRoleID" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="sys_role_rights">
             <EntityTypeMapping TypeName="WarehouseLaborEfficiencyModel.sys_role_rights">
               <MappingFragment StoreEntitySet="sys_role_rights">
@@ -738,7 +810,7 @@ warning 6002: The table/view 'WarehouseLaborEfficiency.dbo.V_USER_RIGHTS' does n
             <EntityTypeMapping TypeName="WarehouseLaborEfficiencyModel.sys_roles">
               <MappingFragment StoreEntitySet="sys_roles">
                 <ScalarProperty Name="RoleName" ColumnName="RoleName" />
-                <ScalarProperty Name="RoleID" ColumnName="RoleID" />
+                <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
