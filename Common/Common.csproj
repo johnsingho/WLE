@@ -46,6 +46,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\ThirdParty\log4net.dll</HintPath>
     </Reference>
+    <Reference Include="MySql.Data, Version=8.0.10.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\ThirdParty\MySql.Data.dll</HintPath>
+    </Reference>
     <Reference Include="NPOI, Version=2.0.6.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\ThirdParty\NPOI.dll</HintPath>
@@ -65,12 +69,12 @@
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
     <Reference Include="System.DirectoryServices" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -81,10 +85,10 @@
     <Compile Include="Authorization\UserState.cs" />
     <Compile Include="DotNetCode\DateTimeHelper.cs" />
     <Compile Include="DotNetData\DataTableHelper.cs" />
-    <Compile Include="DotNetData\SqlServerHelper.cs" />
     <Compile Include="DotNetBean\CookieHelper.cs" />
     <Compile Include="DotNetBean\RequestSession.cs" />
     <Compile Include="DotNetBean\SessionUser.cs" />
+    <Compile Include="DotNetData\MysqlClientHelper.cs" />
     <Compile Include="DotNetExcel\ExcelType.cs" />
     <Compile Include="DotNetExcel\NPOIExcelHelper.cs" />
     <Compile Include="DotNetJson\JsonHelper.cs" />

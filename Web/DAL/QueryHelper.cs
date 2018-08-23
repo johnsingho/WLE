@@ -8,8 +8,9 @@ using Common.DotNetCode;
 using System.Data;
 using Common.DotNetData;
 using WarehouseLaborEfficiencyBLL;
-using System.Data.SqlClient;
 using Common.DotNetJson;
+using MyDBQuery.common;
+using MySql.Data.MySqlClient;
 
 namespace WarehouseLaborEfficiencyWeb.DAL
 {
@@ -131,13 +132,13 @@ namespace WarehouseLaborEfficiencyWeb.DAL
                                       order by [Date]
                                     "
                                     );
-            var parameter = new SqlParameter[]
+            var parameter = new MySqlParameter[]
             {
-                    new SqlParameter("@Warehouse", bu),
-                    new SqlParameter("@StartDate", startDate),
-                    new SqlParameter("@EndDate", endDate)
+                    new MySqlParameter("@Warehouse", bu),
+                    new MySqlParameter("@StartDate", startDate),
+                    new MySqlParameter("@EndDate", endDate)
             };
-            var ds = SqlServerHelper.ExecuteQuery(CustomConfig.ConnStrMain, sql, parameter);
+            var ds = MySqlClientHelper.ExecuteQuery(CustomConfig.ConnStrMain, sql, parameter);
             if (DataTableHelper.IsEmptyDataSet(ds))
             {
                 return res;
@@ -190,8 +191,8 @@ namespace WarehouseLaborEfficiencyWeb.DAL
                                     "
                                     , selKind
                                     );
-            SqlParameter[] parameter = null;
-            var ds = SqlServerHelper.ExecuteQuery(CustomConfig.ConnStrMain, sql, parameter);
+            MySqlParameter[] parameter = null;
+            var ds = MySqlClientHelper.ExecuteQuery(CustomConfig.ConnStrMain, sql, parameter);
             if (DataTableHelper.IsEmptyDataSet(ds))
             {
                 return res;

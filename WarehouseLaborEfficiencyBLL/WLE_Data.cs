@@ -1,11 +1,10 @@
 ﻿using Common.DotNetData;
 using Common.DotNetExcel;
+using MyDBQuery.common;
+using MySql.Data.MySqlClient;
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
 using System.IO;
-using System.Linq;
 using System.Text;
 
 namespace WarehouseLaborEfficiencyBLL
@@ -17,12 +16,10 @@ namespace WarehouseLaborEfficiencyBLL
         private static readonly string TBL_HCDATA = "tbl_HCData";
 
         #region Common
-        private static void WriteDBLog(SqlConnection conn, string msg)
+        private static void WriteDBLog(MySqlConnection conn, string msg)
         {
-            var sql = string.Format("insert into task_log values('{0}', getdate())", msg);
-            SqlCommand cmm = new SqlCommand(sql, conn);
-            cmm.CommandType = CommandType.Text;
-            cmm.ExecuteNonQuery();
+            var sql = string.Format("insert into task_log values('{0}', current_timestamp())", msg);
+            MySqlClientHelper.ExecuteNonQuery(conn, CommandType.Text, null);
         }
         #endregion
 
@@ -63,11 +60,11 @@ namespace WarehouseLaborEfficiencyBLL
                 r["UpdateTime"] = timNow;
             }
 
-            using (var conn = new SqlConnection(CustomConfig.ConnStrMain))
+            using (var conn = new MySqlConnection(CustomConfig.ConnStrMain))
             {
                 conn.Open();
                 WriteDBLog(conn, "start Upload WeekData");
-                var nWritten = SqlServerHelper.BulkToDB(conn, dtRead, TBL_WEEKDATA, out sErr);
+                var nWritten = MySqlClientHelper.BulkToDB(CustomConfig.ConnStrMain, dtRead, TBL_WEEKDATA, out sErr);
                 WriteDBLog(conn, string.Format("end Upload WeekData:{0}", nWritten));
                 return nWritten;
             }
@@ -96,13 +93,13 @@ namespace WarehouseLaborEfficiencyBLL
                                       order by [Date]
                                     "
                                     );
-            var parameter = new SqlParameter[]
+            var parameter = new MySqlParameter[]
             {
-                    new SqlParameter("@Warehouse", bu),
-                    new SqlParameter("@StartDate", startWeek),
-                    new SqlParameter("@EndDate", endWeek)
+                    new MySqlParameter("@Warehouse", bu),
+                    new MySqlParameter("@StartDate", startWeek),
+                    new MySqlParameter("@EndDate", endWeek)
             };
-            var ds = SqlServerHelper.ExecuteQuery(CustomConfig.ConnStrMain, sql, parameter);
+            var ds = MySqlClientHelper.ExecuteQuery(CustomConfig.ConnStrMain, sql, parameter);
             if (DataTableHelper.IsEmptyDataSet(ds))
             {
                 return bys;
@@ -150,11 +147,11 @@ namespace WarehouseLaborEfficiencyBLL
                 r["UpdateTime"] = timNow;
             }
 
-            using (var conn = new SqlConnection(CustomConfig.ConnStrMain))
+            using (var conn = new MySqlConnection(CustomConfig.ConnStrMain))
             {
                 conn.Open();
                 WriteDBLog(conn, "start Upload MonthData");
-                var nWritten = SqlServerHelper.BulkToDB(conn, dtRead, TBL_MONTHDATA, out sErr);
+                var nWritten = MySqlClientHelper.BulkToDB(CustomConfig.ConnStrMain, dtRead, TBL_MONTHDATA, out sErr);
                 WriteDBLog(conn, string.Format("end Upload MonthData:{0}", nWritten));
                 return nWritten;
             }
@@ -177,8 +174,8 @@ namespace WarehouseLaborEfficiencyBLL
                                       "
                                     , sCol
                                     );
-            SqlParameter[] parameter = null;
-            var ds = SqlServerHelper.ExecuteQuery(CustomConfig.ConnStrMain, sql, parameter);
+            MySqlParameter[] parameter = null;
+            var ds = MySqlClientHelper.ExecuteQuery(CustomConfig.ConnStrMain, sql, parameter);
             if (DataTableHelper.IsEmptyDataSet(ds))
             {
                 return bys;
@@ -225,11 +222,11 @@ namespace WarehouseLaborEfficiencyBLL
                 r["UpdateTime"] = timNow;
             }
 
-            using (var conn = new SqlConnection(CustomConfig.ConnStrMain))
+            using (var conn = new MySqlConnection(CustomConfig.ConnStrMain))
             {
                 conn.Open();
                 WriteDBLog(conn, "start Upload HCData");
-                var nWritten = SqlServerHelper.BulkToDB(conn, dtRead, TBL_HCDATA, out sErr);
+                var nWritten = MySqlClientHelper.BulkToDB(CustomConfig.ConnStrMain, dtRead, TBL_HCDATA, out sErr);
                 WriteDBLog(conn, string.Format("end Upload HCData:{0}", nWritten));
                 return nWritten;
             }
@@ -238,7 +235,7 @@ namespace WarehouseLaborEfficiencyBLL
         public static byte[] GetHCData_Down(string bus)
         {
             byte[] bys = null;
-            SqlParameter[] parameter = null;
+            MySqlParameter[] parameter = null;
             string sql = string.Empty;
             if (string.IsNullOrEmpty(bus) || 0 == string.Compare("all", bus, true))
             {
@@ -289,7 +286,7 @@ namespace WarehouseLaborEfficiencyBLL
                                     );
             }
             
-            var ds = SqlServerHelper.ExecuteQuery(CustomConfig.ConnStrMain, sql, parameter);
+            var ds = MySqlClientHelper.ExecuteQuery(CustomConfig.ConnStrMain, sql, parameter);
             if (DataTableHelper.IsEmptyDataSet(ds))
             {
                 return bys;
