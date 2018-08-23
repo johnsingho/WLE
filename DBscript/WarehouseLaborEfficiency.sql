@@ -236,6 +236,9 @@ BEGIN
 END;
 GO
 
+select * from sys_roles
+-- truncate table sys_roles
+
 
 insert into sys_roles
 values ('B87251FE-847F-433D-99C8-8B1216BE3CC4',

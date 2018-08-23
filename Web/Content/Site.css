@@ -22,7 +22,9 @@ footer.sticky-footer {
     width: 100%;
     z-index: 99;
     color:#fff;
-    background-color:#424f63;
+    background-color:#424f63; /*#424f63*/
+    filter: alpha(opacity=85); /* internet explorer */
+    opacity: 0.85;              /* fx, safari, opera */
 }
 
 /* Styles for basic forms
@@ -243,10 +245,8 @@ input[type="checkbox"].myCheck {
     position: absolute;
     right: 9000px;
 }
-
 input[type="radio"].myRadio + .label-radio:before,
-input[type="checkbox"].myCheck + .label-check:before{
-	content: "\e157";
+input[type="checkbox"].myCheck + .label-check:before{	
 	font-family: "Glyphicons Halflings";
 	font-style: normal;
 	font-weight: normal;
@@ -257,6 +257,10 @@ input[type="checkbox"].myCheck + .label-check:before{
 	width: 1em;
 	display: inline-block;
 	margin-right: 5px;
+}
+input[type="radio"].myRadio:not(:checked) + .label-radio:before,
+input[type="checkbox"].myCheck:not(:checked) + .label-check:before {
+    content: "\e157";
 }
 input[type="radio"].myRadio:checked + .label-radio:before,
 input[type="checkbox"].myCheck:checked + .label-check:before{

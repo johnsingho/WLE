@@ -28,7 +28,8 @@ namespace WarehouseLaborEfficiencyWeb.Controllers
         {
             if (!CommonInfo.HasRight(TRightID.ADMIN))
             {
-                return new HttpStatusCodeResult(HttpStatusCode.Unauthorized);
+                return RedirectToAction("Signin", "Login");
+                //return new HttpStatusCodeResult(HttpStatusCode.Unauthorized);
             }
             
             ViewBag.rolesList = SysUserInfo.LoadRoles();
@@ -93,8 +94,8 @@ namespace WarehouseLaborEfficiencyWeb.Controllers
 
                     //验证域密码
                     domainUser = new ActiveDirectoryHelper().GetDomainUser(ad, pwd, out msg);
-//for debug only                    
-#if false
+//true for debug only                    
+#if true
                     domainUser = new UserBasicInfo(user.id, user.ADAccount, user.Email, user.FullName, user.IsAdmin);
 #endif
 
@@ -209,13 +210,13 @@ namespace WarehouseLaborEfficiencyWeb.Controllers
         }
 
         [HttpPost]
-        public ActionResult ChangeRole(string userAD, string ddlRole)
+        public ActionResult ChangeRole(string userAD, string[] selRole)
         {
             var res = new TRes
             {
                 bok = false
             };
-            if(string.IsNullOrEmpty(userAD) || string.IsNullOrEmpty(ddlRole))
+            if(string.IsNullOrEmpty(userAD) || null==selRole || 0==selRole.Length)
             {
                 res.msg = "参数有误";
                 return Json(res);
@@ -227,7 +228,7 @@ namespace WarehouseLaborEfficiencyWeb.Controllers
             }
 
             string errmsg = string.Empty;
-            var sRoleID = SysUserInfo.ChangeRole(userAD, ddlRole);
+            var sRoleID = SysUserInfo.ChangeRole(userAD, selRole, out errmsg);
             res.bok = true;
             res.data = sRoleID;
             return Json(res);

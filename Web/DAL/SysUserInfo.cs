@@ -39,33 +39,18 @@ namespace WarehouseLaborEfficiencyWeb.DAL
         }
         
         //取用户的roleID
-        public static string GetUserRoleID(string sAd)
+        public static List<string> GetUserRoleID(string sAd)
         {
             //var userInfo = CommonInfo.CurrentUser;
-            if (string.IsNullOrEmpty(sAd)) { return string.Empty; }
+            if (string.IsNullOrEmpty(sAd)) { return new List<string>(); }
             using (var context = new WarehouseLaborEfficiencyEntities())
             {
-                //admin特殊处理
-                var bIsAdmin = (from r in context.sys_user
-                                where r.ADAccount == sAd
-                                      && r.IsAdmin
-                                select r
-                          ).Any();
-                if (bIsAdmin)
-                {
-                    return "admin";
-                }
-
                 var roleIDs = from r in context.sys_user
                               join ur in context.sys_user_role_conn
                               on r.id equals ur.RefUserID
                               where r.ADAccount==sAd
                               select ur.RefRoleID;
-                if(roleIDs.Count() > 0)
-                {
-                    return roleIDs.FirstOrDefault();
-                }
-                return string.Empty;
+                return roleIDs.ToList();
             }
         }
 
@@ -85,48 +70,47 @@ namespace WarehouseLaborEfficiencyWeb.DAL
             }
         }
         
-        public static bool ChangeRole(string userAD, string roleID)
+        public static bool ChangeRole(string userAD, string[] roleIDs, out string sErr)
         {
-            var bChangeToAdmin = string.Equals(roleID, "admin", StringComparison.InvariantCultureIgnoreCase);
+            sErr = string.Empty;
             using (var context = new WarehouseLaborEfficiencyEntities())
             {
-                var items = from u in context.sys_user
-                            where (0 == String.Compare(u.ADAccount, userAD, StringComparison.InvariantCultureIgnoreCase))
-                            select u;
-                if (items.Any())
+                var userID = (from u in context.sys_user
+                                where (0 == String.Compare(u.ADAccount, userAD, StringComparison.InvariantCultureIgnoreCase))
+                                select u.id).FirstOrDefault();
+                if(0 == userID)
                 {
-                    var item = items.First();
-                    item.IsAdmin = bChangeToAdmin;
-                    context.Entry(item).State = EntityState.Modified;
-                    context.SaveChanges();
-                    if (bChangeToAdmin)
-                    {
-                        return true;
-                    }
-                }
-                else
-                {
-                    //用户不存在?
                     return false;
-                }                
-            }
-
-            using (var context = new WarehouseLaborEfficiencyEntities())
-            {
-                var items = from u in context.sys_user
-                            from ur in context.sys_user_role_conn
-                            where u.id == ur.RefUserID
-                                  && (0 == String.Compare(u.ADAccount, userAD, StringComparison.InvariantCultureIgnoreCase))
-                            select ur;
-                if (items.Any())
-                {
-                    var item = items.First();
-                    item.RefRoleID = roleID;
-                    context.Entry(item).State = EntityState.Modified;
-                    context.SaveChanges();
-                    return true;
                 }
-                return false;
+
+                //先删后加
+                var bOk = false;
+                try
+                {
+                    var qry = from x in context.sys_user_role_conn
+                              where x.RefUserID == userID
+                              select x;
+                    context.sys_user_role_conn.RemoveRange(qry);
+
+                    var lst = new List<sys_user_role_conn>();
+                    foreach (var rid in roleIDs)
+                    {
+                        lst.Add(new sys_user_role_conn
+                        {
+                            RefRoleID = rid,
+                            RefUserID = userID
+                        });
+                    }
+                    context.sys_user_role_conn.AddRange(lst);
+                    context.SaveChanges();
+                    bOk = true;
+                    sErr = string.Empty;
+                }
+                catch (Exception ex)
+                {
+                    sErr = ex.Message;
+                }
+                return bOk;
             }
         }
 

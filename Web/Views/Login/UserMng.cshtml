@@ -55,7 +55,7 @@
                                 {
                                     <li>
                                         <label>
-                                            <input class="myCheck" id="selRole" name="selRole" required
+                                            <input class="myCheck" name="selRole" required
                                                    type="checkbox" 
                                                    value="@r.Value" 
                                                    checked="@r.Selected"/>
@@ -63,13 +63,6 @@
                                         </label>
                                     </li>
                                 }
-                                <li>
-                                    <label>
-                                        <input class="myCheck" id="selRole" name="selRole" required="true" type="checkbox" value="90D1D346-A8F6-43D2-9F12-53FA3B5A8D4F" />
-                                        <span class="label-check">上传数据</span>
-                                    </label>
-
-                                </li>
                             }
                             </ul>
                             <div class="help-block with-errors"></div>
@@ -184,6 +177,7 @@
             });
 
             var idFrmModiPriv = '#frmModiPriv';
+            $(idFrmModiPriv).validate();
             $(idFrmModiPriv).on('submit', function (e) {
                 if (e.isDefaultPrevented()) {
                     //invalid
@@ -241,6 +235,7 @@
         }
 
         function ShowDlgModiPriv(bshow) {
+            $(".myCheck").prop("checked", false);
             ShowModalDlg('#dlgModiPriv', bshow);
         }
         function ModifyPrivi(cell) {
@@ -251,7 +246,9 @@
             var para = { "adName": dt.ADAccount };
             AjaxPost(url, JSON.stringify(para), true, function (resp) {
                 if (resp.bok) {
-                    $('#ddlRole').val(resp.data);
+                    $.each(resp.data, function (ind, val) {
+                        $(".myCheck[value=" + val + "]").prop("checked", "checked");
+                    });
                 }
             });
             $('#userAD').val(dt.ADAccount);

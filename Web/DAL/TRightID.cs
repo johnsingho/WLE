@@ -6,7 +6,7 @@ using System.Web;
 namespace WarehouseLaborEfficiencyWeb.DAL
 {
     //对应 sys_rights 的ID
-    public class TRightID
+    public static class TRightID
     {
         public static readonly int ADMIN = 999;
         public static readonly int READONLY = 1;
