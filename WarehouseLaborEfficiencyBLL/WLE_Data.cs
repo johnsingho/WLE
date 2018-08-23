@@ -29,7 +29,7 @@ namespace WarehouseLaborEfficiencyBLL
         #region Week Data
         private static DataTable ReadWeekData(FileInfo xlsxFile)
         {
-            var dtNew = NPOIExcelHelper.ReadExcel(xlsxFile);
+            var dtNew = NPOIExcelHelper.ReadExcel(xlsxFile, true);
             if (dtNew == null)
             {
                 return null;
@@ -116,7 +116,7 @@ namespace WarehouseLaborEfficiencyBLL
         #region Month Data
         private static DataTable ReadMonthData(FileInfo xlsxFile)
         {
-            var dtNew = NPOIExcelHelper.ReadExcel(xlsxFile);
+            var dtNew = NPOIExcelHelper.ReadExcel(xlsxFile,true);
             if (dtNew == null)
             {
                 return null;
@@ -193,7 +193,7 @@ namespace WarehouseLaborEfficiencyBLL
         #region HCData
         private static DataTable ReadHCData(FileInfo xlsxFile)
         {
-            var dtNew = NPOIExcelHelper.ReadExcel(xlsxFile);
+            var dtNew = NPOIExcelHelper.ReadExcel(xlsxFile,true);
             if (dtNew == null)
             {
                 return null;

@@ -16,7 +16,7 @@ namespace Test
         [TestMethod]
         public void TestImportWeekData()
         {
-            var sFile = @"D:\he\Doc\20180724发物流人力计算管控系统Dashboard\testData0821\WeekData.xlsx";
+            var sFile = @"D:\he\Doc\20180724发物流人力计算管控系统Dashboard\testData0821\WeekData_badTest.xlsx";
             //var sFile = @"D:\he\Doc\20180724发物流人力计算管控系统Dashboard\testData\WeekData.xlsx";
             //var sFile = @"D:\he\Doc\20180724发物流人力计算管控系统Dashboard\testData\WeekData1.xlsx";
             var sErr = string.Empty;

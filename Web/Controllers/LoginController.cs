@@ -76,9 +76,7 @@ namespace WarehouseLaborEfficiencyWeb.Controllers
             string ad = model.Username;
             string pwd = model.Password;
             string msg = "";
-
-            //CacheFactory.ClearCache(); //TODO remove
-
+            
             try
             {
                 UserBasicInfo domainUser = null;
@@ -95,7 +93,7 @@ namespace WarehouseLaborEfficiencyWeb.Controllers
                     //验证域密码
                     domainUser = new ActiveDirectoryHelper().GetDomainUser(ad, pwd, out msg);
 //true for debug only                    
-#if true
+#if false
                     domainUser = new UserBasicInfo(user.id, user.ADAccount, user.Email, user.FullName, user.IsAdmin);
 #endif
 

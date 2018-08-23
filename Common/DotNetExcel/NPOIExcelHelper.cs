@@ -5,6 +5,7 @@ using System.Data;
 using System.Data.Common;
 using System.IO;
 using System;
+using System.Collections.Generic;
 
 namespace Common.DotNetExcel
 {
@@ -15,6 +16,7 @@ namespace Common.DotNetExcel
     /// Modified:
     ///     2018-03-06 添加存储过程执行功能
     ///     2018-07-01 support formula,date
+    ///     2018-08-23 对数值类型进行默认值处理
     /// </summary>
     public class NPOIExcelHelper
     {
@@ -134,7 +136,94 @@ namespace Common.DotNetExcel
             }
             return obj;
         }
-        public static DataTable ReadExcel(System.IO.Stream stream, bool bNewExcel = true)
+
+        //TODO 暂时只处理数值类型,字符串
+        private static object TryFillCellDefault(ICell cell, object cellVal, CellType cellType)
+        {
+            object obj = "";
+            switch (cellType)
+            {
+                case CellType.Numeric:
+                    {
+                        var bok = false;
+                        do
+                        {
+                            if (null == cellVal) { break; }
+                            var sVal = cellVal.ToString().Trim();
+                            if (!string.IsNullOrEmpty(sVal)) { bok = true; break; }
+                        } while (false);
+                        obj = bok ? cellVal : 0;
+                    }
+                    break;                
+                default:
+                    {
+                        // String
+                        obj = null!=cellVal ? cellVal : string.Empty;
+                    }
+                    break;
+            }
+            return obj;
+        }
+
+        private static DataTable DecodeExcel(bool bNewExcel, IWorkbook wb, int iSheet, bool bDefaultFromFirstRow=true)
+        {
+            ISheet sheet = wb.GetSheetAt(iSheet);
+            DataTable dt = new DataTable();
+
+            // 由第一行取标题
+            IRow headerRow = sheet.GetRow(0);
+            int cellCount = headerRow.LastCellNum; // 取列数
+            for (int i = headerRow.FirstCellNum; i < cellCount; i++)
+            {
+                var sColName = headerRow.GetCell(i).StringCellValue.Trim();
+                dt.Columns.Add(new DataColumn(sColName));
+            }
+
+            var firstRowCellTypes = new Dictionary<int, CellType>(); //缓存第一一行的列格式
+            var bFirstRow = true;
+            //TODO 这里改成读列名应该会好点
+            for (int i = (sheet.FirstRowNum + 1); i <= sheet.LastRowNum; i++)
+            {
+                IRow row = sheet.GetRow(i);
+                if (row == null) continue;
+
+                DataRow dataRow = dt.NewRow();
+                for (int j = row.FirstCellNum; j < cellCount; j++)
+                {
+                    ICell cell = row.GetCell(j);
+                    if (cell == null)
+                    {
+                        continue;
+                    }
+
+                    var cellVal = RetrivCellVal(wb, bNewExcel, cell);                    
+                    if (bFirstRow)
+                    {
+                        firstRowCellTypes.Add(j, cell.CellType);
+                    }
+                    else if(bDefaultFromFirstRow)
+                    {
+                        cellVal = TryFillCellDefault(cell, cellVal, firstRowCellTypes[j]);
+                    }
+
+                    dataRow[j] = cellVal;
+                }
+
+                bFirstRow = false;
+                dt.Rows.Add(dataRow);
+            }
+
+            return dt;
+        }
+
+        /// <summary>
+        /// Excel sheet ---> DataTable
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <param name="bNewExcel"></param>
+        /// <param name="bDefaultFromFirstRow">是否要根据第一行的类型来推导后续行的数据类型</param>
+        /// <returns></returns>
+        public static DataTable ReadExcel(System.IO.Stream stream, bool bNewExcel = true, bool bDefaultFromFirstRow = true)
         {
             IWorkbook wb;
             if (bNewExcel)
@@ -148,46 +237,14 @@ namespace Common.DotNetExcel
                 HSSFFormulaEvaluator.EvaluateAllFormulaCells(wb);
             }
 
-            // 只取第一个sheet
-            ISheet sheet = wb.GetSheetAt(0);
-            DataTable dt = new DataTable();
-
-            // 由第一行取标题
-            IRow headerRow = sheet.GetRow(0);
-            int cellCount = headerRow.LastCellNum; // 取列数
-            for (int i = headerRow.FirstCellNum; i < cellCount; i++)
-            {
-                var sColName = headerRow.GetCell(i).StringCellValue.Trim();
-                dt.Columns.Add(new DataColumn(sColName));
-            }
-            
-            //TODO 这里改成读列名应该会好点
-            for (int i = (sheet.FirstRowNum + 1); i <= sheet.LastRowNum; i++)
-            {
-                IRow row = sheet.GetRow(i);
-                if (row == null) continue;
-
-                DataRow dataRow = dt.NewRow();
-                for (int j = row.FirstCellNum; j < cellCount; j++)
-                {
-                    ICell cell = row.GetCell(j);
-                    if (cell != null)
-                    {
-                        dataRow[j] = RetrivCellVal(wb, bNewExcel, cell);
-                    }
-                }
-
-                dt.Rows.Add(dataRow);
-            }
-            
-            return dt;
+            return DecodeExcel(bNewExcel, wb, 0, bDefaultFromFirstRow);//默认取第一页
         }
-        public static DataTable ReadExcel(System.IO.FileInfo file)
+        public static DataTable ReadExcel(System.IO.FileInfo file, bool bDefaultFromFirstRow)
         {
             using (System.IO.Stream stream = file.OpenRead())
             {
                 var bNewExcel = (0==string.Compare(file.Extension,".xlsx", false));
-                return ReadExcel(stream, bNewExcel);
+                return ReadExcel(stream, bNewExcel, bDefaultFromFirstRow);
             }
         }
     }
