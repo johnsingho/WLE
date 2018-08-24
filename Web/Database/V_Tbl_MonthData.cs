@@ -12,7 +12,7 @@ namespace WarehouseLaborEfficiencyWeb.Database
     using System;
     using System.Collections.Generic;
     
-    public partial class V_Tbl_MonthData
+    public partial class v_tbl_monthdata
     {
         public int id { get; set; }
         public System.DateTime Date { get; set; }

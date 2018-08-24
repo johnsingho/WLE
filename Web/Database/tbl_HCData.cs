@@ -12,7 +12,7 @@ namespace WarehouseLaborEfficiencyWeb.Database
     using System;
     using System.Collections.Generic;
     
-    public partial class tbl_HCData
+    public partial class tbl_hcdata
     {
         public int id { get; set; }
         public System.DateTime Date { get; set; }

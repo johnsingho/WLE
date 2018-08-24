@@ -12,7 +12,7 @@ namespace WarehouseLaborEfficiencyWeb.Database
     using System;
     using System.Collections.Generic;
     
-    public partial class V_USER_RIGHTS
+    public partial class v_user_rights
     {
         public int UserID { get; set; }
         public string ADAccount { get; set; }

@@ -12,11 +12,10 @@ namespace WarehouseLaborEfficiencyWeb.Database
     using System;
     using System.Collections.Generic;
     
-    public partial class sys_role_rights
+    public partial class task_log
     {
         public int id { get; set; }
-        public string RefRoleID { get; set; }
-        public string RightName { get; set; }
-        public string RightContent { get; set; }
+        public string Msg { get; set; }
+        public Nullable<System.DateTime> HappenTime { get; set; }
     }
 }

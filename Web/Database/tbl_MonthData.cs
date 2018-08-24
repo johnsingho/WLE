@@ -12,7 +12,7 @@ namespace WarehouseLaborEfficiencyWeb.Database
     using System;
     using System.Collections.Generic;
     
-    public partial class tbl_MonthData
+    public partial class tbl_monthdata
     {
         public int id { get; set; }
         public System.DateTime Date { get; set; }
@@ -20,7 +20,7 @@ namespace WarehouseLaborEfficiencyWeb.Database
         public Nullable<int> HC_FCST { get; set; }
         public Nullable<int> HC_Actual { get; set; }
         public Nullable<int> HC_Support { get; set; }
-        public Nullable<float> HC_Utilization { get; set; }
+        public Nullable<double> HC_Utilization { get; set; }
         public Nullable<int> Case_ID_in { get; set; }
         public Nullable<int> Case_ID_out { get; set; }
         public Nullable<int> Pallet_In { get; set; }

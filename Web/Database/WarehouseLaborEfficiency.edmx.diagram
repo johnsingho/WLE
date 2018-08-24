@@ -4,21 +4,21 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="8a6034027efa44ad9aa0cbb5032a4550" Name="Diagram1">
-        <EntityTypeShape EntityType="WarehouseLaborEfficiencyModel.sys_rights" Width="1.5" PointX="0.75" PointY="0.75" />
-        <EntityTypeShape EntityType="WarehouseLaborEfficiencyModel.sys_role_right_conn" Width="1.5" PointX="2.75" PointY="0.75" />
-        <EntityTypeShape EntityType="WarehouseLaborEfficiencyModel.sys_role_rights" Width="1.5" PointX="0.75" PointY="3.75" />
-        <EntityTypeShape EntityType="WarehouseLaborEfficiencyModel.sys_roles" Width="1.5" PointX="2.75" PointY="3.75" />
-        <EntityTypeShape EntityType="WarehouseLaborEfficiencyModel.sys_user" Width="1.5" PointX="4.75" PointY="0.75" />
-        <EntityTypeShape EntityType="WarehouseLaborEfficiencyModel.sys_user_role_conn" Width="1.5" PointX="4.75" PointY="4.75" />
-        <EntityTypeShape EntityType="WarehouseLaborEfficiencyModel.tbl_bu" Width="1.5" PointX="6.75" PointY="0.75" />
-        <EntityTypeShape EntityType="WarehouseLaborEfficiencyModel.tbl_HCData" Width="1.5" PointX="0.75" PointY="6.75" />
-        <EntityTypeShape EntityType="WarehouseLaborEfficiencyModel.tbl_MonthData" Width="1.5" PointX="6.75" PointY="3.75" />
-        <EntityTypeShape EntityType="WarehouseLaborEfficiencyModel.tbl_WeekData" Width="1.5" PointX="2.75" PointY="7.75" />
-        <EntityTypeShape EntityType="WarehouseLaborEfficiencyModel.V_Tbl_HCData" Width="1.5" PointX="8.75" PointY="0.75" />
-        <EntityTypeShape EntityType="WarehouseLaborEfficiencyModel.V_Tbl_MonthData" Width="1.5" PointX="8.75" PointY="4.75" />
-        <EntityTypeShape EntityType="WarehouseLaborEfficiencyModel.V_Tbl_WeekData" Width="1.5" PointX="4.75" PointY="8.75" />
-        <EntityTypeShape EntityType="WarehouseLaborEfficiencyModel.V_USER_RIGHTS" Width="1.5" PointX="6.75" PointY="9.75" />
+      <Diagram DiagramId="f12170d9514a4dacb19f18d5a65aebd4" Name="Diagram1">
+        <EntityTypeShape EntityType="WarehouseLaborEffModel.sys_rights" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="WarehouseLaborEffModel.sys_role_right_conn" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="WarehouseLaborEffModel.sys_roles" Width="1.5" PointX="0.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="WarehouseLaborEffModel.sys_user" Width="1.5" PointX="2.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="WarehouseLaborEffModel.sys_user_role_conn" Width="1.5" PointX="4.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="WarehouseLaborEffModel.task_log" Width="1.5" PointX="4.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="WarehouseLaborEffModel.tbl_bu" Width="1.5" PointX="6.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="WarehouseLaborEffModel.tbl_hcdata" Width="1.5" PointX="6.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="WarehouseLaborEffModel.tbl_monthdata" Width="1.5" PointX="0.75" PointY="7.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="WarehouseLaborEffModel.tbl_weekdata" Width="1.5" PointX="2.75" PointY="7.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="WarehouseLaborEffModel.v_tbl_hcdata" Width="1.5" PointX="8.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="WarehouseLaborEffModel.v_tbl_monthdata" Width="1.5" PointX="8.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="WarehouseLaborEffModel.v_tbl_weekdata" Width="1.5" PointX="4.75" PointY="8.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="WarehouseLaborEffModel.v_user_rights" Width="1.5" PointX="6.75" PointY="9.75" IsExpanded="true" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

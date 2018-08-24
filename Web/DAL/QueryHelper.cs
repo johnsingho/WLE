@@ -48,7 +48,7 @@ namespace WarehouseLaborEfficiencyWeb.DAL
         
         internal static List<TSelectOpt> GetWarehouseList()
         {
-            using (var context = new WarehouseLaborEfficiencyEntities())
+            using (var context = new WarehouseLaborEffEntities())
             {
                 var qry = from c in context.tbl_bu
                           orderby c.bu
@@ -63,9 +63,9 @@ namespace WarehouseLaborEfficiencyWeb.DAL
         
         internal static object GetWeekdateList()
         {
-            using (var context = new WarehouseLaborEfficiencyEntities())
+            using (var context = new WarehouseLaborEffEntities())
             {
-                var qry = (from c in context.V_Tbl_WeekData
+                var qry = (from c in context.v_tbl_weekdata
                            group c by c.Date into g
                            orderby g.Key
                            select g.FirstOrDefault()
@@ -80,9 +80,9 @@ namespace WarehouseLaborEfficiencyWeb.DAL
 
         internal static List<TSelectOpt> GetMonthdateList()
         {
-            using (var context = new WarehouseLaborEfficiencyEntities())
+            using (var context = new WarehouseLaborEffEntities())
             {
-                var qry = (from c in context.V_Tbl_MonthData
+                var qry = (from c in context.v_tbl_monthdata
                            group c by c.Date into g
                            orderby g.Key
                            select g.FirstOrDefault()
@@ -273,9 +273,9 @@ namespace WarehouseLaborEfficiencyWeb.DAL
             var res = new TDatatables();
             res.kinds = GetHCRows();
 
-            using (var context = new WarehouseLaborEfficiencyEntities())
+            using (var context = new WarehouseLaborEffEntities())
             {
-                var qry = (from c in context.V_Tbl_HCData
+                var qry = (from c in context.v_tbl_hcdata
                            where 0 == string.Compare(c.Warehouse, bu, true)
                            orderby c.Date
                            select c

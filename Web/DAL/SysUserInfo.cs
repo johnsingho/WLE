@@ -23,7 +23,7 @@ namespace WarehouseLaborEfficiencyWeb.DAL
     {
         internal static List<TSysUserInfo> LoadAll()
         {
-            using (var context = new WarehouseLaborEfficiencyEntities())
+            using (var context = new WarehouseLaborEffEntities())
             {
                 var users = from x in context.sys_user
                             select new TSysUserInfo
@@ -43,7 +43,7 @@ namespace WarehouseLaborEfficiencyWeb.DAL
         {
             //var userInfo = CommonInfo.CurrentUser;
             if (string.IsNullOrEmpty(sAd)) { return new List<string>(); }
-            using (var context = new WarehouseLaborEfficiencyEntities())
+            using (var context = new WarehouseLaborEffEntities())
             {
                 var roleIDs = from r in context.sys_user
                               join ur in context.sys_user_role_conn
@@ -56,7 +56,7 @@ namespace WarehouseLaborEfficiencyWeb.DAL
 
         internal static List<SelectListItem> LoadRoles()
         {
-            using (var context = new WarehouseLaborEfficiencyEntities())
+            using (var context = new WarehouseLaborEffEntities())
             {
                 var users = from r in context.sys_roles
                             select new SelectListItem
@@ -73,7 +73,7 @@ namespace WarehouseLaborEfficiencyWeb.DAL
         public static bool ChangeRole(string userAD, string[] roleIDs, out string sErr)
         {
             sErr = string.Empty;
-            using (var context = new WarehouseLaborEfficiencyEntities())
+            using (var context = new WarehouseLaborEffEntities())
             {
                 var userID = (from u in context.sys_user
                                 where (0 == String.Compare(u.ADAccount, userAD, StringComparison.InvariantCultureIgnoreCase))
@@ -117,7 +117,7 @@ namespace WarehouseLaborEfficiencyWeb.DAL
         public static sys_user GetUserInfoByAd(string sAdName)
         {
             sys_user user = null;
-            using (var context = new WarehouseLaborEfficiencyEntities())
+            using (var context = new WarehouseLaborEffEntities())
             {
                 var people = from p in context.sys_user
                              where (0 == String.Compare(p.ADAccount, sAdName, StringComparison.InvariantCultureIgnoreCase))
@@ -135,7 +135,7 @@ namespace WarehouseLaborEfficiencyWeb.DAL
         public static bool HasOtherUsers()
         {
             //sys_user user = null;
-            using (var context = new WarehouseLaborEfficiencyEntities())
+            using (var context = new WarehouseLaborEffEntities())
             {
                 var peoples = context.sys_user;
                 if (peoples.Any())
@@ -168,7 +168,7 @@ namespace WarehouseLaborEfficiencyWeb.DAL
                 errmsg = "You had been registered!";
                 return false;
             }
-            using (var context = new WarehouseLaborEfficiencyEntities())
+            using (var context = new WarehouseLaborEffEntities())
             {
                 var entity = new sys_user()
                 {
@@ -196,7 +196,7 @@ namespace WarehouseLaborEfficiencyWeb.DAL
         public static bool EnableUser(int uid, bool bEnabled, out string errmsg)
         {
             bool bOk = false;
-            using (var context = new WarehouseLaborEfficiencyEntities())
+            using (var context = new WarehouseLaborEffEntities())
             {
                 var persons = from p in context.sys_user
                               where p.id == uid
@@ -223,7 +223,7 @@ namespace WarehouseLaborEfficiencyWeb.DAL
         {
             bool bOk = false;
             errmsg = string.Empty;
-            using (var mContext = new WarehouseLaborEfficiencyEntities())
+            using (var mContext = new WarehouseLaborEffEntities())
             {
                 var persons = from p in mContext.sys_user
                               where p.id == id
@@ -248,7 +248,7 @@ namespace WarehouseLaborEfficiencyWeb.DAL
         
         public static void UpdateUserLoginTimeByAd(string sAdName)
         {
-            using (var context = new WarehouseLaborEfficiencyEntities())
+            using (var context = new WarehouseLaborEffEntities())
             {
                 var people = from p in context.sys_user
                              where (0 == String.Compare(p.ADAccount, sAdName, StringComparison.InvariantCultureIgnoreCase))
@@ -265,7 +265,7 @@ namespace WarehouseLaborEfficiencyWeb.DAL
 
         public static void Update(sys_user user)
         {
-            using (var context = new WarehouseLaborEfficiencyEntities())
+            using (var context = new WarehouseLaborEffEntities())
             {
                 //user.LastLogon = DateTime.Now;
                 context.Entry(user).State = EntityState.Modified;
@@ -275,7 +275,7 @@ namespace WarehouseLaborEfficiencyWeb.DAL
 
         public static bool HasRight(string sAD, int nRightID)
         {
-            using (var context = new WarehouseLaborEfficiencyEntities())
+            using (var context = new WarehouseLaborEffEntities())
             {
                 var qry = context.Database.SqlQuery<int>("select dbo.FN_Check_UserRight(@ad, @rightID)",
                                                         new SqlParameter("@ad", sAD),

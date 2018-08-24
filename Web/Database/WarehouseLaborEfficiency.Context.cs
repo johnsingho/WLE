@@ -13,10 +13,10 @@ namespace WarehouseLaborEfficiencyWeb.Database
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class WarehouseLaborEfficiencyEntities : DbContext
+    public partial class WarehouseLaborEffEntities : DbContext
     {
-        public WarehouseLaborEfficiencyEntities()
-            : base("name=WarehouseLaborEfficiencyEntities")
+        public WarehouseLaborEffEntities()
+            : base("name=WarehouseLaborEffEntities")
         {
         }
     
@@ -27,17 +27,17 @@ namespace WarehouseLaborEfficiencyWeb.Database
     
         public virtual DbSet<sys_rights> sys_rights { get; set; }
         public virtual DbSet<sys_role_right_conn> sys_role_right_conn { get; set; }
-        public virtual DbSet<sys_role_rights> sys_role_rights { get; set; }
         public virtual DbSet<sys_roles> sys_roles { get; set; }
         public virtual DbSet<sys_user> sys_user { get; set; }
         public virtual DbSet<sys_user_role_conn> sys_user_role_conn { get; set; }
+        public virtual DbSet<task_log> task_log { get; set; }
         public virtual DbSet<tbl_bu> tbl_bu { get; set; }
-        public virtual DbSet<tbl_HCData> tbl_HCData { get; set; }
-        public virtual DbSet<tbl_MonthData> tbl_MonthData { get; set; }
-        public virtual DbSet<tbl_WeekData> tbl_WeekData { get; set; }
-        public virtual DbSet<V_Tbl_HCData> V_Tbl_HCData { get; set; }
-        public virtual DbSet<V_Tbl_MonthData> V_Tbl_MonthData { get; set; }
-        public virtual DbSet<V_Tbl_WeekData> V_Tbl_WeekData { get; set; }
-        public virtual DbSet<V_USER_RIGHTS> V_USER_RIGHTS { get; set; }
+        public virtual DbSet<tbl_hcdata> tbl_hcdata { get; set; }
+        public virtual DbSet<tbl_monthdata> tbl_monthdata { get; set; }
+        public virtual DbSet<tbl_weekdata> tbl_weekdata { get; set; }
+        public virtual DbSet<v_tbl_hcdata> v_tbl_hcdata { get; set; }
+        public virtual DbSet<v_tbl_monthdata> v_tbl_monthdata { get; set; }
+        public virtual DbSet<v_tbl_weekdata> v_tbl_weekdata { get; set; }
+        public virtual DbSet<v_user_rights> v_user_rights { get; set; }
     }
 }
