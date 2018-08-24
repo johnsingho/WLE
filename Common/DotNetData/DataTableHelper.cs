@@ -60,6 +60,13 @@ namespace Common.DotNetData
             }
         }
 
+        //private static bool HasSpaceChar(string colVal)
+        //{
+        //    return colVal.IndexOfAny(new char[]
+        //    {
+        //        '\r','\n',' ','\t'
+        //    }) >= 0;
+        //}
 
         /// <summary>
         ///将DataTable转换为标准的CSV
@@ -78,18 +85,22 @@ namespace Common.DotNetData
                 {
                     DataColumn colum = dt.Columns[i];
                     if (i != 0) { sb.Append(","); }
-                    if (colum.DataType == typeof(string) && row[colum].ToString().Contains(","))
+                    var colVal = row[colum].ToString().Trim().Replace("\"", "\"\"");
+                    if (colVal.Contains(","))
                     {
-                        sb.Append("\"" + row[colum].ToString().Replace("\"", "\"\"") + "\"");
+                        sb.Append("\"" + colVal + "\"");
                     }
-                    else sb.Append(row[colum].ToString());
+                    else
+                    {
+                        sb.Append(colVal);
+                    }
                 }
-                sb.AppendLine();
+                sb.Append("\r\n");
             }
 
             return sb.ToString();
         }
-        
+
         //2018-08-01 DataTable行列转换
         //注意：
         //转换完之后所有值类型都是相同，默认转换为字符串，都没有列名了。
