@@ -7,6 +7,7 @@ using WarehouseLaborEfficiencyWeb.Database;
 using Common.Authorization;
 using System.Data.SqlClient;
 using System.Web.Mvc;
+using MySql.Data.MySqlClient;
 
 namespace WarehouseLaborEfficiencyWeb.DAL
 {
@@ -277,9 +278,9 @@ namespace WarehouseLaborEfficiencyWeb.DAL
         {
             using (var context = new WarehouseLaborEffEntities())
             {
-                var qry = context.Database.SqlQuery<int>("select dbo.FN_Check_UserRight(@ad, @rightID)",
-                                                        new SqlParameter("@ad", sAD),
-                                                        new SqlParameter("@rightID", nRightID)
+                var qry = context.Database.SqlQuery<int>("select FN_Check_UserRight(@ad, @rightID)",
+                                                        new MySqlParameter("@ad", sAD),
+                                                        new MySqlParameter("@rightID", nRightID)
                                                         );
                 return qry.FirstOrDefault() > 0;
             }

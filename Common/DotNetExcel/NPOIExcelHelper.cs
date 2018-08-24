@@ -20,6 +20,7 @@ namespace Common.DotNetExcel
     /// </summary>
     public class NPOIExcelHelper
     {
+        //默认全部当文本来输出
         public static byte[] BuilderExcel(DataTable table, string dateFormat = "yyyy-MM-dd HH:mm:ss")
         {
             IWorkbook workbook = new XSSFWorkbook(); //office2007            
@@ -39,6 +40,64 @@ namespace Common.DotNetExcel
                 foreach (DataColumn column in table.Columns)
                 {
                     dataRow.CreateCell(column.Ordinal).SetCellValue(row[column].ToString());
+                }
+                rowIndex++;
+            }
+
+            byte[] bys = null;
+            using (MemoryStream memoryStream = new MemoryStream())
+            {
+                workbook.Write(memoryStream);
+                memoryStream.Flush();
+                bys = memoryStream.ToArray();
+            }
+            return bys;
+        }
+
+        //进行数值类型输出
+        public static byte[] BuilderExcelWithDataType(DataTable table, string dateFormat = "yyyy-MM-dd HH:mm:ss")
+        {
+            IWorkbook workbook = new XSSFWorkbook(); //office2007            
+            ISheet sheet = workbook.CreateSheet("Sheet1");
+            IRow headerRow = sheet.CreateRow(0);
+
+            // handling header.
+            foreach (DataColumn column in table.Columns)
+            {
+                headerRow.CreateCell(column.Ordinal).SetCellValue(column.ColumnName);
+            }
+
+            int rowIndex = 1;
+            foreach (DataRow row in table.Rows)
+            {
+                IRow dataRow = sheet.CreateRow(rowIndex);
+                var bHandle = false;
+                foreach (DataColumn column in table.Columns)
+                {
+                    bHandle = false;
+                    var cell = dataRow.CreateCell(column.Ordinal);
+                    if (column.DataType==typeof(int) 
+                        || column.DataType == typeof(double)
+                        || column.DataType == typeof(float)
+                        || column.DataType == typeof(decimal)/*这也许会有问题*/
+                        )
+                    {
+                        double dbl = 0.0;
+                        try
+                        {
+                            dbl = Convert.ToDouble(row[column]);                            
+                            cell.SetCellType(CellType.Numeric);
+                            cell.SetCellValue(dbl);
+                            bHandle = true;
+                        }
+                        catch {
+                        }                        
+                    }
+
+                    if (!bHandle)
+                    {
+                        cell.SetCellValue(row[column].ToString());
+                    }
                 }
                 rowIndex++;
             }

@@ -47,24 +47,6 @@ CREATE TABLE IF NOT EXISTS `WarehouseLaborEfficiency`.`sys_role_right_conn` (
   UNIQUE INDEX `unq_sys_role_right_conn` (`RefRoleID` ASC, `RefRightID` ASC));
 
 
-CREATE TABLE IF NOT EXISTS `WarehouseLaborEfficiency`.`tbl_WeekData_bak` (
-  `id` INT NOT NULL,
-  `Date` DATE NOT NULL,
-  `Warehouse` VARCHAR(50) CHARACTER SET 'utf8mb4' NULL,
-  `HC_FCST` INT NULL,
-  `HC_Actual` INT NULL,
-  `HC_Support` INT NULL,
-  `HC_Utilization` FLOAT(24,0) NULL,
-  `Case_ID_in` INT NULL,
-  `Case_ID_out` INT NULL,
-  `Pallet_In` INT NULL,
-  `Pallet_Out` INT NULL,
-  `Jobs_Rec` INT NULL,
-  `Jobs_Issue` INT NULL,
-  `Reel_ID_Rec` INT NULL,
-  `UpdateTime` DATETIME(6) NULL);
-
-
 CREATE TABLE IF NOT EXISTS `WarehouseLaborEfficiency`.`sys_user` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `ADAccount` VARCHAR(50) NOT NULL,
@@ -95,6 +77,8 @@ CREATE TABLE IF NOT EXISTS `WarehouseLaborEfficiency`.`tbl_WeekData` (
   PRIMARY KEY (`id`),
   UNIQUE INDEX `unq_tbl_WeekData` (`Date` ASC, `Warehouse` ASC));
 
+ALTER TABLE `warehouselaborefficiency`.`tbl_WeekData` 
+CHANGE COLUMN `UpdateTime` `UpdateTime` DATETIME NULL DEFAULT CURRENT_TIMESTAMP;
 
 CREATE TABLE IF NOT EXISTS `WarehouseLaborEfficiency`.`tbl_MonthData` (
   `id` INT NOT NULL AUTO_INCREMENT,
@@ -115,6 +99,8 @@ CREATE TABLE IF NOT EXISTS `WarehouseLaborEfficiency`.`tbl_MonthData` (
   PRIMARY KEY (`id`),
   UNIQUE INDEX `unq_tbl_MonthData` (`Date` ASC, `Warehouse` ASC));
 
+ALTER TABLE `warehouselaborefficiency`.`tbl_monthdata` 
+CHANGE COLUMN `UpdateTime` `UpdateTime` DATETIME NULL DEFAULT CURRENT_TIMESTAMP;
 
 CREATE TABLE IF NOT EXISTS `WarehouseLaborEfficiency`.`tbl_HCData` (
   `id` INT NOT NULL AUTO_INCREMENT,
@@ -131,6 +117,9 @@ CREATE TABLE IF NOT EXISTS `WarehouseLaborEfficiency`.`tbl_HCData` (
   `UpdateTime` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `unq_tbl_HCData` (`Date` ASC, `Warehouse` ASC));
+
+ALTER TABLE `warehouselaborefficiency`.`tbl_HCData` 
+CHANGE COLUMN `UpdateTime` `UpdateTime` DATETIME NULL DEFAULT CURRENT_TIMESTAMP;
 
 -- ==========================================================================
 

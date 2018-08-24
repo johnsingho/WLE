@@ -8,7 +8,7 @@ namespace Common.DotNetData
     /// DataTableHelper
     /// By H.Z.XIN
     /// Modified:
-    ///     2018-08-15 整理
+    ///     2018-08-23 整理
     /// 
     /// </summary>
     public static class DataTableHelper
@@ -68,36 +68,55 @@ namespace Common.DotNetData
         //    }) >= 0;
         //}
 
-        /// <summary>
-        ///将DataTable转换为标准的CSV
-        /// </summary>
-        /// <param name="dt">数据表</param>
-        /// <returns>返回标准的CSV</returns>
-        public static string DataTableToCsv(DataTable dt)
+        private static string QuoteValue(string value)
         {
-            //以半角逗号（即,）作分隔符，列为空也要表达其存在。
-            //列内容如存在半角逗号（即,）则用半角引号（即""）将该字段值包含起来。
-            //列内容如存在半角引号（即"）则应替换成半角双引号（""）转义，并用半角引号（即""）将该字段值包含起来。
-            StringBuilder sb = new StringBuilder();
-            foreach (DataRow row in dt.Rows)
+            if(value.IndexOfAny(new char[]{',','"'}) >= 0)
             {
-                for (int i = 0; i < dt.Columns.Count; i++)
+                return String.Concat("\"", value.Replace("\"", "\"\""), "\"");
+            }
+            return value;
+        }
+        public static string DataTableToCSV(DataTable dt, bool bHasColName=false)
+        {
+            StringBuilder sb = new StringBuilder();
+            int intClmn = dt.Columns.Count;
+
+            if (bHasColName)
+            {
+                for (int i = 0; i < intClmn; i++)
                 {
-                    DataColumn colum = dt.Columns[i];
-                    if (i != 0) { sb.Append(","); }
-                    var colVal = row[colum].ToString().Trim().Replace("\"", "\"\"");
-                    if (colVal.Contains(","))
+                    var colVal = dt.Columns[i].ColumnName.ToString();
+                    sb.Append(QuoteValue(colVal));
+                    if (i == intClmn - 1)
                     {
-                        sb.Append("\"" + colVal + "\"");
+                        sb.Append(" ");
                     }
                     else
                     {
-                        sb.Append(colVal);
+                        sb.Append(",");
+                    }
+                }
+                sb.Append(Environment.NewLine);
+            }
+
+            foreach (DataRow row in dt.Rows)
+            {
+                for (var ir = 0; ir<intClmn; ir++)
+                {
+                    var colVal = row[ir].ToString();
+                    sb.Append(QuoteValue(colVal));
+                    if (ir == intClmn - 1)
+                    {
+                        sb.Append(" ");
+                    }
+                    else
+                    {
+                        sb.Append(",");
                     }
                 }
                 sb.Append("\r\n");
             }
-
+            //return System.Text.Encoding.UTF8.GetBytes(sb.ToString());
             return sb.ToString();
         }
 

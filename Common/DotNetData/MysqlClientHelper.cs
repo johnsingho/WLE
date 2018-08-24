@@ -220,17 +220,33 @@ namespace MyDBQuery.common
             }
         }
         #endregion
+        private static void EnableImport(MySqlConnection conn, bool bEnable)
+        {
+            string sPriv = string.Format("set global local_infile={0}", bEnable ? 1 : 0);
+            ExecuteNonQuery(conn, CommandType.Text, sPriv, null);
+        }
 
+        /// <summary>
+        /// BulkToDB 批量导入
+        /// 注意： 日期字符串格式应该是 yyyy-MM-dd HH:mm:ss
+        /// 对应mysql的默认格式  %Y-%m-%d %H-%i-%s
+        /// 否则的话，导入的日期有可能是0000-00-00
+        /// </summary>
+        /// <param name="constring"></param>
+        /// <param name="dt"></param>
+        /// <param name="tarTble"></param>
+        /// <param name="sErr"></param>
+        /// <returns></returns>
         public static int BulkToDB(string constring, DataTable dt, string tarTble, out string sErr)
         {
             sErr = string.Empty;
             if (DataTableHelper.IsEmptyDataTable(dt)) { return 0; }
             int nIns = 0;
             string tmpPath = Path.GetTempFileName();
-            string csv = DataTableHelper.DataTableToCsv(dt);
+            var sRes = DataTableHelper.DataTableToCSV(dt);
             try
             {
-                File.WriteAllText(tmpPath, csv);
+                File.WriteAllText(tmpPath, sRes);
             }
             catch (Exception ex)
             {
@@ -245,19 +261,22 @@ namespace MyDBQuery.common
                 {
                     conn.Open();
                     tran = conn.BeginTransaction();
+                    EnableImport(conn, true);
                     MySqlBulkLoader bulk = new MySqlBulkLoader(conn)
                     {
                         FieldTerminator = ",",
-                        FieldQuotationCharacter = '"',
                         EscapeCharacter = '"',
                         LineTerminator = "\r\n",
                         FileName = tmpPath,
                         NumberOfLinesToSkip = 0,
                         TableName = tarTble,
+                        Local=true
                     };
-                    bulk.Columns.AddRange(dt.Columns.Cast<DataColumn>().Select(colum => colum.ColumnName).ToArray());
+                    var cols = dt.Columns.Cast<DataColumn>().Select(colum => colum.ColumnName).ToList();
+                    bulk.Columns.AddRange(cols);
                     nIns = bulk.Load();
                     tran.Commit();
+                    EnableImport(conn, false);
                 }
                 catch (Exception ex)
                 {
@@ -267,13 +286,20 @@ namespace MyDBQuery.common
                     }
                     sErr = ex.Message;
                 }
+                finally
+                {
+                    try
+                    {
+                        File.Delete(tmpPath);
+                    }
+                    catch { }
+                }
             }
 
-            try
+            if (0 == nIns)
             {
-                File.Delete(tmpPath);
+                sErr = "没有导入数据，可能不符合数据库约束";
             }
-            catch { }            
             return nIns;
         }
 

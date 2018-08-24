@@ -9,7 +9,7 @@ namespace Common.DotNetCode
     /// DateTimeHelper
     /// By H.Z.XIN
     /// Modified:
-    ///     2018-08-01 整理
+    ///     2018-08-23 整理
     /// 
     /// </summary>
     public class DateTimeHelper
@@ -32,14 +32,36 @@ namespace Common.DotNetCode
             if(null==dt || !dt.HasValue) { return string.Empty; }
             return dt.Value.ToString("yyyy-MM-dd");
         }
+        
+        //用于可能是日期字符串的情况
         public static string GetLocalDateStrNull(object obj)
         {
-            var dat = (DateTime)obj;
-            if (obj == null)
+            if(null==obj || obj == DBNull.Value)
             {
                 return string.Empty;
             }
-            return dat.ToString("yyyy-MM-dd");
+            var stim = obj.ToString();
+            var tim = default(DateTime);
+            if(DateTime.TryParse(stim, out tim))
+            {
+                return tim.ToString("yyyy-MM-dd");
+            }
+            return string.Empty;
+        }
+
+        public static string GetLocalDateTimeStrNull(object obj)
+        {
+            if (null == obj || obj == DBNull.Value)
+            {
+                return string.Empty;
+            }
+            var stim = obj.ToString();
+            var tim = default(DateTime);
+            if (DateTime.TryParse(stim, out tim))
+            {
+                return tim.ToString("yyyy-MM-dd HH:mm:ss");
+            }
+            return string.Empty;
         }
 
     }

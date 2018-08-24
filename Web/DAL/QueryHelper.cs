@@ -115,21 +115,21 @@ namespace WarehouseLaborEfficiencyWeb.DAL
         public static TDatatables GetWeekData(string bu, string startDate, string endDate)
         {
             var res = new TDatatables();
-            var sql = string.Format(@"select [Date]
-                                              ,[HC_FCST]
-                                              ,[HC_Actual]
-                                              ,[HC_Support]
-                                              ,[HC_Utilization] as [HC_Utilization(%)]
-                                              ,[Case_ID_in]
-                                              ,[Case_ID_out]
-                                              ,[Pallet_In]
-                                              ,[Pallet_Out]
-                                              ,[Jobs_Rec]
-                                              ,[Jobs_Issue]
-                                              ,[Reel_ID_Rec] 
+            var sql = string.Format(@"select `Date`
+                                              ,`HC_FCST`
+                                              ,`HC_Actual`
+                                              ,`HC_Support`
+                                              ,`HC_Utilization` as `HC_Utilization(%)`
+                                              ,`Case_ID_in`
+                                              ,`Case_ID_out`
+                                              ,`Pallet_In`
+                                              ,`Pallet_Out`
+                                              ,`Jobs_Rec`
+                                              ,`Jobs_Issue`
+                                              ,`Reel_ID_Rec` 
                                       from V_Tbl_WeekData
-                                      where Warehouse= @Warehouse and ( @StartDate<=[Date] and [Date]<= @EndDate)
-                                      order by [Date]
+                                      where Warehouse= @Warehouse and ( @StartDate<=`Date` and `Date`<= @EndDate)
+                                      order by `Date`
                                     "
                                     );
             var parameter = new MySqlParameter[]
@@ -183,11 +183,11 @@ namespace WarehouseLaborEfficiencyWeb.DAL
                 return res;
             }
 
-            var sql = string.Format(@"select cast([Date] as char(10)) as [Date]
-                                              ,[Warehouse]
+            var sql = string.Format(@"select cast(`Date` as char(10)) as `Date`
+                                              ,`Warehouse`
                                               ,{0}
                                       from V_Tbl_MonthData
-                                      order by [Date],Warehouse
+                                      order by `Date`,Warehouse
                                     "
                                     , selKind
                                     );

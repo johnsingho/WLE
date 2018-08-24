@@ -1,4 +1,5 @@
-﻿using Common.DotNetData;
+﻿using Common.DotNetCode;
+using Common.DotNetData;
 using Common.DotNetExcel;
 using MyDBQuery.common;
 using MySql.Data.MySqlClient;
@@ -18,8 +19,10 @@ namespace WarehouseLaborEfficiencyBLL
         #region Common
         private static void WriteDBLog(MySqlConnection conn, string msg)
         {
-            var sql = string.Format("insert into task_log values('{0}', current_timestamp())", msg);
-            MySqlClientHelper.ExecuteNonQuery(conn, CommandType.Text, null);
+            var sql = string.Format(@"insert into task_log (msg,happentime) 
+                                    values('{0}', CURRENT_TIMESTAMP)"
+                                    , msg);
+            MySqlClientHelper.ExecuteNonQuery(conn, CommandType.Text, sql);
         }
         #endregion
 
@@ -33,7 +36,7 @@ namespace WarehouseLaborEfficiencyBLL
             }
 
             //convert 
-            dtNew.Columns.Add("UpdateTime", typeof(DateTime));
+            dtNew.Columns.Add("UpdateTime", typeof(string));
             dtNew.Columns["HC FCST"].ColumnName = "HC_FCST";
             dtNew.Columns["HC Actual"].ColumnName = "HC_Actual";
             dtNew.Columns["HC Support"].ColumnName = "HC_Support";
@@ -52,12 +55,11 @@ namespace WarehouseLaborEfficiencyBLL
         {
             sErr = string.Empty;
             DataTable dtRead = ReadWeekData(xlsxFile);
-            var timNow = DateTime.Now;
+            var stimNow = DateTimeHelper.GetLocalDateTimeStrNull(DateTime.Now);
             foreach(DataRow r in dtRead.Rows)
             {
-                var sDate = r["Date"];
-                r["Date"] = Convert.ToDateTime(sDate); //转换日期
-                r["UpdateTime"] = timNow;
+                r["Date"] = DateTimeHelper.GetLocalDateStrNull(r["Date"]);//转换日期
+                r["UpdateTime"] = stimNow;
             }
 
             using (var conn = new MySqlConnection(CustomConfig.ConnStrMain))
@@ -75,22 +77,22 @@ namespace WarehouseLaborEfficiencyBLL
         {
             byte[] bys = null;
             var sql = string.Format(@"select 
-                                          cast([Date] as char(10)) as [Date]
-                                          ,[Warehouse]
-                                          ,[HC_FCST]
-                                          ,[HC_Actual]
-                                          ,[HC_Support]
-                                          , ([HC_Utilization] /100.0) as HC_Utilization
-                                          ,[Case_ID_in]
-                                          ,[Case_ID_out]
-                                          ,[Pallet_In]
-                                          ,[Pallet_Out]
-                                          ,[Jobs_Rec]
-                                          ,[Jobs_Issue]
-                                          ,[Reel_ID_Rec]
+                                          cast(Date as char(10)) as Date
+                                          ,Warehouse
+                                          ,HC_FCST
+                                          ,HC_Actual
+                                          ,HC_Support
+                                          , (HC_Utilization /100.0) as HC_Utilization
+                                          ,Case_ID_in
+                                          ,Case_ID_out
+                                          ,Pallet_In
+                                          ,Pallet_Out
+                                          ,Jobs_Rec
+                                          ,Jobs_Issue
+                                          ,Reel_ID_Rec
                                       from V_Tbl_WeekData
-                                      where Warehouse= @Warehouse and ( @StartDate<=[Date] and [Date]<= @EndDate)
-                                      order by [Date]
+                                      where Warehouse= @Warehouse and ( @StartDate<=Date and Date<= @EndDate)
+                                      order by Date
                                     "
                                     );
             var parameter = new MySqlParameter[]
@@ -105,7 +107,7 @@ namespace WarehouseLaborEfficiencyBLL
                 return bys;
             }
             var dt = DataTableHelper.GetDataTable0(ds);
-            bys = NPOIExcelHelper.BuilderExcel(dt);
+            bys = NPOIExcelHelper.BuilderExcelWithDataType(dt);
             return bys;
         }
         #endregion
@@ -120,7 +122,7 @@ namespace WarehouseLaborEfficiencyBLL
             }
 
             //convert 
-            dtNew.Columns.Add("UpdateTime", typeof(DateTime));
+            dtNew.Columns.Add("UpdateTime", typeof(string));
             dtNew.Columns["HC FCST"].ColumnName = "HC_FCST";
             dtNew.Columns["HC Actual"].ColumnName = "HC_Actual";
             dtNew.Columns["HC Support"].ColumnName = "HC_Support";
@@ -139,14 +141,13 @@ namespace WarehouseLaborEfficiencyBLL
         {
             sErr = string.Empty;
             DataTable dtRead = ReadMonthData(xlsxFile);
-            var timNow = DateTime.Now;
+            var stimNow = DateTimeHelper.GetLocalDateTimeStrNull(DateTime.Now);
             foreach (DataRow r in dtRead.Rows)
             {
-                var sDate = r["Date"];
-                r["Date"] = Convert.ToDateTime(sDate); //转换日期
-                r["UpdateTime"] = timNow;
+                r["Date"] = DateTimeHelper.GetLocalDateStrNull(r["Date"]);//转换日期
+                r["UpdateTime"] = stimNow;
             }
-
+            
             using (var conn = new MySqlConnection(CustomConfig.ConnStrMain))
             {
                 conn.Open();
@@ -163,14 +164,14 @@ namespace WarehouseLaborEfficiencyBLL
             var sCol = selKind;
             if(0==string.Compare("HC_Utilization", selKind, true))
             {
-                sCol = "([HC_Utilization] / 100.0) as HC_Utilization";
+                sCol = "(HC_Utilization / 100.0) as HC_Utilization";
             }
             var sql = string.Format(@"select 
-                                        cast([Date] as char(10)) as [Date],
+                                        cast(Date as char(10)) as Date,
                                         Warehouse,
                                         {0} 
                                         from V_Tbl_MonthData
-                                      order by [Date],Warehouse
+                                      order by Date,Warehouse
                                       "
                                     , sCol
                                     );
@@ -181,7 +182,7 @@ namespace WarehouseLaborEfficiencyBLL
                 return bys;
             }
             var dt = DataTableHelper.GetDataTable0(ds);
-            bys = NPOIExcelHelper.BuilderExcel(dt);
+            bys = NPOIExcelHelper.BuilderExcelWithDataType(dt);
             return bys;
         }
         
@@ -197,7 +198,7 @@ namespace WarehouseLaborEfficiencyBLL
             }
 
             //convert 
-            dtNew.Columns.Add("UpdateTime", typeof(DateTime));
+            dtNew.Columns.Add("UpdateTime", typeof(string));
             dtNew.Columns["Warehouse"].ColumnName = "Warehouse";
             dtNew.Columns["System Clerk"].ColumnName = "System_Clerk";
             dtNew.Columns["Inventory Control"].ColumnName = "Inventory_Control";
@@ -214,14 +215,13 @@ namespace WarehouseLaborEfficiencyBLL
         {
             sErr = string.Empty;
             DataTable dtRead = ReadHCData(xlsxFile);
-            var timNow = DateTime.Now;
+            var stimNow = DateTimeHelper.GetLocalDateTimeStrNull(DateTime.Now);
             foreach (DataRow r in dtRead.Rows)
             {
-                var sDate = r["Date"];
-                r["Date"] = Convert.ToDateTime(sDate); //转换日期
-                r["UpdateTime"] = timNow;
+                r["Date"] = DateTimeHelper.GetLocalDateStrNull(r["Date"]);//转换日期
+                r["UpdateTime"] = stimNow;
             }
-
+            
             using (var conn = new MySqlConnection(CustomConfig.ConnStrMain))
             {
                 conn.Open();
@@ -240,17 +240,17 @@ namespace WarehouseLaborEfficiencyBLL
             if (string.IsNullOrEmpty(bus) || 0 == string.Compare("all", bus, true))
             {
                 sql = string.Format(@"SELECT 
-                                          cast([Date] as char(10)) as [Date]
-                                          ,[Warehouse]
-                                          ,[Overall]
-                                          ,[System_Clerk]
-                                          ,[Inventory_Control]
-                                          ,[RTV_Scrap]
-                                          ,[Receiving]
-                                          ,[Shipping]
-                                          ,[Forklift_Driver]
-                                          ,[Total]
-                                    FROM [dbo].[V_Tbl_HCData]
+                                          cast(Date as char(10)) as Date
+                                          ,Warehouse
+                                          ,Overall
+                                          ,System_Clerk
+                                          ,Inventory_Control
+                                          ,RTV_Scrap
+                                          ,Receiving
+                                          ,Shipping
+                                          ,Forklift_Driver
+                                          ,Total
+                                    FROM V_Tbl_HCData
                                     order by Date
                                     "
                                     );
@@ -268,17 +268,17 @@ namespace WarehouseLaborEfficiencyBLL
                     sb.Remove(sb.Length - 1, 1);
                 }
                 sql = string.Format(@"SELECT 
-                                        cast([Date] as char(10)) as [Date]
-                                          ,[Warehouse]
-                                          ,[Overall]
-                                          ,[System_Clerk]
-                                          ,[Inventory_Control]
-                                          ,[RTV_Scrap]
-                                          ,[Receiving]
-                                          ,[Shipping]
-                                          ,[Forklift_Driver]
-                                          ,[Total]
-                                    FROM [dbo].[V_Tbl_HCData]
+                                        cast(Date as char(10)) as Date
+                                          ,Warehouse
+                                          ,Overall
+                                          ,System_Clerk
+                                          ,Inventory_Control
+                                          ,RTV_Scrap
+                                          ,Receiving
+                                          ,Shipping
+                                          ,Forklift_Driver
+                                          ,Total
+                                    FROM V_Tbl_HCData
                                     where Warehouse in ({0})
                                     order by Date
                                     ",
@@ -292,7 +292,7 @@ namespace WarehouseLaborEfficiencyBLL
                 return bys;
             }
             var dt = DataTableHelper.GetDataTable0(ds);
-            bys = NPOIExcelHelper.BuilderExcel(dt);
+            bys = NPOIExcelHelper.BuilderExcelWithDataType(dt);
             return bys;
         }
         #endregion

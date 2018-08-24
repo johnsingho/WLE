@@ -10,7 +10,8 @@ namespace Test
     {
         static UnitTest1()
         {
-            CustomConfig.ConnStrMain = "server=dmnnte801;user id=admin;password=dmn@1a2b3c4d;database=WarehouseLaborEfficiency;min pool size=4;max pool size=100;packet size=3072";
+            //CustomConfig.ConnStrMain = "server=dmnnte801;user id=admin;password=dmn@1a2b3c4d;database=WarehouseLaborEfficiency;min pool size=4;max pool size=100;packet size=3072";
+            CustomConfig.ConnStrMain = "Datasource=10.201.63.2;port=3306;Database=WarehouseLaborEfficiency;uid=eapp;pwd=eapp2018SQL;";
         }
 
         [TestMethod]
