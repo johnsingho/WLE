@@ -56,7 +56,7 @@ namespace WarehouseLaborEfficiencyWeb.Controllers
             {
                 obj.bok = false;
                 obj.msg = "数据有问题:"+ex.Message;
-                throw;
+                //throw;
             }
 
             if (null==lstData || 0 == lstData.Count)

@@ -123,6 +123,10 @@
                 "{}",
                 true,
                 function (result) {
+                    if (!result.bok) {
+                        BootstrapDialog.alert(result.msg);
+                        return;
+                    }
                     var warehouseList = result.data || [];
                     var weekdateList = result.extra || [];
                     $("#idSelBu").select2({
