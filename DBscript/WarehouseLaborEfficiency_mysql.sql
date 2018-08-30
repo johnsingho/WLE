@@ -199,10 +199,11 @@ SELECT id
 -- ==================================================
 USE `WarehouseLaborEfficiency`;
 
+drop function FN_Check_UserRight;
 
 DELIMITER $$
 USE `WarehouseLaborEfficiency`$$
-CREATE DEFINER = CURRENT_USER FUNCTION `FN_Check_UserRight`(`userAd` varchar(50), `rightID` int)
+CREATE FUNCTION `FN_Check_UserRight`(`userAd` varchar(50), `rightID` int)
 RETURNS int
 DETERMINISTIC
 BEGIN

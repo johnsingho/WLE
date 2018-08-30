@@ -1,5 +1,6 @@
 ﻿using Common.DotNetCode;
 using Common.DotNetExcel;
+using System;
 using System.Web;
 using System.Web.Mvc;
 using WarehouseLaborEfficiencyBLL;
@@ -44,11 +45,21 @@ namespace WarehouseLaborEfficiencyWeb.Controllers
             var obj = new TRes
             {
                 bok = true,
-                data = lstData,
-                extra = QueryHelper.GetWeekdateList(),
+                data = lstData
             };
 
-            if(null==lstData || 0 == lstData.Count)
+            try
+            {
+                obj.extra = QueryHelper.GetWeekdateList();
+            }
+            catch (Exception ex)
+            {
+                obj.bok = false;
+                obj.msg = "数据有问题:"+ex.Message;
+                throw;
+            }
+
+            if (null==lstData || 0 == lstData.Count)
             {
                 obj.bok = false;
                 obj.msg = "没有查询到数据";
@@ -59,17 +70,27 @@ namespace WarehouseLaborEfficiencyWeb.Controllers
         [HttpPost]
         public ActionResult QueryWeekData(string bu, string startDate, string endDate)
         {
-            var datWeek = QueryHelper.GetWeekData(bu, startDate, endDate);
             var obj = new TRes
             {
-                bok = true,
-                data = datWeek
+                bok = true
             };
-            if (null==datWeek.data || 0==datWeek.columns.Count)
+
+            try
+            {
+                var datWeek = QueryHelper.GetWeekData(bu, startDate, endDate);
+                obj.data = datWeek;
+                if (null == datWeek.data || 0 == datWeek.columns.Count)
+                {
+                    obj.bok = false;
+                    obj.msg = "没有查询到数据";
+                }
+            }
+            catch (Exception ex)
             {
                 obj.bok = false;
-                obj.msg = "没有查询到数据";
+                obj.msg = "数据有问题:" + ex.Message;
             }
+
             return Json(obj);
         }
         
