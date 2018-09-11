@@ -4,10 +4,33 @@
 
 @using WarehouseLaborEfficiencyWeb.DAL
 
+
+@section Styles{
+<style>
+.myUl {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 11px;
+}
+.myUl li { 
+    padding-left: 16px; 
+    line-height: 16px;
+}
+    .myUl li::before {
+        content: "•";
+        vertical-align:middle;
+        padding-right: 8px;
+        color: green;
+        font-size: 24px;
+        font-weight: 700;
+    }
+</style>
+}
 <div class="row InfoHead">
     <div class="col-md-9">
         <h2>
-            HC tabula
+            Headcount Position Distribution Monthly Trend
         </h2>
     </div>
 </div>
@@ -34,7 +57,7 @@
                 @if (CommonInfo.HasRight(TRightID.DOWNLOAD))
                 {
                     <button class="btn btn-info btn-sm" type="button" id="btnDownload">Download</button>
-                }                
+                }
             </div>
         </div>
     }
@@ -74,7 +97,7 @@
                         placeholder: "choose one or more warehouse...",
                         width: "55%"
                     });
-                    
+
                 });
 
             $('#frmQueryHCData').on('submit', function (e) {
@@ -110,14 +133,22 @@
             $("#btnQuery").click();
         }
         function CreateAChart(name) {
-            var chartHead = '<div class="wrapper" style="margin-top:18px;"><div class="row"><div id="idChart_';
-            var charTail = '" style="height:520px;"></div></div></div>';
-            return chartHead + name + charTail;
+            var chartHead = '<div class="wrapper" style="margin-top:18px;">';
+            var chartBegin = '<div class="row"><div id="idChart_';
+            var chartEnd = '" style="height:520px;"></div></div>';
+            var chartDesc = '<div class="row">'
+                                + '<ul class="myUl">'
+                                + '<li>Total = System Clerk+Receiving+Shipping+RTV & Scrap+Inventory Control+Overall.</li>'
+                                + '<li>Forklift Driver included in the Receiving and Shipping.</li>'
+                                + '</ul>'
+                            +'</div>';
+            var charTail = '</div>';
+            return chartHead + chartBegin + name + chartEnd + chartDesc + charTail;
         }
         function ViewCharts(items) {
             if (!items || 0 == items.Length) {
                 return;
-            }            
+            }
             var $cont = $('#idChartCont');
             $cont.empty();
             //chartHead += name;
@@ -126,7 +157,7 @@
                 $cont.append(CreateAChart(name));
             });
 
-            $.each(items, function (ind, val) {                
+            $.each(items, function (ind, val) {
                 RefreshChart(val.name, val.entry);
             });
         }
@@ -210,7 +241,7 @@
                 color: GetBarColors(),
                 title: {
                     text: name + "（G1-G7）",
-                    left: 'center'                
+                    left: 'center'
                 },
                 legend: {
                     data: cd.cols,
