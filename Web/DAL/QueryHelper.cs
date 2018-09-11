@@ -201,7 +201,7 @@ namespace WarehouseLaborEfficiencyWeb.DAL
 
             var qry = dt.AsEnumerable().Select(x=>new
             {
-                Date = x["Date"].ToString(),
+                Date = x["Date"].ToString().Substring(0,7), /*yyyy-MM*/
                 Warehouse = x["Warehouse"].ToString(),
                 Item = x[selKind].ToString()
             });
@@ -281,7 +281,7 @@ namespace WarehouseLaborEfficiencyWeb.DAL
                            select c
                            ).ToList().Select(c => new
                            {
-                               Date = DateTimeHelper.GetLocalDateStr(c.Date),
+                               Date = DateTimeHelper.GetLocalDateStr(c.Date).Substring(0, 7),/*yyyy-MM*/
                                c.System_Clerk,
                                c.Receiving,
                                c.Shipping,

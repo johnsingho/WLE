@@ -167,7 +167,8 @@
                                 'data': JSON.parse(resp.data.data)
                             };
                             RefreshTable(weekData);
-                            RefreshChart();
+                            var selBu = $("#idSelBu").val();
+                            RefreshChart(selBu);
                         } else {
                             EmptyTable();
                             EmptyChart(weekChart);
@@ -263,7 +264,7 @@
             });
             return objSels;
         }
-        function RefreshChart() {
+        function RefreshChart(selBu) {
             var chartData = MakeChartData();
             var xCols = MakexAxis(weekData.columns);
             var selKinds = MakeSelectedKinds(weekData.kinds);
@@ -276,7 +277,7 @@
                 },
                 color: GetMyChartColors(),
                 title: {
-                    text: 'Weekly Trend',
+                    text: 'Weekly Trend (' + selBu +')'
                 },
                 legend: {
                     data: weekData.kinds,
