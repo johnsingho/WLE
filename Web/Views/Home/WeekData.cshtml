@@ -40,9 +40,9 @@
 
 <div class="row InfoHead">
     <div class="col-md-9">
-        <h2>
+        <h3>
             Weekly Trend
-        </h2>
+        </h3>
     </div>
 </div>
 
@@ -52,7 +52,7 @@
 {
     <div class="row">
         <div class="col-md-3">
-            <span>WareHouse</span>
+            <span class="my-bigger">WareHouse</span>
             <span>
                 <select id="idSelBu" name="bu" required>
                     <option></option>
@@ -60,7 +60,7 @@
             </span>
         </div>
         <div class="col-md-3">
-            <span>Start Week</span>
+            <span class="my-bigger">Start Week</span>
             <span>
                 <select id="idSelStartWeek" name="startDate" required>
                     <option></option>
@@ -68,7 +68,7 @@
             </span>
         </div>
         <div class="col-md-3">
-            <span>End Week</span>
+            <span class="my-bigger">End Week</span>
             <span>
                 <select id="idSelEndWeek" name="endDate" required>
                     <option></option>
@@ -277,7 +277,7 @@
                 },
                 color: GetMyChartColors(),
                 title: {
-                    text: 'Weekly Trend (' + selBu +')'
+                    text: 'Weekly Trend(' + selBu + ')'
                 },
                 legend: {
                     data: weekData.kinds,

@@ -7,9 +7,9 @@
 
 .headTitle{
     color: #2aabd2 !important;
-    font-size: 22px;
+    font-size: 28px;
     font-family: 'Microsoft YaHei','Segoe UI', Tahoma, sans-serif;
-    font-weight: 800;
+    font-weight: 600;
 }
 
 header, footer, nav, section {
@@ -290,4 +290,6 @@ input[type="checkbox"].myCheck:disabled + .label-check{
     background-color: #5197D7;
 }
 
-
+.my-bigger{
+    font-size:1.1em;
+}
