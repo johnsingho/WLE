@@ -293,3 +293,8 @@ input[type="checkbox"].myCheck:disabled + .label-check{
 .my-bigger{
     font-size:1.1em;
 }
+
+.MVCGridContainer{
+    overflow:auto;
+}
+

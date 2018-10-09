@@ -57,7 +57,7 @@ namespace WarehouseLaborEfficiencyWeb.DAL
             var vUserState = UserState.GetInstance(_cook);
             if (!vUserState.IsLogin)
             {
-                return false; ;
+                return false;
             }
             var loginUser = vUserState.GetLoginUser();
             return SysUserInfo.HasRight(loginUser.AdName, nRightID);

@@ -59,6 +59,7 @@ namespace WarehouseLaborEfficiencyWeb.DAL
         {
             using (var context = new WarehouseLaborEffEntities())
             {
+                //暂不考虑排序
                 var users = from r in context.sys_roles
                             select new SelectListItem
                             {

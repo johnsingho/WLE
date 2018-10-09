@@ -1,0 +1,60 @@
+﻿@using MVCGrid.Web
+@using WarehouseLaborEfficiencyWeb.DAL;
+
+@{
+    ViewBag.Title = "ModifyHCData";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Scripts{
+    <script>
+        function DoDelete(id) {
+            if (!id) { return; }
+
+            var str = "确定要永久删除这条记录吗?"
+            BootstrapDialog.confirm(str, function (result) {
+                if (!result) {
+                    return;
+                }
+                var url = "@Url.Action("DeleteHCData", "Query")";
+                var para = { id: id };
+                AjaxPost(url,
+                    JSON.stringify(para),
+                    true,
+                    function (result) {
+                        if (!result.bok) {
+                            BootstrapDialog.alert(result.msg);
+                            return;
+                        } else {
+                            reloadRaw();
+                        }
+                    });
+            });
+        }
+    </script>
+}
+
+<div class="row InfoHead">
+    <div class="col-md-9">
+        <h3>
+            Modify HCData
+        </h3>
+    </div>
+</div>
+
+<div class="wrapper">
+    <div class="panel panel-default">
+        <div class="panel-body">
+            @Html.Partial("_MVCGridToolbar", new MVCGridToolbarModel()
+       {
+           MVCGridName = "HCDataGrid",
+           PageSize = true,
+           ColumnVisibility = false,
+           Export = false,
+           GlobalSearch = true
+       })
+            @Html.MVCGrid("HCDataGrid")
+        </div>
+    </div>
+
+</div>

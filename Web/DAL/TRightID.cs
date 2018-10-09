@@ -12,5 +12,6 @@ namespace WarehouseLaborEfficiencyWeb.DAL
         public static readonly int READONLY = 1;
         public static readonly int DOWNLOAD = 2;
         public static readonly int UPLOAD = 3;
+        public static readonly int MODIFY = 4;
     }
 }

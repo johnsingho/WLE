@@ -226,3 +226,26 @@ DELIMITER ;
 -- ----------------------------------
 SET FOREIGN_KEY_CHECKS = 1;
 
+
+-- ----------------------------------
+
+insert into sys_roles
+values ('57571823-CAEB-11E8-86C8-00505694FA5F',
+'数据编辑'
+);
+
+insert into sys_rights
+values(
+0,
+'数据编辑',
+null
+);
+
+insert into sys_role_right_conn
+values (
+0,
+'57571823-CAEB-11E8-86C8-00505694FA5F',
+4
+);
+
+

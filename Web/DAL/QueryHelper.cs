@@ -298,5 +298,88 @@ namespace WarehouseLaborEfficiencyWeb.DAL
         }
         #endregion
 
+        #region 数据编辑 
+        public static bool DeleteWeekData(int id, out string sErr)
+        {
+            sErr = string.Empty;
+            var bOk = false;
+            using (var mContext = new WarehouseLaborEffEntities())
+            {
+                var items = from p in mContext.tbl_weekdata
+                              where p.id == id
+                              select p;
+                if (items.Any())
+                {
+                    var obj = items.First();
+                    mContext.tbl_weekdata.Remove(obj);
+                    try
+                    {
+                        mContext.SaveChanges();
+                        bOk = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        sErr = ex.Message;
+                    }
+                }
+            }
+            return bOk;
+        }
+
+        public static bool DeleteMonthData(int id, out string sErr)
+        {
+            sErr = string.Empty;
+            var bOk = false;
+            using (var mContext = new WarehouseLaborEffEntities())
+            {
+                var items = from p in mContext.tbl_monthdata
+                            where p.id == id
+                            select p;
+                if (items.Any())
+                {
+                    var obj = items.First();
+                    mContext.tbl_monthdata.Remove(obj);
+                    try
+                    {
+                        mContext.SaveChanges();
+                        bOk = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        sErr = ex.Message;
+                    }
+                }
+            }
+            return bOk;
+        }
+        public static bool DeleteHCData(int id, out string sErr)
+        {
+            sErr = string.Empty;
+            var bOk = false;
+            using (var mContext = new WarehouseLaborEffEntities())
+            {
+                var items = from p in mContext.tbl_hcdata
+                            where p.id == id
+                            select p;
+                if (items.Any())
+                {
+                    var obj = items.First();
+                    mContext.tbl_hcdata.Remove(obj);
+                    try
+                    {
+                        mContext.SaveChanges();
+                        bOk = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        sErr = ex.Message;
+                    }
+                }
+            }
+            return bOk;
+        }
+
+        #endregion
+
     }
 }

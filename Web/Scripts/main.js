@@ -45,6 +45,16 @@ function reload() {
     window.location.reload(true);
 }
 
+function reloadRaw() {
+    var url = window.location.href;
+    var pos = url.indexOf('?');
+    if (pos >= 0) {
+        window.location.href = url.substring(0, pos);
+    } else {
+        reload();
+    }    
+}
+
 function ShowModalDlg(id, bShow) {
     if (bShow) {
         $(id).modal('show');

@@ -248,5 +248,46 @@ namespace WarehouseLaborEfficiencyWeb.Controllers
             return File(bys, ExcelType.XLSX_MIME, fn);
         }
 
+        #region 数据编辑         
+        [HttpPost]
+        public ActionResult DeleteWeekData(int id)
+        {
+            var sErr = string.Empty;
+            var bRet = QueryHelper.DeleteWeekData(id, out sErr);
+            var obj = new TRes
+            {
+                bok = bRet,
+                msg = sErr
+            };
+            return Json(obj);
+        }
+        [HttpPost]
+        public ActionResult DeleteMonthData(int id)
+        {
+            var sErr = string.Empty;
+            var bRet = QueryHelper.DeleteMonthData(id, out sErr);
+            var obj = new TRes
+            {
+                bok = bRet,
+                msg = sErr
+            };
+            return Json(obj);
+        }
+        [HttpPost]
+        public ActionResult DeleteHCData(int id)
+        {
+            var sErr = string.Empty;
+            var bRet = QueryHelper.DeleteHCData(id, out sErr);
+            var obj = new TRes
+            {
+                bok = bRet,
+                msg = sErr
+            };
+            return Json(obj);
+        }
+
+        #endregion
+
+
     }
 }
