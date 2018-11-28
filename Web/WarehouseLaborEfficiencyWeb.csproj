@@ -174,7 +174,6 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\QueryController.cs" />
-    <Compile Include="DAL\MVCGridToolbarModel.cs" />
     <Compile Include="DAL\CommonInfo.cs" />
     <Compile Include="DAL\QueryHelper.cs" />
     <Compile Include="DAL\SysUserInfo.cs" />
@@ -251,6 +250,10 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\jsgrid-theme.css" />
+    <Content Include="Content\jsgrid-theme.min.css" />
+    <Content Include="Content\jsgrid.css" />
+    <Content Include="Content\jsgrid.min.css" />
     <Content Include="Content\select2-bootstrap.min.css" />
     <Content Include="Content\select2.min.css" />
     <Content Include="favicon.ico" />
@@ -286,6 +289,8 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\jsgrid.js" />
+    <Content Include="Scripts\jsgrid.min.js" />
     <Content Include="Scripts\main.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Scripts\select2.min.js" />

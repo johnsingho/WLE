@@ -1,6 +1,7 @@
 ﻿using Common.DotNetCode;
 using Common.DotNetExcel;
 using System;
+using System.Collections.Generic;
 using System.Web;
 using System.Web.Mvc;
 using WarehouseLaborEfficiencyBLL;
@@ -93,7 +94,33 @@ namespace WarehouseLaborEfficiencyWeb.Controllers
 
             return Json(obj);
         }
-        
+
+        [HttpPost]
+        public ActionResult QueryWeekDataAll(string date, string warehouse)
+        {
+            var obj = new TRes
+            {
+                bok = true
+            };
+
+            try
+            {
+                var datWeek = QueryHelper.QueryWeekDataAll(date, warehouse);
+                obj.data = datWeek;
+                //if (0 == datWeek.Count)
+                //{
+                //    obj.bok = false;
+                //    obj.msg = "没有查询到数据";
+                //}
+            }
+            catch (Exception ex)
+            {
+                obj.bok = false;
+                obj.msg = "数据有问题:" + ex.Message;
+            }
+
+            return Json(obj);
+        }
         #endregion
 
         #region Month Data
@@ -132,6 +159,33 @@ namespace WarehouseLaborEfficiencyWeb.Controllers
             }
             return Json(obj);
         }
+
+        [HttpPost]
+        public ActionResult QueryMonthDataAll(string date, string warehouse)
+        {
+            var obj = new TRes
+            {
+                bok = true
+            };
+
+            try
+            {
+                var dat = QueryHelper.QueryMonthDataAll(date, warehouse);
+                obj.data = dat;
+                //if (0 == datWeek.Count)
+                //{
+                //    obj.bok = false;
+                //    obj.msg = "没有查询到数据";
+                //}
+            }
+            catch (Exception ex)
+            {
+                obj.bok = false;
+                obj.msg = "数据有问题:" + ex.Message;
+            }
+
+            return Json(obj);
+        }
         #endregion
 
         #region HCData        
@@ -152,6 +206,33 @@ namespace WarehouseLaborEfficiencyWeb.Controllers
             }
             return Json(obj);
         }
+
+        [HttpPost]
+        public ActionResult QueryHCDataAll(string date, string warehouse)
+        {
+            var obj = new TRes
+            {
+                bok = true
+            };
+
+            try
+            {
+                var dat = QueryHelper.QueryHCDataAll(date, warehouse);
+                obj.data = dat;
+                //if (0 == datWeek.Count)
+                //{
+                //    obj.bok = false;
+                //    obj.msg = "没有查询到数据";
+                //}
+            }
+            catch (Exception ex)
+            {
+                obj.bok = false;
+                obj.msg = "数据有问题:" + ex.Message;
+            }
+
+            return Json(obj);
+        }        
         #endregion
 
         [HttpPost]
@@ -250,10 +331,10 @@ namespace WarehouseLaborEfficiencyWeb.Controllers
 
         #region 数据编辑         
         [HttpPost]
-        public ActionResult DeleteWeekData(int id)
+        public ActionResult DeleteWeekData(IEnumerable<int> ids)
         {
             var sErr = string.Empty;
-            var bRet = QueryHelper.DeleteWeekData(id, out sErr);
+            var bRet = QueryHelper.DeleteWeekData(ids, out sErr);
             var obj = new TRes
             {
                 bok = bRet,
@@ -262,10 +343,10 @@ namespace WarehouseLaborEfficiencyWeb.Controllers
             return Json(obj);
         }
         [HttpPost]
-        public ActionResult DeleteMonthData(int id)
+        public ActionResult DeleteMonthData(IEnumerable<int> ids)
         {
             var sErr = string.Empty;
-            var bRet = QueryHelper.DeleteMonthData(id, out sErr);
+            var bRet = QueryHelper.DeleteMonthData(ids, out sErr);
             var obj = new TRes
             {
                 bok = bRet,
@@ -274,10 +355,10 @@ namespace WarehouseLaborEfficiencyWeb.Controllers
             return Json(obj);
         }
         [HttpPost]
-        public ActionResult DeleteHCData(int id)
+        public ActionResult DeleteHCData(IEnumerable<int> ids)
         {
             var sErr = string.Empty;
-            var bRet = QueryHelper.DeleteHCData(id, out sErr);
+            var bRet = QueryHelper.DeleteHCData(ids, out sErr);
             var obj = new TRes
             {
                 bok = bRet,

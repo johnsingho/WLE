@@ -10,6 +10,7 @@ namespace Common.DotNetCode
     /// By H.Z.XIN
     /// Modified:
     ///     2018-08-23 整理
+    ///     2018-11-28 add date equal
     /// 
     /// </summary>
     public class DateTimeHelper
@@ -32,7 +33,16 @@ namespace Common.DotNetCode
             if(null==dt || !dt.HasValue) { return string.Empty; }
             return dt.Value.ToString("yyyy-MM-dd");
         }
-        
+        public static bool EquStr(DateTime dt, string symd)
+        {
+            DateTime dtemp = default(DateTime);
+            DateTime.TryParse(symd, out dtemp);
+            return (dt.Year == dtemp.Year
+                    && dt.Month==dtemp.Month
+                    && dt.Day== dtemp.Day
+                );
+        }
+
         //用于可能是日期字符串的情况
         public static string GetLocalDateStrNull(object obj)
         {

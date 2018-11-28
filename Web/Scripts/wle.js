@@ -69,3 +69,45 @@ function DownloadMonthData(selKind) {
     url += $.param(para);
     parent.location.href = url;
 }
+
+
+function GridHelper(gridID) {
+    var self = this;
+
+    self.Warehouses = [
+        { name: 'Mech', value: "Mech" },
+        { name: 'PCBA B11', value: "PCBA B11" },
+        { name: 'PCBA B13', value: "PCBA B13" },
+        { name: 'PCBA B15', value: "PCBA B15" }
+    ];
+
+    self.GridID = gridID;
+    self.selectedItems = [];
+    self.selectItem = function (item) {
+        self.selectedItems.push(item);
+    };
+    self.hasSelected = function () {
+        return self.selectedItems && self.selectedItems.length>0;
+    };
+    self.unselectItem = function (item) {
+        self.selectedItems = $.grep(self.selectedItems, function (i) {
+            return i !== item;
+        });
+    };
+
+    self.deleteSelectedItems = function(cbDelete) {
+        if (!self.selectedItems.length) {
+            return;
+        }
+        cbDelete(self.selectedItems);
+        var $grid = $(self.GridID);
+        $grid.jsGrid("option", "pageIndex", 1);
+        $grid.jsGrid("loadData");
+        self.selectedItems = [];
+    };
+
+    self.refresh = function () {
+        var $grid = $(self.GridID);
+        $grid.jsGrid("reset");
+    };
+}

@@ -94,7 +94,7 @@ namespace WarehouseLaborEfficiencyWeb.DAL
                 return qry.ToList();
             }
         }
-        
+
         private static List<string> GetKinds()
         {
             var lst = new List<string>();
@@ -174,7 +174,49 @@ namespace WarehouseLaborEfficiencyWeb.DAL
             return res;
         }
 
-        
+        public static object QueryWeekDataAll(string date, string warehouse)
+        {
+            using (var db = new WarehouseLaborEffEntities())
+            {
+                var query = db.tbl_weekdata.AsQueryable();
+                IEnumerable<tbl_weekdata> enQ = null;
+                if (!string.IsNullOrEmpty(warehouse))
+                {
+                    query = from x in query
+                            where 0 == string.Compare(x.Warehouse, warehouse, true)
+                            select x;
+                }
+                if (!string.IsNullOrEmpty(date))
+                {
+                    enQ = from x in query.AsEnumerable()
+                            where DateTimeHelper.EquStr(x.Date, date)
+                            select x;
+                }else
+                {
+                    enQ = query.AsEnumerable();
+                }
+
+                var items = enQ.Select(x=>new
+                {
+                    id=x.id,
+                    Date = DateTimeHelper.GetLocalDateStr(x.Date),
+                    Warehouse=x.Warehouse,
+                    HC_FCST=x.HC_FCST,
+                    HC_Actual=x.HC_Actual,
+                    HC_Support=x.HC_Support,
+                    HC_Utilization=x.HC_Utilization.Value.ToString("F"),
+                    Case_ID_in=x.Case_ID_in,
+                    Case_ID_out=x.Case_ID_out,
+                    Pallet_In=x.Pallet_In,
+                    Pallet_Out=x.Pallet_Out,
+                    Jobs_Rec=x.Jobs_Rec,
+                    Jobs_Issue=x.Jobs_Issue,
+                    Reel_ID_Rec=x.Reel_ID_Rec
+                }).ToList();
+                return items;
+            }
+        }
+
         internal static TDatatables GetMonthData(string selKind)
         {
             var res = new TDatatables();
@@ -230,6 +272,49 @@ namespace WarehouseLaborEfficiencyWeb.DAL
             return res;
         }
 
+        public static object QueryMonthDataAll(string date, string warehouse)
+        {
+            using (var db = new WarehouseLaborEffEntities())
+            {
+                var query = db.tbl_monthdata.AsQueryable();
+                IEnumerable<tbl_monthdata> enQ = null;
+                if (!string.IsNullOrEmpty(warehouse))
+                {
+                    query = from x in query
+                            where 0 == string.Compare(x.Warehouse, warehouse, true)
+                            select x;
+                }
+                if (!string.IsNullOrEmpty(date))
+                {
+                    enQ = from x in query.AsEnumerable()
+                          where DateTimeHelper.EquStr(x.Date, date)
+                          select x;
+                }
+                else
+                {
+                    enQ = query.AsEnumerable();
+                }
+
+                var items = enQ.Select(x => new
+                {
+                    id = x.id,
+                    Date = DateTimeHelper.GetLocalDateStr(x.Date),
+                    Warehouse = x.Warehouse,
+                    HC_FCST = x.HC_FCST,
+                    HC_Actual = x.HC_Actual,
+                    HC_Support = x.HC_Support,
+                    HC_Utilization = x.HC_Utilization.Value.ToString("F"),
+                    Case_ID_in = x.Case_ID_in,
+                    Case_ID_out = x.Case_ID_out,
+                    Pallet_In = x.Pallet_In,
+                    Pallet_Out = x.Pallet_Out,
+                    Jobs_Rec = x.Jobs_Rec,
+                    Jobs_Issue = x.Jobs_Issue,
+                    Reel_ID_Rec = x.Reel_ID_Rec
+                }).ToList();
+                return items;
+            }
+        }
         #region HCData
         private static List<string> GetHCRows()
         {
@@ -250,6 +335,46 @@ namespace WarehouseLaborEfficiencyWeb.DAL
         {
             var buList = bus.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
             return GetHCDataAll(buList);
+        }
+        public static object QueryHCDataAll(string date, string warehouse)
+        {
+            using (var db = new WarehouseLaborEffEntities())
+            {
+                var query = db.tbl_hcdata.AsQueryable();
+                IEnumerable<tbl_hcdata> enQ = null;
+                if (!string.IsNullOrEmpty(warehouse))
+                {
+                    query = from x in query
+                            where 0 == string.Compare(x.Warehouse, warehouse, true)
+                            select x;
+                }
+                if (!string.IsNullOrEmpty(date))
+                {
+                    enQ = from x in query.AsEnumerable()
+                          where DateTimeHelper.EquStr(x.Date, date)
+                          select x;
+                }
+                else
+                {
+                    enQ = query.AsEnumerable();
+                }
+
+                var items = enQ.Select(x => new
+                {
+                    id = x.id,
+                    Date = DateTimeHelper.GetLocalDateStr(x.Date),
+                    Warehouse = x.Warehouse,
+                    Overall = x.Overall,
+                    System_Clerk = x.System_Clerk,
+                    Inventory_Control = x.Inventory_Control,
+                    RTV_Scrap = x.RTV_Scrap,
+                    Receiving = x.Receiving,
+                    Shipping = x.Shipping,
+                    Forklift_Driver = x.Forklift_Driver,
+                    Total = x.Total
+                }).ToList();
+                return items;
+            }
         }
 
         private static List<TMapDatatables> GetHCDataAll(string[] buList)
@@ -299,19 +424,20 @@ namespace WarehouseLaborEfficiencyWeb.DAL
         #endregion
 
         #region 数据编辑 
-        public static bool DeleteWeekData(int id, out string sErr)
+        public static bool DeleteWeekData(IEnumerable<int> ids, out string sErr)
         {
             sErr = string.Empty;
             var bOk = false;
             using (var mContext = new WarehouseLaborEffEntities())
             {
                 var items = from p in mContext.tbl_weekdata
-                              where p.id == id
+                              where ids.Contains(p.id)
                               select p;
                 if (items.Any())
                 {
-                    var obj = items.First();
-                    mContext.tbl_weekdata.Remove(obj);
+                    mContext.tbl_weekdata.RemoveRange(items);
+                    //var obj = items.First();
+                    //mContext.tbl_weekdata.Remove(obj);
                     try
                     {
                         mContext.SaveChanges();
@@ -322,23 +448,26 @@ namespace WarehouseLaborEfficiencyWeb.DAL
                         sErr = ex.Message;
                     }
                 }
+                else
+                {
+                    sErr = "数据已删除";
+                }
             }
             return bOk;
         }
 
-        public static bool DeleteMonthData(int id, out string sErr)
+        public static bool DeleteMonthData(IEnumerable<int> ids, out string sErr)
         {
             sErr = string.Empty;
             var bOk = false;
             using (var mContext = new WarehouseLaborEffEntities())
             {
                 var items = from p in mContext.tbl_monthdata
-                            where p.id == id
+                            where ids.Contains(p.id)
                             select p;
                 if (items.Any())
                 {
-                    var obj = items.First();
-                    mContext.tbl_monthdata.Remove(obj);
+                    mContext.tbl_monthdata.RemoveRange(items);
                     try
                     {
                         mContext.SaveChanges();
@@ -349,22 +478,25 @@ namespace WarehouseLaborEfficiencyWeb.DAL
                         sErr = ex.Message;
                     }
                 }
+                else
+                {
+                    sErr = "数据已删除";
+                }
             }
             return bOk;
         }
-        public static bool DeleteHCData(int id, out string sErr)
+        public static bool DeleteHCData(IEnumerable<int> ids, out string sErr)
         {
             sErr = string.Empty;
             var bOk = false;
             using (var mContext = new WarehouseLaborEffEntities())
             {
                 var items = from p in mContext.tbl_hcdata
-                            where p.id == id
+                            where ids.Contains(p.id)
                             select p;
                 if (items.Any())
                 {
-                    var obj = items.First();
-                    mContext.tbl_hcdata.Remove(obj);
+                    mContext.tbl_hcdata.RemoveRange(items);
                     try
                     {
                         mContext.SaveChanges();
@@ -374,6 +506,10 @@ namespace WarehouseLaborEfficiencyWeb.DAL
                     {
                         sErr = ex.Message;
                     }
+                }
+                else
+                {
+                    sErr = "数据已删除";
                 }
             }
             return bOk;

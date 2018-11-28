@@ -47,6 +47,17 @@ namespace WarehouseLaborEfficiencyWeb
                         .Include("~/Scripts/wle.js")
                         );
 
+            bundles.Add(new ScriptBundle("~/bundles/jsgrid")
+                //.Include("~/Scripts/jsgrid.js")
+                .Include("~/Scripts/jsgrid.min.js")
+            );
+            bundles.Add(new StyleBundle("~/Content/jsgrid")
+                //.Include("~/Content/jsgrid.css")
+                //.Include("~/Content/jsgrid-theme.css")
+                .Include("~/Content/jsgrid.min.css") //for release
+                .Include("~/Content/jsgrid-theme.min.css") //for release
+            );
+
         }
     }
 }

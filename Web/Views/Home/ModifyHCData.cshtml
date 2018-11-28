@@ -1,36 +1,113 @@
-﻿@using MVCGrid.Web
-@using WarehouseLaborEfficiencyWeb.DAL;
+﻿@using WarehouseLaborEfficiencyWeb.DAL;
 
 @{
     ViewBag.Title = "ModifyHCData";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+@Styles.Render("~/Content/jsgrid")
+@Scripts.Render("~/bundles/jsgrid")
+
 
 @section Scripts{
     <script>
-        function DoDelete(id) {
-            if (!id) { return; }
-
-            var str = "确定要永久删除这条记录吗?"
-            BootstrapDialog.confirm(str, function (result) {
-                if (!result) {
-                    return;
-                }
-                var url = "@Url.Action("DeleteHCData", "Query")";
-                var para = { id: id };
-                AjaxPost(url,
-                    JSON.stringify(para),
-                    true,
-                    function (result) {
-                        if (!result.bok) {
-                            BootstrapDialog.alert(result.msg);
-                            return;
-                        } else {
-                            reloadRaw();
-                        }
-                    });
+        var gridHelper = null;
+        function DeleteItems(items) {
+            var url = "@Url.Action("DeleteHCData", "Query")";
+            var ids = [];
+            items.forEach(function (it) {
+                ids.push(it.id);
             });
+            var para = { ids: ids};
+            AjaxPost(url,
+                JSON.stringify(para),
+                true,
+                function (result) {
+                    if (!result.bok) {
+                        BootstrapDialog.alert(result.msg);
+                        return;
+                    } else {
+                        reloadRaw();
+                        //gridHelper.refresh();
+                    }
+                });
         }
+
+        $(function () {
+            gridHelper = new GridHelper("#gridHCData");
+            var warehouses = gridHelper.Warehouses.slice(0);
+            warehouses.unshift({ name: "All", value: "" });
+            var $gridHCData = $("#gridHCData").jsGrid({
+                height: "auto",
+                width: "100%",
+                inserting: false,
+                editing: false,
+                sorting: true,
+                filtering: true,
+                paging: true,
+                pageSize: 15,
+                pageButtonCount: 5,
+                autoload: true,
+                controller: {
+                    loadData: function(filter) {
+                        var d = $.Deferred();
+                        var surl = "@Url.Action("QueryHCDataAll", "Query")";
+                        var para = {};
+                        if (null != filter) {
+                            para.Date = filter.Date;
+                            para.Warehouse = filter.Warehouse;
+                        }
+                        AjaxPost(surl,
+                            JSON.stringify(para),
+                            true,
+                            function (resp) {
+                                var dat = resp.data;
+                                d.resolve(dat);
+                            });
+                        return d.promise();
+                    }
+                },
+                fields: [
+                    {
+                        headerTemplate: function () {
+                            return $("<button>").attr("type", "button").text("Delete").addClass("btn btn-danger btn-sm")
+                                    .on("click", function () {
+                                        if (!gridHelper.hasSelected()) {
+                                            BootstrapDialog.alert("没有选择记录!");
+                                            return;
+                                        }
+                                        BootstrapDialog.confirm("确定要永久删除所选记录吗?", function (result) {
+                                            if (!result) {
+                                                return;
+                                            }
+                                            gridHelper.deleteSelectedItems(DeleteItems);
+                                        });
+                                    });
+                        },
+                        itemTemplate: function (_, item) {
+                            return $("<input>").attr("type", "checkbox")
+                                    .prop("checked", $.inArray(item, gridHelper.selectedItems) > -1)
+                                    .on("change", function () {
+                                        $(this).is(":checked") ? gridHelper.selectItem(item) : gridHelper.unselectItem(item);
+                                    });
+                        },
+                        align: "center",
+                        width: 80
+                    },
+                    { name: "id", type: "number", readOnly: true, filtering: false, visible:false},
+                    { name: "Date", type: "text", width:100 },
+                    { name: "Warehouse", type: "select", items: warehouses, textField: "name", valueField: "value", selectedIndex:-1, width:100},
+                    { name: "Overall", type: "number", readOnly: true, filtering: false },
+                    { name: "System_Clerk", type: "number", readOnly: true, filtering: false },
+                    { name: "Inventory_Control", type: "number", readOnly: true, filtering: false,width:140},
+                    { name: "RTV_Scrap", type: "number", readOnly: true, filtering: false },
+                    { name: "Receiving", type: "number", readOnly: true, filtering: false },
+                    { name: "Shipping", type: "number", readOnly: true, filtering: false },
+                    { name: "Forklift_Driver", type: "number", readOnly: true, filtering: false },
+                    { name: "Total", type: "number", readOnly: true, filtering: false }
+                ]
+            });
+        });
+
     </script>
 }
 
@@ -45,15 +122,7 @@
 <div class="wrapper">
     <div class="panel panel-default">
         <div class="panel-body">
-            @Html.Partial("_MVCGridToolbar", new MVCGridToolbarModel()
-       {
-           MVCGridName = "HCDataGrid",
-           PageSize = true,
-           ColumnVisibility = false,
-           Export = false,
-           GlobalSearch = true
-       })
-            @Html.MVCGrid("HCDataGrid")
+            <div id="gridHCData"></div>
         </div>
     </div>
 
