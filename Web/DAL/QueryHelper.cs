@@ -24,9 +24,9 @@ namespace WarehouseLaborEfficiencyWeb.DAL
         
         public class TDatatables
         {
-            public List<TColEntry> columns { get; set; }
-            public object data { get; set; }            
-            public List<string> kinds { get; set; }
+            public IList<TColEntry> columns { get; set; }
+            public object data { get; set; }
+            public IList<string> kinds { get; set; }
         }
         public class TColEntry
         {
@@ -421,6 +421,97 @@ namespace WarehouseLaborEfficiencyWeb.DAL
          
             return res;
         }
+        #endregion
+
+        #region HCRate
+        private static List<string> GetHCRateKinds()
+        {
+            var lst = new List<string>();
+            lst.Add("System_Clerk");
+            lst.Add("Receiving");
+            lst.Add("Shipping");
+            lst.Add("RTV_Scrap");
+            lst.Add("Inventory_Control");
+            lst.Add("Overall");
+            //lst.Add("Forklift_Driver");
+
+            return lst;
+        }
+
+        public static List<TMapDatatables> QueryHCRate(string bus)
+        {
+            var buList = bus.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            return QueryHCRateAll(buList);
+        }
+        private static List<TMapDatatables> QueryHCRateAll(string[] buList)
+        {
+            var items = new List<TMapDatatables>();
+            if (null == buList || 0 == buList.Length) { return items; }
+            foreach (var bu in buList)
+            {
+                items.Add(new TMapDatatables
+                {
+                    name = bu,
+                    entry = GetHCRateBu(bu)
+                }
+                );
+            }
+            return items;
+        }
+
+        private static string Float2Str(float? f)
+        {
+            if (!f.HasValue) { return "0"; }
+            return f.Value.ToString("F");
+        }
+        private static TDatatables GetHCRateBu(string bu)
+        {
+            var res = new TDatatables();
+            res.kinds = GetHCRateKinds();
+
+            using (var context = new WarehouseLaborEffEntities())
+            {
+                var qry = (from c in context.v_tbl_hcdata_rate
+                           where 0 == string.Compare(c.Warehouse, bu, true)
+                           orderby c.Date
+                           select c
+                           ).AsEnumerable().Select(c => new
+                           {
+                               Date = DateTimeHelper.GetLocalDateStr(c.Date).Substring(0, 7),/*yyyy-MM*/
+                               c.System_Clerk,
+                               c.Receiving,
+                               c.Shipping,
+                               c.RTV_Scrap,
+                               c.Inventory_Control,
+                               c.Overall
+                           });
+                //var dat = qry.ToList();
+                res.columns = (from x in qry
+                               select new TColEntry(x.Date, x.Date)
+                              ).ToList();
+
+                var dic = new Dictionary<string, List<string>>();
+                List<string> lst = null;
+                lst = (from x in qry select Float2Str(x.System_Clerk)).ToList();
+                dic.Add("System_Clerk", lst);
+                lst = (from x in qry select Float2Str(x.Receiving)).ToList();
+                dic.Add("Receiving", lst);
+                lst = (from x in qry select Float2Str(x.Shipping)).ToList();
+                dic.Add("Shipping", lst);
+                lst = (from x in qry select Float2Str(x.RTV_Scrap)).ToList();
+                dic.Add("RTV_Scrap", lst);
+                lst = (from x in qry select Float2Str(x.Inventory_Control)).ToList();
+                dic.Add("Inventory_Control", lst);
+                lst = (from x in qry select Float2Str(x.Overall)).ToList();
+                dic.Add("Overall", lst);
+
+                res.data = dic;
+            }
+
+            return res;
+        }
+        
+
         #endregion
 
         #region 数据编辑 

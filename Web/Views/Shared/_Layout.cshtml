@@ -24,6 +24,15 @@
         .navbar-right {
             margin-right: -55px;
         }
+        .nav > li > a {
+            padding-left: 8px;
+            padding-right: 10px;            
+        }
+        @@media (min-width: 768px){
+            .navbar-my>.container .navbar-brand {
+                margin-left: -110px;
+            }
+        }
     </style>
 
 </head>
@@ -47,6 +56,7 @@
                         <li>@Html.ActionLink("Weekly Trend", "WeekData", "Home")</li>
                         <li>@Html.ActionLink("Monthly Trend", "MonthData", "Home")</li>
                         <li>@Html.ActionLink("HC & Position", "HCData", "Home")</li>
+                        <li>@Html.ActionLink("HC Rate", "HCRate", "Home")</li>
                         if (CommonInfo.HasRight(TRightID.UPLOAD))
                         {
                             <li><a href="#" onclick="ShowUploadDlg(true)"><i class="fa fa-upload fa-fw"></i>上传数据</a></li>

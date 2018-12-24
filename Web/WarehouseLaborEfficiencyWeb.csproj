@@ -181,6 +181,9 @@
     <Compile Include="DAL\CommodityRecvHelper.cs" />
     <Compile Include="DAL\TRes.cs" />
     <Compile Include="DAL\TRightID.cs" />
+    <Compile Include="Database\v_tbl_hcdata_rate.cs">
+      <DependentUpon>warehouselaborefficiency.tt</DependentUpon>
+    </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -329,6 +332,7 @@
     <Content Include="Views\Home\ModifyHCData.cshtml" />
     <Content Include="Views\Home\ModifyWeekData.cshtml" />
     <Content Include="Views\Home\ModifyMonthData.cshtml" />
+    <Content Include="Views\Home\HCRate.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

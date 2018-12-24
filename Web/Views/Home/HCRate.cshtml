@@ -1,0 +1,227 @@
+﻿@{
+    ViewBag.Title = "HeadCost Rate";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using WarehouseLaborEfficiencyWeb.DAL
+
+<div class="row InfoHead">
+    <div class="col-md-9">
+        <h3>
+            @ViewBag.Title
+        </h3>
+    </div>
+</div>
+
+
+<div class="wrapper">
+    @using (Html.BeginForm("QueryHCRate", "Query",
+                                   FormMethod.Post, new { @id = "frmQueryHCRate" }))
+    {
+        <div class="row">
+            <div class="col-md-8">
+                <span class="my-bigger">WareHouse</span>
+                <span>
+                    <select id="idSelBu" required multiple>
+                        @*<option></option>*@
+                    </select>
+                    @Html.Hidden("warehouses")
+                </span>
+            </div>
+            <div class="col-md-4">
+                @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                <button class="btn btn-info btn-sm" type="submit" id="btnQuery">Query</button>
+                <button class="btn btn-info btn-sm" type="button" id="btnQueryAll">Query All</button>
+                @*@if (CommonInfo.HasRight(TRightID.DOWNLOAD))
+                {
+                    <button class="btn btn-info btn-sm" type="button" id="btnDownload">Download</button>
+                }*@
+            </div>
+        </div>
+    }
+</div>
+
+<div class="container" id="idChartCont" style="width: 1200px;margin-left: -40px;">
+</div>
+
+
+
+@section Scripts{
+    <script>
+        $(function () {
+            InitData();
+            setTimeout(function () {
+                DoQueryAll();
+            }, 800);
+        });
+
+        function InitData() {
+            $("#frmQueryHCRate").validate();
+            //$("#btnDownload").click(function () {
+            //    DownloadData('HCRate', $("#frmQueryHCRate"));
+            //});
+            $("#btnQueryAll").click(function () {
+                DoQueryAll();
+            });
+
+            var url = "@Url.Action("GetWarehouseInfo", "Query")";
+            AjaxPost(url,
+                "{}",
+                true,
+                function (result) {
+                    var warehouseList = result.data || [];
+                    $("#idSelBu").select2({
+                        data: warehouseList,
+                        placeholder: "choose one or more warehouse...",
+                        width: "55%"
+                    });
+                });
+
+            $('#frmQueryHCRate').on('submit', function (e) {
+                if (e.isDefaultPrevented()) {
+                    //invalid
+                    return false;
+                } else {
+                    var url = $(this).attr("action");
+                    $('#warehouses').val(GetSelect2SelMulti($('#idSelBu')));
+                    AjaxPostForm(url, '#frmQueryHCRate', true, function (resp) {
+                        if (resp.bok) {
+                            ViewCharts(resp.data);
+                        } else {
+                            BootstrapDialog.alert("查询失败:<br>" + resp.msg);
+                        }
+                    },
+                    undefined,
+                    function () {
+                        showBusyLoading(true);
+                    },
+                    function () {
+                        showBusyLoading(false);
+                    });
+                }
+                return false;
+            });
+        }
+
+        function DoQueryAll() {
+            var $ctlSelBu = $('#idSelBu');
+            $ctlSelBu.find('option').prop('selected', 'selected');
+            $ctlSelBu.trigger('change');
+            $("#btnQuery").click();
+        }
+        function CreateAChart(name) {
+            var chartHead = '<div class="wrapper" style="margin-top:18px;">';
+            var chartBegin = '<div class="row"><div id="idChart_';
+            var chartEnd = '" style="height:520px;"></div></div>';
+            var chartDesc = '';
+            var charTail = '</div>';
+            return chartHead + chartBegin + name + chartEnd + chartDesc + charTail;
+        }
+        function ViewCharts(items) {
+            if (!items || 0 == items.Length) {
+                return;
+            }
+            var $cont = $('#idChartCont');
+            $cont.empty();
+            //chartHead += name;
+            $.each(items, function (ind, val) {
+                var name = val.name;
+                $cont.append(CreateAChart(name));
+            });
+
+            $.each(items, function (ind, val) {
+                RefreshChart(val.name, val.entry);
+            });
+        }
+
+        function GetBarColors() {
+            return [
+                '#c23531', '#2f4554', '#61a0a8',
+                '#d48265', '#91c7ae', '#FFCC00',
+                '#0D29F2'
+            ];
+        }
+
+        function MakeChartData(itemData) {
+            var chartData = [];
+            var cols = [];
+            var details = itemData.data;
+
+            $.each(itemData.columns, function(index, value) {
+                cols.push(value.title);
+            });
+
+            $.each(itemData.kinds, function (index, value) {
+                var partName = value;
+                var serialPart = {
+                    name: partName,
+                    type: 'bar',
+                    stack: 'Total',
+                    label: {
+                        normal: {
+                            show: true,
+                            position: 'insideRight',
+                            formatter: '{c}%'
+                        },                        
+                    },
+                    data: itemData.data[partName]
+                };
+                chartData.push(serialPart);
+            });
+
+            return {
+                'cols': cols,
+                'kinds': itemData.kinds,
+                'charData': chartData
+            }
+        }
+        function RefreshChart(name, itemData) {
+            var cd = MakeChartData(itemData);
+
+            var option = {
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                        type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                    }
+                },
+                title: {
+                    text: name + " (G1-G7)",
+                    textStyle: {
+                        fontSize: 16
+                    },
+                    left: 'center'
+                },
+                color: GetBarColors(),
+                legend: {
+                    data: cd.kinds,
+                    top:'25px',
+                },
+                grid: {
+                    left: '1%',
+                    right: '1%',
+                    bottom: '2%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'value',
+                    max: 105,
+                },
+                yAxis: {
+                    type: 'category',
+                    data: cd.cols,
+                    offset: '4',
+                    axisLabel: {
+                        rotate:'25',
+                    }
+                },
+                series: cd.charData
+            };
+
+            var weekChart = echarts.init(document.getElementById("idChart_"+name));
+            weekChart.setOption(option);
+        }
+
+    </script>
+}
+

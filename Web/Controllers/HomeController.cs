@@ -35,6 +35,15 @@ namespace WarehouseLaborEfficiencyWeb.Controllers
             }
             return View();
         }
+
+        public ActionResult HCRate()
+        {
+            if (!CommonInfo.IsLogin())
+            {
+                return RedirectToAction("Signin", "Login");
+            }
+            return View();
+        }
         #endregion
 
         #region 数据编辑

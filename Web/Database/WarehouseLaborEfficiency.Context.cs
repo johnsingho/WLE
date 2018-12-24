@@ -36,6 +36,7 @@ namespace WarehouseLaborEfficiencyWeb.Database
         public virtual DbSet<tbl_monthdata> tbl_monthdata { get; set; }
         public virtual DbSet<tbl_weekdata> tbl_weekdata { get; set; }
         public virtual DbSet<v_tbl_hcdata> v_tbl_hcdata { get; set; }
+        public virtual DbSet<v_tbl_hcdata_rate> v_tbl_hcdata_rate { get; set; }
         public virtual DbSet<v_tbl_monthdata> v_tbl_monthdata { get; set; }
         public virtual DbSet<v_tbl_weekdata> v_tbl_weekdata { get; set; }
         public virtual DbSet<v_user_rights> v_user_rights { get; set; }

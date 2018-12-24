@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="WarehouseLaborEffModel.Store" Provider="MySql.Data.MySqlClient" ProviderManifestToken="8.0" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="WarehouseLaborEffModel.Store" Provider="MySql.Data.MySqlClient" ProviderManifestToken="8.0" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="sys_rights">
           <Key>
             <PropertyRef Name="id" />
@@ -140,6 +140,23 @@ warning 6002: The table/view 'def.warehouselaborefficiency.v_tbl_hcdata' does no
           <Property Name="Total" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
+warning 6002: The table/view 'def.warehouselaborefficiency.v_tbl_hcdata_rate' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="v_tbl_hcdata_rate">
+          <Key>
+            <PropertyRef Name="id" />
+            <PropertyRef Name="Date" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" />
+          <Property Name="Date" Type="date" Nullable="false" />
+          <Property Name="Warehouse" Type="varchar" MaxLength="50" />
+          <Property Name="Overall" Type="float" />
+          <Property Name="System_Clerk" Type="float" />
+          <Property Name="Inventory_Control" Type="float" />
+          <Property Name="RTV_Scrap" Type="float" />
+          <Property Name="Receiving" Type="float" />
+          <Property Name="Shipping" Type="float" />
+        </EntityType>
+        <!--Errors Found During Generation:
 warning 6002: The table/view 'def.warehouselaborefficiency.v_tbl_monthdata' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="v_tbl_monthdata">
           <Key>
@@ -204,6 +221,8 @@ warning 6002: The table/view 'def.warehouselaborefficiency.v_user_rights' does n
           <Property Name="RightName" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="RightContent" Type="varchar" MaxLength="300" />
         </EntityType>
+        
+        
         <EntityContainer Name="WarehouseLaborEffModelStoreContainer">
           <EntitySet Name="sys_rights" EntityType="Self.sys_rights" Schema="warehouselaborefficiency" store:Type="Tables" />
           <EntitySet Name="sys_role_right_conn" EntityType="Self.sys_role_right_conn" Schema="warehouselaborefficiency" store:Type="Tables" />
@@ -229,6 +248,19 @@ warning 6002: The table/view 'def.warehouselaborefficiency.v_user_rights' does n
 `v_tbl_hcdata`.`Forklift_Driver`, 
 `v_tbl_hcdata`.`Total`
 FROM `v_tbl_hcdata` AS `v_tbl_hcdata`</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="v_tbl_hcdata_rate" EntityType="Self.v_tbl_hcdata_rate" store:Type="Views" store:Schema="warehouselaborefficiency">
+            <DefiningQuery>SELECT
+`v_tbl_hcdata_rate`.`id`, 
+`v_tbl_hcdata_rate`.`Date`, 
+`v_tbl_hcdata_rate`.`Warehouse`, 
+`v_tbl_hcdata_rate`.`Overall`, 
+`v_tbl_hcdata_rate`.`System_Clerk`, 
+`v_tbl_hcdata_rate`.`Inventory_Control`, 
+`v_tbl_hcdata_rate`.`RTV_Scrap`, 
+`v_tbl_hcdata_rate`.`Receiving`, 
+`v_tbl_hcdata_rate`.`Shipping`
+FROM `v_tbl_hcdata_rate` AS `v_tbl_hcdata_rate`</DefiningQuery>
           </EntitySet>
           <EntitySet Name="v_tbl_monthdata" EntityType="Self.v_tbl_monthdata" store:Type="Views" store:Schema="warehouselaborefficiency">
             <DefiningQuery>SELECT
@@ -279,17 +311,33 @@ FROM `v_tbl_weekdata` AS `v_tbl_weekdata`</DefiningQuery>
 FROM `v_user_rights` AS `v_user_rights`</DefiningQuery>
           </EntitySet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="WarehouseLaborEffModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="WarehouseLaborEffEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="sys_rights" EntityType="WarehouseLaborEffModel.sys_rights" />
+          <EntitySet Name="sys_role_right_conn" EntityType="WarehouseLaborEffModel.sys_role_right_conn" />
+          <EntitySet Name="sys_roles" EntityType="WarehouseLaborEffModel.sys_roles" />
+          <EntitySet Name="sys_user" EntityType="WarehouseLaborEffModel.sys_user" />
+          <EntitySet Name="sys_user_role_conn" EntityType="WarehouseLaborEffModel.sys_user_role_conn" />
+          <EntitySet Name="task_log" EntityType="WarehouseLaborEffModel.task_log" />
+          <EntitySet Name="tbl_bu" EntityType="WarehouseLaborEffModel.tbl_bu" />
+          <EntitySet Name="tbl_hcdata" EntityType="WarehouseLaborEffModel.tbl_hcdata" />
+          <EntitySet Name="tbl_monthdata" EntityType="WarehouseLaborEffModel.tbl_monthdata" />
+          <EntitySet Name="tbl_weekdata" EntityType="WarehouseLaborEffModel.tbl_weekdata" />
+          <EntitySet Name="v_tbl_hcdata" EntityType="WarehouseLaborEffModel.v_tbl_hcdata" />
+          <EntitySet Name="v_tbl_hcdata_rate" EntityType="WarehouseLaborEffModel.v_tbl_hcdata_rate" />
+          <EntitySet Name="v_tbl_monthdata" EntityType="WarehouseLaborEffModel.v_tbl_monthdata" />
+          <EntitySet Name="v_tbl_weekdata" EntityType="WarehouseLaborEffModel.v_tbl_weekdata" />
+          <EntitySet Name="v_user_rights" EntityType="WarehouseLaborEffModel.v_user_rights" />
+        </EntityContainer>
         <EntityType Name="sys_rights">
           <Key>
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="RightName" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="RightName" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="RightContent" Type="String" MaxLength="300" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="sys_role_right_conn">
@@ -297,24 +345,24 @@ FROM `v_user_rights` AS `v_user_rights`</DefiningQuery>
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="RefRoleID" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="RefRoleID" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="RefRightID" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="sys_roles">
           <Key>
             <PropertyRef Name="id" />
           </Key>
-          <Property Name="id" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="RoleName" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="id" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="RoleName" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="sys_user">
           <Key>
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ADAccount" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="FullName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="Email" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="ADAccount" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="FullName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Email" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="LastLogon" Type="DateTime" />
           <Property Name="IsValid" Type="Boolean" Nullable="false" />
           <Property Name="IsAdmin" Type="Boolean" Nullable="false" />
@@ -325,7 +373,7 @@ FROM `v_user_rights` AS `v_user_rights`</DefiningQuery>
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="RefUserID" Type="Int32" Nullable="false" />
-          <Property Name="RefRoleID" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="RefRoleID" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="task_log">
           <Key>
@@ -416,6 +464,21 @@ FROM `v_user_rights` AS `v_user_rights`</DefiningQuery>
           <Property Name="Forklift_Driver" Type="Int32" />
           <Property Name="Total" Type="Int32" />
         </EntityType>
+        <EntityType Name="v_tbl_hcdata_rate">
+          <Key>
+            <PropertyRef Name="id" />
+            <PropertyRef Name="Date" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="Date" Type="DateTime" Nullable="false" />
+          <Property Name="Warehouse" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Overall" Type="Single" />
+          <Property Name="System_Clerk" Type="Single" />
+          <Property Name="Inventory_Control" Type="Single" />
+          <Property Name="RTV_Scrap" Type="Single" />
+          <Property Name="Receiving" Type="Single" />
+          <Property Name="Shipping" Type="Single" />
+        </EntityType>
         <EntityType Name="v_tbl_monthdata">
           <Key>
             <PropertyRef Name="id" />
@@ -467,30 +530,14 @@ FROM `v_user_rights` AS `v_user_rights`</DefiningQuery>
             <PropertyRef Name="RightName" />
           </Key>
           <Property Name="UserID" Type="Int32" Nullable="false" />
-          <Property Name="ADAccount" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="FullName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="Email" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="ADAccount" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="FullName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Email" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="IsAdmin" Type="Boolean" Nullable="false" />
           <Property Name="RightID" Type="Int32" Nullable="false" />
-          <Property Name="RightName" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="RightName" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="RightContent" Type="String" MaxLength="300" FixedLength="false" Unicode="false" />
         </EntityType>
-        <EntityContainer Name="WarehouseLaborEffEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="sys_rights" EntityType="Self.sys_rights" />
-          <EntitySet Name="sys_role_right_conn" EntityType="Self.sys_role_right_conn" />
-          <EntitySet Name="sys_roles" EntityType="Self.sys_roles" />
-          <EntitySet Name="sys_user" EntityType="Self.sys_user" />
-          <EntitySet Name="sys_user_role_conn" EntityType="Self.sys_user_role_conn" />
-          <EntitySet Name="task_log" EntityType="Self.task_log" />
-          <EntitySet Name="tbl_bu" EntityType="Self.tbl_bu" />
-          <EntitySet Name="tbl_hcdata" EntityType="Self.tbl_hcdata" />
-          <EntitySet Name="tbl_monthdata" EntityType="Self.tbl_monthdata" />
-          <EntitySet Name="tbl_weekdata" EntityType="Self.tbl_weekdata" />
-          <EntitySet Name="v_tbl_hcdata" EntityType="Self.v_tbl_hcdata" />
-          <EntitySet Name="v_tbl_monthdata" EntityType="Self.v_tbl_monthdata" />
-          <EntitySet Name="v_tbl_weekdata" EntityType="Self.v_tbl_weekdata" />
-          <EntitySet Name="v_user_rights" EntityType="Self.v_user_rights" />
-        </EntityContainer>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -500,196 +547,211 @@ FROM `v_user_rights` AS `v_user_rights`</DefiningQuery>
           <EntitySetMapping Name="sys_rights">
             <EntityTypeMapping TypeName="WarehouseLaborEffModel.sys_rights">
               <MappingFragment StoreEntitySet="sys_rights">
-                <ScalarProperty Name="id" ColumnName="id" />
-                <ScalarProperty Name="RightName" ColumnName="RightName" />
                 <ScalarProperty Name="RightContent" ColumnName="RightContent" />
+                <ScalarProperty Name="RightName" ColumnName="RightName" />
+                <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="sys_role_right_conn">
             <EntityTypeMapping TypeName="WarehouseLaborEffModel.sys_role_right_conn">
               <MappingFragment StoreEntitySet="sys_role_right_conn">
-                <ScalarProperty Name="id" ColumnName="id" />
-                <ScalarProperty Name="RefRoleID" ColumnName="RefRoleID" />
                 <ScalarProperty Name="RefRightID" ColumnName="RefRightID" />
+                <ScalarProperty Name="RefRoleID" ColumnName="RefRoleID" />
+                <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="sys_roles">
             <EntityTypeMapping TypeName="WarehouseLaborEffModel.sys_roles">
               <MappingFragment StoreEntitySet="sys_roles">
-                <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="RoleName" ColumnName="RoleName" />
+                <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="sys_user">
             <EntityTypeMapping TypeName="WarehouseLaborEffModel.sys_user">
               <MappingFragment StoreEntitySet="sys_user">
-                <ScalarProperty Name="id" ColumnName="id" />
-                <ScalarProperty Name="ADAccount" ColumnName="ADAccount" />
-                <ScalarProperty Name="FullName" ColumnName="FullName" />
-                <ScalarProperty Name="Email" ColumnName="Email" />
-                <ScalarProperty Name="LastLogon" ColumnName="LastLogon" />
-                <ScalarProperty Name="IsValid" ColumnName="IsValid" />
                 <ScalarProperty Name="IsAdmin" ColumnName="IsAdmin" />
+                <ScalarProperty Name="IsValid" ColumnName="IsValid" />
+                <ScalarProperty Name="LastLogon" ColumnName="LastLogon" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="FullName" ColumnName="FullName" />
+                <ScalarProperty Name="ADAccount" ColumnName="ADAccount" />
+                <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="sys_user_role_conn">
             <EntityTypeMapping TypeName="WarehouseLaborEffModel.sys_user_role_conn">
               <MappingFragment StoreEntitySet="sys_user_role_conn">
-                <ScalarProperty Name="id" ColumnName="id" />
-                <ScalarProperty Name="RefUserID" ColumnName="RefUserID" />
                 <ScalarProperty Name="RefRoleID" ColumnName="RefRoleID" />
+                <ScalarProperty Name="RefUserID" ColumnName="RefUserID" />
+                <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="task_log">
             <EntityTypeMapping TypeName="WarehouseLaborEffModel.task_log">
               <MappingFragment StoreEntitySet="task_log">
-                <ScalarProperty Name="id" ColumnName="id" />
-                <ScalarProperty Name="Msg" ColumnName="Msg" />
                 <ScalarProperty Name="HappenTime" ColumnName="HappenTime" />
+                <ScalarProperty Name="Msg" ColumnName="Msg" />
+                <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="tbl_bu">
             <EntityTypeMapping TypeName="WarehouseLaborEffModel.tbl_bu">
               <MappingFragment StoreEntitySet="tbl_bu">
-                <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="bu" ColumnName="bu" />
+                <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="tbl_hcdata">
             <EntityTypeMapping TypeName="WarehouseLaborEffModel.tbl_hcdata">
               <MappingFragment StoreEntitySet="tbl_hcdata">
-                <ScalarProperty Name="id" ColumnName="id" />
-                <ScalarProperty Name="Date" ColumnName="Date" />
-                <ScalarProperty Name="Warehouse" ColumnName="Warehouse" />
-                <ScalarProperty Name="Overall" ColumnName="Overall" />
-                <ScalarProperty Name="System_Clerk" ColumnName="System_Clerk" />
-                <ScalarProperty Name="Inventory_Control" ColumnName="Inventory_Control" />
-                <ScalarProperty Name="RTV_Scrap" ColumnName="RTV_Scrap" />
-                <ScalarProperty Name="Receiving" ColumnName="Receiving" />
-                <ScalarProperty Name="Shipping" ColumnName="Shipping" />
-                <ScalarProperty Name="Forklift_Driver" ColumnName="Forklift_Driver" />
-                <ScalarProperty Name="Total" ColumnName="Total" />
                 <ScalarProperty Name="UpdateTime" ColumnName="UpdateTime" />
+                <ScalarProperty Name="Total" ColumnName="Total" />
+                <ScalarProperty Name="Forklift_Driver" ColumnName="Forklift_Driver" />
+                <ScalarProperty Name="Shipping" ColumnName="Shipping" />
+                <ScalarProperty Name="Receiving" ColumnName="Receiving" />
+                <ScalarProperty Name="RTV_Scrap" ColumnName="RTV_Scrap" />
+                <ScalarProperty Name="Inventory_Control" ColumnName="Inventory_Control" />
+                <ScalarProperty Name="System_Clerk" ColumnName="System_Clerk" />
+                <ScalarProperty Name="Overall" ColumnName="Overall" />
+                <ScalarProperty Name="Warehouse" ColumnName="Warehouse" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="tbl_monthdata">
             <EntityTypeMapping TypeName="WarehouseLaborEffModel.tbl_monthdata">
               <MappingFragment StoreEntitySet="tbl_monthdata">
-                <ScalarProperty Name="id" ColumnName="id" />
-                <ScalarProperty Name="Date" ColumnName="Date" />
-                <ScalarProperty Name="Warehouse" ColumnName="Warehouse" />
-                <ScalarProperty Name="HC_FCST" ColumnName="HC_FCST" />
-                <ScalarProperty Name="HC_Actual" ColumnName="HC_Actual" />
-                <ScalarProperty Name="HC_Support" ColumnName="HC_Support" />
-                <ScalarProperty Name="HC_Utilization" ColumnName="HC_Utilization" />
-                <ScalarProperty Name="Case_ID_in" ColumnName="Case_ID_in" />
-                <ScalarProperty Name="Case_ID_out" ColumnName="Case_ID_out" />
-                <ScalarProperty Name="Pallet_In" ColumnName="Pallet_In" />
-                <ScalarProperty Name="Pallet_Out" ColumnName="Pallet_Out" />
-                <ScalarProperty Name="Jobs_Rec" ColumnName="Jobs_Rec" />
-                <ScalarProperty Name="Jobs_Issue" ColumnName="Jobs_Issue" />
-                <ScalarProperty Name="Reel_ID_Rec" ColumnName="Reel_ID_Rec" />
                 <ScalarProperty Name="UpdateTime" ColumnName="UpdateTime" />
+                <ScalarProperty Name="Reel_ID_Rec" ColumnName="Reel_ID_Rec" />
+                <ScalarProperty Name="Jobs_Issue" ColumnName="Jobs_Issue" />
+                <ScalarProperty Name="Jobs_Rec" ColumnName="Jobs_Rec" />
+                <ScalarProperty Name="Pallet_Out" ColumnName="Pallet_Out" />
+                <ScalarProperty Name="Pallet_In" ColumnName="Pallet_In" />
+                <ScalarProperty Name="Case_ID_out" ColumnName="Case_ID_out" />
+                <ScalarProperty Name="Case_ID_in" ColumnName="Case_ID_in" />
+                <ScalarProperty Name="HC_Utilization" ColumnName="HC_Utilization" />
+                <ScalarProperty Name="HC_Support" ColumnName="HC_Support" />
+                <ScalarProperty Name="HC_Actual" ColumnName="HC_Actual" />
+                <ScalarProperty Name="HC_FCST" ColumnName="HC_FCST" />
+                <ScalarProperty Name="Warehouse" ColumnName="Warehouse" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="tbl_weekdata">
             <EntityTypeMapping TypeName="WarehouseLaborEffModel.tbl_weekdata">
               <MappingFragment StoreEntitySet="tbl_weekdata">
-                <ScalarProperty Name="id" ColumnName="id" />
-                <ScalarProperty Name="Date" ColumnName="Date" />
-                <ScalarProperty Name="Warehouse" ColumnName="Warehouse" />
-                <ScalarProperty Name="HC_FCST" ColumnName="HC_FCST" />
-                <ScalarProperty Name="HC_Actual" ColumnName="HC_Actual" />
-                <ScalarProperty Name="HC_Support" ColumnName="HC_Support" />
-                <ScalarProperty Name="HC_Utilization" ColumnName="HC_Utilization" />
-                <ScalarProperty Name="Case_ID_in" ColumnName="Case_ID_in" />
-                <ScalarProperty Name="Case_ID_out" ColumnName="Case_ID_out" />
-                <ScalarProperty Name="Pallet_In" ColumnName="Pallet_In" />
-                <ScalarProperty Name="Pallet_Out" ColumnName="Pallet_Out" />
-                <ScalarProperty Name="Jobs_Rec" ColumnName="Jobs_Rec" />
-                <ScalarProperty Name="Jobs_Issue" ColumnName="Jobs_Issue" />
-                <ScalarProperty Name="Reel_ID_Rec" ColumnName="Reel_ID_Rec" />
                 <ScalarProperty Name="UpdateTime" ColumnName="UpdateTime" />
+                <ScalarProperty Name="Reel_ID_Rec" ColumnName="Reel_ID_Rec" />
+                <ScalarProperty Name="Jobs_Issue" ColumnName="Jobs_Issue" />
+                <ScalarProperty Name="Jobs_Rec" ColumnName="Jobs_Rec" />
+                <ScalarProperty Name="Pallet_Out" ColumnName="Pallet_Out" />
+                <ScalarProperty Name="Pallet_In" ColumnName="Pallet_In" />
+                <ScalarProperty Name="Case_ID_out" ColumnName="Case_ID_out" />
+                <ScalarProperty Name="Case_ID_in" ColumnName="Case_ID_in" />
+                <ScalarProperty Name="HC_Utilization" ColumnName="HC_Utilization" />
+                <ScalarProperty Name="HC_Support" ColumnName="HC_Support" />
+                <ScalarProperty Name="HC_Actual" ColumnName="HC_Actual" />
+                <ScalarProperty Name="HC_FCST" ColumnName="HC_FCST" />
+                <ScalarProperty Name="Warehouse" ColumnName="Warehouse" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="v_tbl_hcdata">
             <EntityTypeMapping TypeName="WarehouseLaborEffModel.v_tbl_hcdata">
               <MappingFragment StoreEntitySet="v_tbl_hcdata">
-                <ScalarProperty Name="id" ColumnName="id" />
-                <ScalarProperty Name="Date" ColumnName="Date" />
-                <ScalarProperty Name="Warehouse" ColumnName="Warehouse" />
-                <ScalarProperty Name="Overall" ColumnName="Overall" />
-                <ScalarProperty Name="System_Clerk" ColumnName="System_Clerk" />
-                <ScalarProperty Name="Inventory_Control" ColumnName="Inventory_Control" />
-                <ScalarProperty Name="RTV_Scrap" ColumnName="RTV_Scrap" />
-                <ScalarProperty Name="Receiving" ColumnName="Receiving" />
-                <ScalarProperty Name="Shipping" ColumnName="Shipping" />
-                <ScalarProperty Name="Forklift_Driver" ColumnName="Forklift_Driver" />
                 <ScalarProperty Name="Total" ColumnName="Total" />
+                <ScalarProperty Name="Forklift_Driver" ColumnName="Forklift_Driver" />
+                <ScalarProperty Name="Shipping" ColumnName="Shipping" />
+                <ScalarProperty Name="Receiving" ColumnName="Receiving" />
+                <ScalarProperty Name="RTV_Scrap" ColumnName="RTV_Scrap" />
+                <ScalarProperty Name="Inventory_Control" ColumnName="Inventory_Control" />
+                <ScalarProperty Name="System_Clerk" ColumnName="System_Clerk" />
+                <ScalarProperty Name="Overall" ColumnName="Overall" />
+                <ScalarProperty Name="Warehouse" ColumnName="Warehouse" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="v_tbl_hcdata_rate">
+            <EntityTypeMapping TypeName="WarehouseLaborEffModel.v_tbl_hcdata_rate">
+              <MappingFragment StoreEntitySet="v_tbl_hcdata_rate">
+                <ScalarProperty Name="Shipping" ColumnName="Shipping" />
+                <ScalarProperty Name="Receiving" ColumnName="Receiving" />
+                <ScalarProperty Name="RTV_Scrap" ColumnName="RTV_Scrap" />
+                <ScalarProperty Name="Inventory_Control" ColumnName="Inventory_Control" />
+                <ScalarProperty Name="System_Clerk" ColumnName="System_Clerk" />
+                <ScalarProperty Name="Overall" ColumnName="Overall" />
+                <ScalarProperty Name="Warehouse" ColumnName="Warehouse" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="v_tbl_monthdata">
             <EntityTypeMapping TypeName="WarehouseLaborEffModel.v_tbl_monthdata">
               <MappingFragment StoreEntitySet="v_tbl_monthdata">
-                <ScalarProperty Name="id" ColumnName="id" />
-                <ScalarProperty Name="Date" ColumnName="Date" />
-                <ScalarProperty Name="Warehouse" ColumnName="Warehouse" />
-                <ScalarProperty Name="HC_FCST" ColumnName="HC_FCST" />
-                <ScalarProperty Name="HC_Actual" ColumnName="HC_Actual" />
-                <ScalarProperty Name="HC_Support" ColumnName="HC_Support" />
-                <ScalarProperty Name="HC_Utilization" ColumnName="HC_Utilization" />
-                <ScalarProperty Name="Case_ID_in" ColumnName="Case_ID_in" />
-                <ScalarProperty Name="Case_ID_out" ColumnName="Case_ID_out" />
-                <ScalarProperty Name="Pallet_In" ColumnName="Pallet_In" />
-                <ScalarProperty Name="Pallet_Out" ColumnName="Pallet_Out" />
-                <ScalarProperty Name="Jobs_Rec" ColumnName="Jobs_Rec" />
-                <ScalarProperty Name="Jobs_Issue" ColumnName="Jobs_Issue" />
                 <ScalarProperty Name="Reel_ID_Rec" ColumnName="Reel_ID_Rec" />
+                <ScalarProperty Name="Jobs_Issue" ColumnName="Jobs_Issue" />
+                <ScalarProperty Name="Jobs_Rec" ColumnName="Jobs_Rec" />
+                <ScalarProperty Name="Pallet_Out" ColumnName="Pallet_Out" />
+                <ScalarProperty Name="Pallet_In" ColumnName="Pallet_In" />
+                <ScalarProperty Name="Case_ID_out" ColumnName="Case_ID_out" />
+                <ScalarProperty Name="Case_ID_in" ColumnName="Case_ID_in" />
+                <ScalarProperty Name="HC_Utilization" ColumnName="HC_Utilization" />
+                <ScalarProperty Name="HC_Support" ColumnName="HC_Support" />
+                <ScalarProperty Name="HC_Actual" ColumnName="HC_Actual" />
+                <ScalarProperty Name="HC_FCST" ColumnName="HC_FCST" />
+                <ScalarProperty Name="Warehouse" ColumnName="Warehouse" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="v_tbl_weekdata">
             <EntityTypeMapping TypeName="WarehouseLaborEffModel.v_tbl_weekdata">
               <MappingFragment StoreEntitySet="v_tbl_weekdata">
-                <ScalarProperty Name="id" ColumnName="id" />
-                <ScalarProperty Name="Date" ColumnName="Date" />
-                <ScalarProperty Name="Warehouse" ColumnName="Warehouse" />
-                <ScalarProperty Name="HC_FCST" ColumnName="HC_FCST" />
-                <ScalarProperty Name="HC_Actual" ColumnName="HC_Actual" />
-                <ScalarProperty Name="HC_Support" ColumnName="HC_Support" />
-                <ScalarProperty Name="HC_Utilization" ColumnName="HC_Utilization" />
-                <ScalarProperty Name="Case_ID_in" ColumnName="Case_ID_in" />
-                <ScalarProperty Name="Case_ID_out" ColumnName="Case_ID_out" />
-                <ScalarProperty Name="Pallet_In" ColumnName="Pallet_In" />
-                <ScalarProperty Name="Pallet_Out" ColumnName="Pallet_Out" />
-                <ScalarProperty Name="Jobs_Rec" ColumnName="Jobs_Rec" />
-                <ScalarProperty Name="Jobs_Issue" ColumnName="Jobs_Issue" />
                 <ScalarProperty Name="Reel_ID_Rec" ColumnName="Reel_ID_Rec" />
+                <ScalarProperty Name="Jobs_Issue" ColumnName="Jobs_Issue" />
+                <ScalarProperty Name="Jobs_Rec" ColumnName="Jobs_Rec" />
+                <ScalarProperty Name="Pallet_Out" ColumnName="Pallet_Out" />
+                <ScalarProperty Name="Pallet_In" ColumnName="Pallet_In" />
+                <ScalarProperty Name="Case_ID_out" ColumnName="Case_ID_out" />
+                <ScalarProperty Name="Case_ID_in" ColumnName="Case_ID_in" />
+                <ScalarProperty Name="HC_Utilization" ColumnName="HC_Utilization" />
+                <ScalarProperty Name="HC_Support" ColumnName="HC_Support" />
+                <ScalarProperty Name="HC_Actual" ColumnName="HC_Actual" />
+                <ScalarProperty Name="HC_FCST" ColumnName="HC_FCST" />
+                <ScalarProperty Name="Warehouse" ColumnName="Warehouse" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="v_user_rights">
             <EntityTypeMapping TypeName="WarehouseLaborEffModel.v_user_rights">
               <MappingFragment StoreEntitySet="v_user_rights">
-                <ScalarProperty Name="UserID" ColumnName="UserID" />
-                <ScalarProperty Name="ADAccount" ColumnName="ADAccount" />
-                <ScalarProperty Name="FullName" ColumnName="FullName" />
-                <ScalarProperty Name="Email" ColumnName="Email" />
-                <ScalarProperty Name="IsAdmin" ColumnName="IsAdmin" />
-                <ScalarProperty Name="RightID" ColumnName="RightID" />
-                <ScalarProperty Name="RightName" ColumnName="RightName" />
                 <ScalarProperty Name="RightContent" ColumnName="RightContent" />
+                <ScalarProperty Name="RightName" ColumnName="RightName" />
+                <ScalarProperty Name="RightID" ColumnName="RightID" />
+                <ScalarProperty Name="IsAdmin" ColumnName="IsAdmin" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="FullName" ColumnName="FullName" />
+                <ScalarProperty Name="ADAccount" ColumnName="ADAccount" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

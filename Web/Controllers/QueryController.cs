@@ -232,7 +232,26 @@ namespace WarehouseLaborEfficiencyWeb.Controllers
             }
 
             return Json(obj);
-        }        
+        }
+
+        [HttpPost]
+        public ActionResult QueryHCRate(string warehouses)
+        {
+            var dat = QueryHelper.QueryHCRate(warehouses);
+            var obj = new TRes
+            {
+                bok = true,
+                data = dat
+            };
+
+            if (0 == dat.Count)
+            {
+                obj.bok = false;
+                obj.msg = "没有查询到数据";
+            }
+            return Json(obj);
+        }
+        
         #endregion
 
         [HttpPost]
