@@ -17,11 +17,11 @@ namespace WarehouseLaborEfficiencyWeb.Database
         public int id { get; set; }
         public System.DateTime Date { get; set; }
         public string Warehouse { get; set; }
-        public Nullable<float> Overall { get; set; }
-        public Nullable<float> System_Clerk { get; set; }
-        public Nullable<float> Inventory_Control { get; set; }
-        public Nullable<float> RTV_Scrap { get; set; }
-        public Nullable<float> Receiving { get; set; }
-        public Nullable<float> Shipping { get; set; }
+        public Nullable<int> Overall { get; set; }
+        public Nullable<int> System_Clerk { get; set; }
+        public Nullable<int> Inventory_Control { get; set; }
+        public Nullable<int> RTV_Scrap { get; set; }
+        public Nullable<int> Receiving { get; set; }
+        public Nullable<int> Shipping { get; set; }
     }
 }

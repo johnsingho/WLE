@@ -424,6 +424,16 @@ namespace WarehouseLaborEfficiencyWeb.DAL
         #endregion
 
         #region HCRate
+        public static List<string> GetHCRateMonth()
+        {
+            using (var context = new WarehouseLaborEffEntities())
+            {
+                var qry = (from x in context.v_tbl_hcdata
+                           select x.Date).Distinct().AsEnumerable().Select(x => x.ToString("yyyy-MM"));
+                return qry.ToList();
+            }
+        }
+
         private static List<string> GetHCRateKinds()
         {
             var lst = new List<string>();
@@ -438,23 +448,23 @@ namespace WarehouseLaborEfficiencyWeb.DAL
             return lst;
         }
 
-        public static List<TMapDatatables> QueryHCRate(string bus)
-        {
-            var buList = bus.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-            return QueryHCRateAll(buList);
-        }
-        private static List<TMapDatatables> QueryHCRateAll(string[] buList)
+        public static List<TMapDatatables> QueryHCRate(string selMonth)
         {
             var items = new List<TMapDatatables>();
-            if (null == buList || 0 == buList.Length) { return items; }
+            var sDate = selMonth.Trim() + "-01";
+            var dtim = DateTime.Now;
+            if(!DateTime.TryParse(sDate, out dtim))
+            {
+                return items;
+            }
+            var buList = new string[] { "Mech", "PCBA B11", "PCBA B13", "PCBA B15" };
             foreach (var bu in buList)
             {
                 items.Add(new TMapDatatables
                 {
                     name = bu,
-                    entry = GetHCRateBu(bu)
-                }
-                );
+                    entry = GetHCRateBu(dtim, bu)
+                });
             }
             return items;
         }
@@ -464,7 +474,13 @@ namespace WarehouseLaborEfficiencyWeb.DAL
             if (!f.HasValue) { return "0"; }
             return f.Value.ToString("F");
         }
-        private static TDatatables GetHCRateBu(string bu)
+        private static int Int2Still(int? n)
+        {
+            if (!n.HasValue) { return 0; }
+            return n.Value;
+        }
+
+        private static TDatatables GetHCRateBu(DateTime date, string bu)
         {
             var res = new TDatatables();
             res.kinds = GetHCRateKinds();
@@ -472,12 +488,13 @@ namespace WarehouseLaborEfficiencyWeb.DAL
             using (var context = new WarehouseLaborEffEntities())
             {
                 var qry = (from c in context.v_tbl_hcdata_rate
-                           where 0 == string.Compare(c.Warehouse, bu, true)
-                           orderby c.Date
+                           where (0==string.Compare(c.Warehouse, bu, true)
+                                  && c.Date==date
+                                 )
                            select c
                            ).AsEnumerable().Select(c => new
                            {
-                               Date = DateTimeHelper.GetLocalDateStr(c.Date).Substring(0, 7),/*yyyy-MM*/
+                               //Date = DateTimeHelper.GetLocalDateStr(c.Date).Substring(0, 7),/*yyyy-MM*/
                                c.System_Clerk,
                                c.Receiving,
                                c.Shipping,
@@ -485,27 +502,16 @@ namespace WarehouseLaborEfficiencyWeb.DAL
                                c.Inventory_Control,
                                c.Overall
                            });
-                //var dat = qry.ToList();
-                res.columns = (from x in qry
-                               select new TColEntry(x.Date, x.Date)
-                              ).ToList();
+                var dat = qry.Single();
+                //var vals = new List<int>();
+                //vals.Add(Int2Still(dat.System_Clerk));
+                //vals.Add(Int2Still(dat.Receiving));
+                //vals.Add(Int2Still(dat.Shipping));
+                //vals.Add(Int2Still(dat.RTV_Scrap));
+                //vals.Add(Int2Still(dat.Inventory_Control));
+                //vals.Add(Int2Still(dat.Overall));
 
-                var dic = new Dictionary<string, List<string>>();
-                List<string> lst = null;
-                lst = (from x in qry select Float2Str(x.System_Clerk)).ToList();
-                dic.Add("System_Clerk", lst);
-                lst = (from x in qry select Float2Str(x.Receiving)).ToList();
-                dic.Add("Receiving", lst);
-                lst = (from x in qry select Float2Str(x.Shipping)).ToList();
-                dic.Add("Shipping", lst);
-                lst = (from x in qry select Float2Str(x.RTV_Scrap)).ToList();
-                dic.Add("RTV_Scrap", lst);
-                lst = (from x in qry select Float2Str(x.Inventory_Control)).ToList();
-                dic.Add("Inventory_Control", lst);
-                lst = (from x in qry select Float2Str(x.Overall)).ToList();
-                dic.Add("Overall", lst);
-
-                res.data = dic;
+                res.data = dat;
             }
 
             return res;

@@ -203,9 +203,6 @@
     <Compile Include="Database\sys_user_role_conn.cs">
       <DependentUpon>warehouselaborefficiency.tt</DependentUpon>
     </Compile>
-    <Compile Include="Database\task_log.cs">
-      <DependentUpon>warehouselaborefficiency.tt</DependentUpon>
-    </Compile>
     <Compile Include="Database\tbl_bu.cs">
       <DependentUpon>warehouselaborefficiency.tt</DependentUpon>
     </Compile>

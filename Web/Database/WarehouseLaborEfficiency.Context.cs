@@ -30,7 +30,6 @@ namespace WarehouseLaborEfficiencyWeb.Database
         public virtual DbSet<sys_roles> sys_roles { get; set; }
         public virtual DbSet<sys_user> sys_user { get; set; }
         public virtual DbSet<sys_user_role_conn> sys_user_role_conn { get; set; }
-        public virtual DbSet<task_log> task_log { get; set; }
         public virtual DbSet<tbl_bu> tbl_bu { get; set; }
         public virtual DbSet<tbl_hcdata> tbl_hcdata { get; set; }
         public virtual DbSet<tbl_monthdata> tbl_monthdata { get; set; }

@@ -48,14 +48,6 @@
           <Property Name="RefUserID" Type="int" Nullable="false" />
           <Property Name="RefRoleID" Type="varchar" MaxLength="50" Nullable="false" />
         </EntityType>
-        <EntityType Name="task_log">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Msg" Type="varchar" MaxLength="50" />
-          <Property Name="HappenTime" Type="timestamp" Precision="0" StoreGeneratedPattern="Identity" />
-        </EntityType>
         <EntityType Name="tbl_bu">
           <Key>
             <PropertyRef Name="id" />
@@ -149,12 +141,12 @@ warning 6002: The table/view 'def.warehouselaborefficiency.v_tbl_hcdata_rate' do
           <Property Name="id" Type="int" Nullable="false" />
           <Property Name="Date" Type="date" Nullable="false" />
           <Property Name="Warehouse" Type="varchar" MaxLength="50" />
-          <Property Name="Overall" Type="float" />
-          <Property Name="System_Clerk" Type="float" />
-          <Property Name="Inventory_Control" Type="float" />
-          <Property Name="RTV_Scrap" Type="float" />
-          <Property Name="Receiving" Type="float" />
-          <Property Name="Shipping" Type="float" />
+          <Property Name="Overall" Type="int" />
+          <Property Name="System_Clerk" Type="int" />
+          <Property Name="Inventory_Control" Type="int" />
+          <Property Name="RTV_Scrap" Type="int" />
+          <Property Name="Receiving" Type="int" />
+          <Property Name="Shipping" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'def.warehouselaborefficiency.v_tbl_monthdata' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -229,7 +221,6 @@ warning 6002: The table/view 'def.warehouselaborefficiency.v_user_rights' does n
           <EntitySet Name="sys_roles" EntityType="Self.sys_roles" Schema="warehouselaborefficiency" store:Type="Tables" />
           <EntitySet Name="sys_user" EntityType="Self.sys_user" Schema="warehouselaborefficiency" store:Type="Tables" />
           <EntitySet Name="sys_user_role_conn" EntityType="Self.sys_user_role_conn" Schema="warehouselaborefficiency" store:Type="Tables" />
-          <EntitySet Name="task_log" EntityType="Self.task_log" Schema="warehouselaborefficiency" store:Type="Tables" />
           <EntitySet Name="tbl_bu" EntityType="Self.tbl_bu" Schema="warehouselaborefficiency" store:Type="Tables" />
           <EntitySet Name="tbl_hcdata" EntityType="Self.tbl_hcdata" Schema="warehouselaborefficiency" store:Type="Tables" />
           <EntitySet Name="tbl_monthdata" EntityType="Self.tbl_monthdata" Schema="warehouselaborefficiency" store:Type="Tables" />
@@ -321,7 +312,6 @@ FROM `v_user_rights` AS `v_user_rights`</DefiningQuery>
           <EntitySet Name="sys_roles" EntityType="WarehouseLaborEffModel.sys_roles" />
           <EntitySet Name="sys_user" EntityType="WarehouseLaborEffModel.sys_user" />
           <EntitySet Name="sys_user_role_conn" EntityType="WarehouseLaborEffModel.sys_user_role_conn" />
-          <EntitySet Name="task_log" EntityType="WarehouseLaborEffModel.task_log" />
           <EntitySet Name="tbl_bu" EntityType="WarehouseLaborEffModel.tbl_bu" />
           <EntitySet Name="tbl_hcdata" EntityType="WarehouseLaborEffModel.tbl_hcdata" />
           <EntitySet Name="tbl_monthdata" EntityType="WarehouseLaborEffModel.tbl_monthdata" />
@@ -374,14 +364,6 @@ FROM `v_user_rights` AS `v_user_rights`</DefiningQuery>
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="RefUserID" Type="Int32" Nullable="false" />
           <Property Name="RefRoleID" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-        </EntityType>
-        <EntityType Name="task_log">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Msg" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="HappenTime" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
         </EntityType>
         <EntityType Name="tbl_bu">
           <Key>
@@ -472,12 +454,12 @@ FROM `v_user_rights` AS `v_user_rights`</DefiningQuery>
           <Property Name="id" Type="Int32" Nullable="false" />
           <Property Name="Date" Type="DateTime" Nullable="false" />
           <Property Name="Warehouse" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Overall" Type="Single" />
-          <Property Name="System_Clerk" Type="Single" />
-          <Property Name="Inventory_Control" Type="Single" />
-          <Property Name="RTV_Scrap" Type="Single" />
-          <Property Name="Receiving" Type="Single" />
-          <Property Name="Shipping" Type="Single" />
+          <Property Name="Overall" Type="Int32" />
+          <Property Name="System_Clerk" Type="Int32" />
+          <Property Name="Inventory_Control" Type="Int32" />
+          <Property Name="RTV_Scrap" Type="Int32" />
+          <Property Name="Receiving" Type="Int32" />
+          <Property Name="Shipping" Type="Int32" />
         </EntityType>
         <EntityType Name="v_tbl_monthdata">
           <Key>
@@ -538,7 +520,7 @@ FROM `v_user_rights` AS `v_user_rights`</DefiningQuery>
           <Property Name="RightName" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="RightContent" Type="String" MaxLength="300" FixedLength="false" Unicode="false" />
         </EntityType>
-      </Schema>
+        </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
@@ -588,15 +570,6 @@ FROM `v_user_rights` AS `v_user_rights`</DefiningQuery>
               <MappingFragment StoreEntitySet="sys_user_role_conn">
                 <ScalarProperty Name="RefRoleID" ColumnName="RefRoleID" />
                 <ScalarProperty Name="RefUserID" ColumnName="RefUserID" />
-                <ScalarProperty Name="id" ColumnName="id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="task_log">
-            <EntityTypeMapping TypeName="WarehouseLaborEffModel.task_log">
-              <MappingFragment StoreEntitySet="task_log">
-                <ScalarProperty Name="HappenTime" ColumnName="HappenTime" />
-                <ScalarProperty Name="Msg" ColumnName="Msg" />
                 <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>

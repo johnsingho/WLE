@@ -233,11 +233,32 @@ namespace WarehouseLaborEfficiencyWeb.Controllers
 
             return Json(obj);
         }
+        
+        #endregion
+
+        #region HCRate
+        [HttpPost]
+        public ActionResult GetHCRateMonth()
+        {
+            var lstData = QueryHelper.GetHCRateMonth();
+            var obj = new TRes
+            {
+                bok = true,
+                data = lstData
+            };
+
+            if (null == lstData || 0 == lstData.Count)
+            {
+                obj.bok = false;
+                obj.msg = "没有查询到数据";
+            }
+            return Json(obj);
+        }
 
         [HttpPost]
-        public ActionResult QueryHCRate(string warehouses)
+        public ActionResult QueryHCRate(string selMonth)
         {
-            var dat = QueryHelper.QueryHCRate(warehouses);
+            var dat = QueryHelper.QueryHCRate(selMonth);
             var obj = new TRes
             {
                 bok = true,
@@ -251,7 +272,6 @@ namespace WarehouseLaborEfficiencyWeb.Controllers
             }
             return Json(obj);
         }
-        
         #endregion
 
         [HttpPost]
