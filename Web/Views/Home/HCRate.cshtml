@@ -1,5 +1,5 @@
 ﻿@{
-    ViewBag.Title = "HeadCost Allocation Ratio";
+    ViewBag.Title = "HC Position Ratio";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -129,8 +129,8 @@
 
         function GetBarColors() {
             return [
-                '#c23531', '#2f4554', '#61a0a8',
-                '#d48265', '#91c7ae', '#FFCC00',
+                '#c23531', '#2f4554', '#0033CC',
+                '#00A900', '#FF00CC', '#FFCC00',
                 '#0D29F2'
             ];
         }
@@ -167,7 +167,7 @@
                 legend: {
                     type: 'scroll',
                     orient: 'vertical',
-                    right: 20,
+                    right: 16,
                     top: '25%',
                     //bottom: 20,
                     data: cd.cols,
@@ -177,14 +177,41 @@
                     {
                         name: '',
                         type: 'pie',
-                        radius: '55%',
-                        center: ['35%', '50%'],
+                        radius: '50%',
+                        center: ['40%', '50%'],
                         data: cd.charData,
                         itemStyle: {
                             emphasis: {
                                 shadowBlur: 10,
                                 shadowOffsetX: 0,
                                 shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            }
+                        },
+                        label: {
+                            normal: {
+                                formatter: '{b| {b} }\n{hr|}\n{c} {per|{d}%}',
+                                backgroundColor: '#eee',
+                                borderColor: '#aaa',
+                                borderWidth: 1,
+                                borderRadius: 4,
+                                rich: {                                   
+                                    b: {
+                                        fontSize: 12,
+                                        lineHeight: 20,
+                                    },
+                                    hr: {
+                                        borderColor: '#aaa',
+                                        width: '100%',
+                                        borderWidth: 0.5,
+                                        height: 0
+                                    },
+                                    per: {
+                                        color: '#eee',
+                                        backgroundColor: '#334455',
+                                        padding: [2, 4],
+                                        borderRadius: 2
+                                    }
+                                }
                             }
                         }
                     }
