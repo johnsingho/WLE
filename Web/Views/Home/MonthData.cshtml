@@ -107,6 +107,7 @@
             InitData();
             weekChart = echarts.init(document.getElementById("idChart"));
             $('input:radio[name="selKind"][value="HC_FCST"]').click();
+            VisitTrack('WarehouseLaborEfficiencyDashboard', 'MonthData', '');
         });
 
         function InitData() {
