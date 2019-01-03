@@ -256,9 +256,9 @@ namespace WarehouseLaborEfficiencyWeb.Controllers
         }
 
         [HttpPost]
-        public ActionResult QueryHCRate(string selMonth)
+        public ActionResult QueryHCRate(string selMonth, string warehouses)
         {
-            var dat = QueryHelper.QueryHCRate(selMonth);
+            var dat = QueryHelper.QueryHCRate(selMonth, warehouses);
             var obj = new TRes
             {
                 bok = true,

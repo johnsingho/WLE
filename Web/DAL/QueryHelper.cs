@@ -448,7 +448,7 @@ namespace WarehouseLaborEfficiencyWeb.DAL
             return lst;
         }
 
-        public static List<TMapDatatables> QueryHCRate(string selMonth)
+        public static List<TMapDatatables> QueryHCRate(string selMonth, string warehouses)
         {
             var items = new List<TMapDatatables>();
             var sDate = selMonth.Trim() + "-01";
@@ -457,7 +457,9 @@ namespace WarehouseLaborEfficiencyWeb.DAL
             {
                 return items;
             }
-            var buList = new string[] { "Mech", "PCBA B11", "PCBA B13", "PCBA B15" };
+
+            var buList = warehouses.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            //var buList = new string[] { "Mech", "PCBA B11", "PCBA B13", "PCBA B15" };
             foreach (var bu in buList)
             {
                 items.Add(new TMapDatatables

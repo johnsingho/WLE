@@ -20,6 +20,14 @@
     {
         <div class="row">
             <div class="col-md-8">
+                <span class="my-bigger">WareHouse</span>
+                <span>
+                    <select id="idSelBu" required multiple>
+                    </select>
+                    @Html.Hidden("warehouses")
+                </span>
+            </div>
+            <div class="col-md-4">
                 <span class="my-bigger">Month</span>
                 <span>
                     <select id="idSelMonth" name="selMonth" required>
@@ -32,8 +40,6 @@
                 {
                     <button class="btn btn-info btn-sm" type="button" id="btnDownload">Download</button>
                 }*@
-            </div>
-            <div class="col-md-4">
             </div>
         </div>
     }
@@ -51,11 +57,30 @@
             VisitTrack('WarehouseLaborEfficiencyDashboard', 'HCRate', '');
         });
 
+        function InitWarehouseSelect() {
+            var url = "@Url.Action("GetWarehouseInfo", "Query")";
+            AjaxPost(url,
+                "{}",
+                true,
+                function (result) {
+                    var warehouseList = result.data || [];
+                    var $ctlSelBu = $('#idSelBu');
+                    $ctlSelBu.select2({
+                        data: warehouseList,
+                        placeholder: "choose one or more warehouse...",
+                        width: "55%"
+                    });
+                    
+                    $ctlSelBu.find('option').prop('selected', 'selected');
+                    $ctlSelBu.trigger('change');
+                });
+        }
         function InitData() {
             $("#frmQueryHCRate").validate();
             //$("#btnDownload").click(function () {
             //    DownloadData('HCRate', $("#frmQueryHCRate"));
             //});
+            InitWarehouseSelect();
 
             var url = "@Url.Action("GetHCRateMonth", "Query")";
             AjaxPost(url,
@@ -76,6 +101,7 @@
                     return false;
                 } else {
                     var url = $(this).attr("action");
+                    $('#warehouses').val(GetSelect2SelMulti($('#idSelBu')));
                     AjaxPostForm(url, '#frmQueryHCRate', true, function (resp) {
                         if (resp.bok) {
                             ViewCharts(resp.data);
@@ -131,7 +157,7 @@
         function GetBarColors() {
             return [
                 '#c23531', '#2f4554', '#0033CC',
-                '#00A900', '#FF00CC', '#FFCC00',
+                '#00A900', '#FF00CC', '#0099ff',
                 '#0D29F2'
             ];
         }
@@ -156,7 +182,7 @@
                 title: {
                     text: name + " (G1-G7)",
                     textStyle: {
-                        fontSize: 16
+                        fontSize: 18
                     },
                     x: 'center'
                 },
@@ -165,21 +191,22 @@
                     trigger: 'item',
                     formatter: "{b} :<br/> {c} ({d}%)"
                 },
-                legend: {
-                    type: 'scroll',
-                    orient: 'vertical',
-                    right: 16,
-                    top: '25%',
-                    //bottom: 20,
-                    data: cd.cols,
-                    selected: cd.cols
-                },
+                //legend: {
+                //    type: 'scroll',
+                //    orient: 'vertical',
+                //    right: 16,
+                //    top: '25%',
+                //    /*bottom: 20,*/
+                //    data: cd.cols,
+                //    selected: cd.cols
+                //},
                 series: [
                     {
                         name: '',
                         type: 'pie',
-                        radius: '50%',
-                        center: ['40%', '50%'],
+                        radius: '68%',
+                        //center: ['40%', '50%'],
+                        center: ['45%', '55%'],
                         data: cd.charData,
                         itemStyle: {
                             emphasis: {
