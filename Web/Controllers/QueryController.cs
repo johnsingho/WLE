@@ -38,27 +38,36 @@ namespace WarehouseLaborEfficiencyWeb.Controllers
             return Json(obj);
         }
 
-        #region WeekData
+        #region WeekData        
         [HttpPost]
-        public ActionResult GetWeekDataInitInfo()
+        public ActionResult QueryYear(string dataType)
         {
-            var lstData = QueryHelper.GetWarehouseList();
+            var warehouses = QueryHelper.GetWarehouseList();
+            var lstData = QueryHelper.QueryYear(dataType);
+            var obj = new TRes
+            {
+                bok = true,
+                data = lstData,
+                extra= warehouses
+            };
+
+            if (null == lstData || 0 == lstData.Count)
+            {
+                obj.bok = false;
+                obj.msg = "没有查询到数据";
+            }
+            return Json(obj);
+        }
+
+        [HttpPost]
+        public ActionResult GetWeekDataInitInfo(string selYear)
+        {
+            var lstData = QueryHelper.GetWeekdateList(selYear);
             var obj = new TRes
             {
                 bok = true,
                 data = lstData
-            };
-
-            try
-            {
-                obj.extra = QueryHelper.GetWeekdateList();
-            }
-            catch (Exception ex)
-            {
-                obj.bok = false;
-                obj.msg = "数据有问题:"+ex.Message;
-                //throw;
-            }
+            };            
 
             if (null==lstData || 0 == lstData.Count)
             {

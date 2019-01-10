@@ -51,7 +51,7 @@
                         FormMethod.Post, new { @id = "frmQueryWeekData"}))
 {
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-20p">
             <span class="my-bigger">WareHouse</span>
             <span>
                 <select id="idSelBu" name="bu" required>
@@ -59,7 +59,15 @@
                 </select>
             </span>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-20p">
+            <span class="my-bigger">Year</span>
+            <span>
+                <select id="idSelYear" name="selYear" required>
+                    <option></option>
+                </select>
+            </span>
+        </div>
+        <div class="col-md-20p">
             <span class="my-bigger">Start Week</span>
             <span>
                 <select id="idSelStartWeek" name="startDate" required>
@@ -67,7 +75,7 @@
                 </select>
             </span>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-20p">
             <span class="my-bigger">End Week</span>
             <span>
                 <select id="idSelEndWeek" name="endDate" required>
@@ -75,7 +83,7 @@
                 </select>
             </span>            
         </div>
-        <div class="col-md-3">
+        <div class="col-md-20p">
             @Html.ValidationSummary(false, "", new { @class = "text-danger" })
             <button class="btn btn-info btn-sm" type="submit" id="btnQuery">Query</button>
             @if (CommonInfo.HasRight(TRightID.DOWNLOAD))
@@ -105,7 +113,10 @@
     <script>
         var oidTable =null;
         var weekChart=null;
-        var weekData =null;
+        var weekData = null;
+        var selectorYear = null;
+        var selectorStartWeek = null;
+        var selectorEndWeek = null;
 
         $(function () {
             InitData();
@@ -119,40 +130,40 @@
                 DownloadData('WeekData', $("#frmQueryWeekData"));
             });
 
-            var url = "@Url.Action("GetWeekDataInitInfo", "Query")";
+            selectorYear = new TSelect2Helper($("#idSelYear"));
+            selectorYear.SetSelectChangeCallback(GetWeekData);
+            selectorStartWeek = new TSelect2Helper($("#idSelStartWeek"));
+            selectorEndWeek = new TSelect2Helper($("#idSelEndWeek"));
+
+            var url = "@Url.Action("QueryYear", "Query")";
+            var para = {
+                dataType: "WeekData"
+            };
             AjaxPost(url,
-                "{}",
+                JSON.stringify(para),
                 true,
                 function (result) {
                     if (!result.bok) {
                         BootstrapDialog.alert(result.msg);
                         return;
                     }
-                    var warehouseList = result.data || [];
-                    var weekdateList = result.extra || [];
+                    var yearList = result.data || [];
+                    var warehouseList = result.extra || [];
+
+                    $("#idSelYear").select2({
+                        data: yearList,
+                        placeholder: "choose...",
+                        width: "120px"
+                    })
+
                     $("#idSelBu").select2({
                         data: warehouseList,
                         placeholder: "choose a warehouse...",
                         width: "120px"
                     });
                     //selectorBu = new TSelect2Helper($("#idSelBu"));
+                });
 
-                    $("#idSelStartWeek").select2({
-                        data: weekdateList,
-                        placeholder: "choose...",
-                        width: "120px"
-                    });
-                    //selectorStartWeek = new TSelect2Helper($("#idSelStartWeek"));
-
-                    $("#idSelEndWeek").select2({
-                        data: weekdateList,
-                        placeholder: "choose...",
-                        width: "120px"
-                    });
-                    //selectorEndWeek = new TSelect2Helper($("#idSelEndWeek"));
-
-                });            
-            
             $('#frmQueryWeekData').on('submit', function (e) {
                 if (e.isDefaultPrevented()) {
                     //invalid
@@ -164,6 +175,7 @@
                             EmptyTable();
                             weekData = {
                                 'columns': resp.data.columns,
+                                'selYear':selectorYear.GetCurSelData(),
                                 'kinds': resp.data.kinds,
                                 'data': JSON.parse(resp.data.data)
                             };
@@ -187,7 +199,40 @@
                 return false;
             });
         }
-        
+
+        function GetWeekData() {
+            selectorStartWeek.RemoveAll();
+            selectorEndWeek.RemoveAll();
+            var selIt = selectorYear.GetCurSelData();
+            var url = "@Url.Action("GetWeekDataInitInfo", "Query")";
+            var para = {
+                selYear: selIt.text
+            };
+            AjaxPost(url,
+                JSON.stringify(para),
+                true,
+                function (result) {
+                    if (!result.bok) {
+                        BootstrapDialog.alert(result.msg);
+                        return;
+                    }
+                    var weekdateList = result.data || [];
+
+                    $("#idSelStartWeek").select2({
+                        data: weekdateList,
+                        placeholder: "choose...",
+                        width: "120px"
+                    });                    
+
+                    $("#idSelEndWeek").select2({
+                        data: weekdateList,
+                        placeholder: "choose...",
+                        width: "120px"
+                    });
+
+
+                });            
+        }
         function RefreshTable(tdata) {
             //console.log('tdata: ' + tdata);
             var cols = tdata.columns;

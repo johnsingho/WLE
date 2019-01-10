@@ -45,7 +45,7 @@ namespace WarehouseLaborEfficiencyWeb.DAL
         }
 
         //========================================
-        
+
         internal static List<TSelectOpt> GetWarehouseList()
         {
             using (var context = new WarehouseLaborEffEntities())
@@ -61,22 +61,82 @@ namespace WarehouseLaborEfficiencyWeb.DAL
             }
         }
         
-        internal static object GetWeekdateList()
+        internal static List<TSelectOpt> GetWeekdateList(string selYear)
         {
+            var nYear = 0;
+            int.TryParse(selYear, out nYear);
             using (var context = new WarehouseLaborEffEntities())
             {
-                var qry = (from c in context.v_tbl_weekdata
+                var lst = (from c in context.v_tbl_weekdata
                            group c by c.Date into g
                            orderby g.Key
                            select g.FirstOrDefault()
-                          ).ToList().Select(x => new TSelectOpt
-                          {
-                              id = DateTimeHelper.GetLocalDateStrNull(x.Date),
-                              text = DateTimeHelper.GetLocalDateStrNull(x.Date)
-                          });
-                return qry.ToList();
+                          ).AsEnumerable();
+                var qWeekData = (from x in lst
+                                 where x.Date.Year == nYear
+                                 select x).Select(x => new TSelectOpt
+                                 {
+                                     id = DateTimeHelper.GetLocalDateStrNull(x.Date),
+                                     text = DateTimeHelper.GetLocalDateStrNull(x.Date)
+                                 });
+                return qWeekData.ToList();
             }
         }
+
+
+        internal static List<string> QueryYear(string dataType)
+        {
+            if (dataType.Equals("weekdata", StringComparison.InvariantCultureIgnoreCase))
+            {
+                using (var context = new WarehouseLaborEffEntities())
+                {
+                    var lst = (from c in context.v_tbl_weekdata
+                               select c.Date
+                              ).AsEnumerable()
+                              .Select(x => x.Date.ToString("yyyy"))
+                               .Distinct().OrderByDescending(x => x);
+                    return lst.ToList();
+                }
+            }
+            else if (dataType.Equals("monthdata", StringComparison.InvariantCultureIgnoreCase))
+            {
+                using (var context = new WarehouseLaborEffEntities())
+                {
+                    var lst = (from c in context.v_tbl_monthdata
+                               select c.Date
+                              ).AsQueryable()
+                              .Select(x => x.Date.ToString("yyyy"))
+                               .Distinct().OrderByDescending(x => x);
+                    return lst.ToList();
+                }
+            }
+            else if (dataType.Equals("hcdata", StringComparison.InvariantCultureIgnoreCase))
+            {
+                using (var context = new WarehouseLaborEffEntities())
+                {
+                    var lst = (from c in context.v_tbl_hcdata
+                               select c.Date
+                              ).AsQueryable()
+                              .Select(x => x.Date.ToString("yyyy"))
+                               .Distinct().OrderByDescending(x => x);
+                    return lst.ToList();
+                }
+            }
+            else if (dataType.Equals("hcrate", StringComparison.InvariantCultureIgnoreCase))
+            {
+                using (var context = new WarehouseLaborEffEntities())
+                {
+                    var lst = (from c in context.v_tbl_hcdata_rate
+                               select c.Date
+                              ).AsQueryable()
+                              .Select(x => x.Date.ToString("yyyy"))
+                               .Distinct().OrderByDescending(x => x);
+                    return lst.ToList();
+                }
+            }
+            return new List<string>();
+        }
+
 
         internal static List<TSelectOpt> GetMonthdateList()
         {
