@@ -19,7 +19,7 @@
                             FormMethod.Post, new { @id = "frmQueryHCRate" }))
     {
         <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-7">
                 <span class="my-bigger">WareHouse</span>
                 <span>
                     <select id="idSelBu" required multiple>
@@ -27,7 +27,15 @@
                     @Html.Hidden("warehouses")
                 </span>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-2">
+                <span class="my-bigger">Year</span>
+                <span>
+                    <select id="idSelYear" name="selYear" required>
+                        <option></option>
+                    </select>
+                </span>
+            </div>
+            <div class="col-md-3">
                 <span class="my-bigger">Month</span>
                 <span>
                     <select id="idSelMonth" name="selMonth" required>
@@ -52,11 +60,39 @@
 
 @section Scripts{
     <script>
+        var selectorYear = null;
+
         $(function () {
             InitData();
             VisitTrack('WarehouseLaborEfficiencyDashboard', 'HCRate', '');
         });
 
+        function InitSelYear() {
+            selectorYear = new TSelect2Helper($("#idSelYear"));
+            selectorYear.SetSelectChangeCallback(RefSelYear);
+
+            var url = "@Url.Action("QueryYear", "Query")";
+            var para = {
+                dataType: "HCRate"
+            };
+            AjaxPost(url,
+                JSON.stringify(para),
+                true,
+                function (result) {
+                    if (!result.bok) {
+                        BootstrapDialog.alert(result.msg);
+                        return;
+                    }
+                    var yearList = result.data || [];
+                    //var warehouseList = result.extra || [];
+
+                    $("#idSelYear").select2({
+                        data: yearList,
+                        placeholder: "choose...",
+                        width: "120px"
+                    });
+                });
+        }
         function InitWarehouseSelect() {
             var url = "@Url.Action("GetWarehouseInfo", "Query")";
             AjaxPost(url,
@@ -70,7 +106,7 @@
                         placeholder: "choose one or more warehouse...",
                         width: "55%"
                     });
-                    
+
                     $ctlSelBu.find('option').prop('selected', 'selected');
                     $ctlSelBu.trigger('change');
                 });
@@ -81,19 +117,7 @@
             //    DownloadData('HCRate', $("#frmQueryHCRate"));
             //});
             InitWarehouseSelect();
-
-            var url = "@Url.Action("GetHCRateMonth", "Query")";
-            AjaxPost(url,
-                "{}",
-                true,
-                function (result) {
-                    var monthList = result.data || [];
-                    $("#idSelMonth").select2({
-                        data: monthList,
-                        placeholder: "choose month...",
-                        width: "55%"
-                    });
-                });
+            InitSelYear();
 
             $('#frmQueryHCRate').on('submit', function (e) {
                 if (e.isDefaultPrevented()) {
@@ -119,6 +143,24 @@
                 }
                 return false;
             });
+        }
+        function RefSelYear() {
+            var url = "@Url.Action("GetHCRateMonth", "Query")";
+            var selIt = selectorYear.GetCurSelData();
+            var para = {
+                selYear: selIt.text
+            };
+            AjaxPost(url,
+                JSON.stringify(para),
+                true,
+                function (result) {
+                    var monthList = result.data || [];
+                    $("#idSelMonth").select2({
+                        data: monthList,
+                        placeholder: "choose month...",
+                        width: "55%"
+                    });
+                });
         }
 
         //function DoQueryAll() {
@@ -146,7 +188,7 @@
             if (!items || 0 == items.Length) {
                 return;
             }
-            
+
             //chartHead += name;
             CreateCharts(items);
             $.each(items, function (ind, val) {
@@ -222,7 +264,7 @@
                                 borderColor: '#aaa',
                                 borderWidth: 1,
                                 borderRadius: 4,
-                                rich: {                                   
+                                rich: {
                                     b: {
                                         fontSize: 12,
                                         lineHeight: 20,

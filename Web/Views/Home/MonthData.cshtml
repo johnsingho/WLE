@@ -12,6 +12,16 @@
     </div>
 </div>
 
+<div class="wrapper">
+    <div class="col-md-4">
+        <span class="my-bigger">Year</span>
+        <span>
+            <select id="idSelYear" name="selYear" required>
+                <option></option>
+            </select>
+        </span>
+    </div>
+</div>
 <div class="wrapper" style="width: 1200px;margin-left: -40px;">
     <div class="col-md-10">
             <div class="wrapper">
@@ -102,14 +112,38 @@
     <script>
         var weekChart = null;
         var weekData = null;
+        var selectorYear = null;
 
         $(function () {
             InitData();
+            InitSelYear();
             weekChart = echarts.init(document.getElementById("idChart"));
-            $('input:radio[name="selKind"][value="HC_FCST"]').click();
             VisitTrack('WarehouseLaborEfficiencyDashboard', 'MonthData', '');
         });
 
+        function InitSelYear() {
+            var url = "@Url.Action("QueryYear", "Query")";
+            var para = {
+                dataType: "MonthData"
+            };
+            AjaxPost(url,
+                JSON.stringify(para),
+                true,
+                function (result) {
+                    if (!result.bok) {
+                        BootstrapDialog.alert(result.msg);
+                        return;
+                    }
+                    var yearList = result.data || [];
+                    //var warehouseList = result.extra || [];
+
+                    $("#idSelYear").select2({
+                        data: yearList,
+                        placeholder: "choose...",
+                        width: "120px"
+                    });
+                });
+        }
         function InitData() {
             //$("#frmQueryMonthData").validate();
             $("#btnDownload").click(function () {
@@ -117,11 +151,16 @@
                 DownloadMonthData(selKind);
             });
 
+            selectorYear = new TSelect2Helper($("#idSelYear"));
+            selectorYear.SetSelectChangeCallback(RefSelYear);
+
             $('input[name="selKind"]').on('change', function () {
                 var $sel = $(this);
                 if ($sel.is(":checked")) {
+                    var selIt = selectorYear.GetCurSelData();
                     var url = "@Url.Action("QueryMonthData", "Query")";
                     var para = {
+                        'selYear': selIt.text,
                         'selKind': $sel.val()
                     };
 
@@ -151,6 +190,10 @@
                         });
                 }
             });
+        }
+
+        function RefSelYear() {
+            $('input:radio[name="selKind"][value="HC_FCST"]').click();
         }
 
         /////////////////////////////////////////////////////
@@ -185,7 +228,7 @@
                     }
                 }
             };
-            $.each(weekData.data, function (index, value) {                
+            $.each(weekData.data, function (index, value) {
                 var objChart = {
                     'name': value.name,
                     'type': 'bar',
@@ -198,7 +241,7 @@
             });
             return chartData;
         }
-        function RefreshChart() {            
+        function RefreshChart() {
             var xCols = MakexAxis(weekData.columns);
             var selKind = $('input[name="selKind"]:checked').val();
             var markline = null;

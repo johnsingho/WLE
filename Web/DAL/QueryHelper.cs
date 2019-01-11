@@ -61,10 +61,10 @@ namespace WarehouseLaborEfficiencyWeb.DAL
             }
         }
         
-        internal static List<TSelectOpt> GetWeekdateList(string selYear)
+        internal static List<TSelectOpt> GetWeekdateList(int selYear)
         {
-            var nYear = 0;
-            int.TryParse(selYear, out nYear);
+            //var nYear = 0;
+            //int.TryParse(selYear, out nYear);
             using (var context = new WarehouseLaborEffEntities())
             {
                 var lst = (from c in context.v_tbl_weekdata
@@ -73,7 +73,7 @@ namespace WarehouseLaborEfficiencyWeb.DAL
                            select g.FirstOrDefault()
                           ).AsEnumerable();
                 var qWeekData = (from x in lst
-                                 where x.Date.Year == nYear
+                                 where x.Date.Year == selYear
                                  select x).Select(x => new TSelectOpt
                                  {
                                      id = DateTimeHelper.GetLocalDateStrNull(x.Date),
@@ -104,7 +104,7 @@ namespace WarehouseLaborEfficiencyWeb.DAL
                 {
                     var lst = (from c in context.v_tbl_monthdata
                                select c.Date
-                              ).AsQueryable()
+                              ).AsEnumerable()
                               .Select(x => x.Date.ToString("yyyy"))
                                .Distinct().OrderByDescending(x => x);
                     return lst.ToList();
@@ -116,7 +116,7 @@ namespace WarehouseLaborEfficiencyWeb.DAL
                 {
                     var lst = (from c in context.v_tbl_hcdata
                                select c.Date
-                              ).AsQueryable()
+                              ).AsEnumerable()
                               .Select(x => x.Date.ToString("yyyy"))
                                .Distinct().OrderByDescending(x => x);
                     return lst.ToList();
@@ -128,7 +128,7 @@ namespace WarehouseLaborEfficiencyWeb.DAL
                 {
                     var lst = (from c in context.v_tbl_hcdata_rate
                                select c.Date
-                              ).AsQueryable()
+                              ).AsEnumerable()
                               .Select(x => x.Date.ToString("yyyy"))
                                .Distinct().OrderByDescending(x => x);
                     return lst.ToList();
@@ -277,7 +277,7 @@ namespace WarehouseLaborEfficiencyWeb.DAL
             }
         }
 
-        internal static TDatatables GetMonthData(string selKind)
+        internal static TDatatables GetMonthData(int selYear, string selKind)
         {
             var res = new TDatatables();
             if (string.IsNullOrEmpty(selKind))
@@ -289,9 +289,10 @@ namespace WarehouseLaborEfficiencyWeb.DAL
                                               ,`Warehouse`
                                               ,{0}
                                       from V_Tbl_MonthData
+                                      where year(`Date`)={1}
                                       order by `Date`,Warehouse
                                     "
-                                    , selKind
+                                    , selKind, selYear
                                     );
             MySqlParameter[] parameter = null;
             var ds = MySqlClientHelper.ExecuteQuery(CustomConfig.ConnStrMain, sql, parameter);
@@ -391,10 +392,10 @@ namespace WarehouseLaborEfficiencyWeb.DAL
             return lst;
         }
 
-        public static List<TMapDatatables> GetHCData(string bus)
+        public static List<TMapDatatables> GetHCData(string selYear, string bus)
         {
             var buList = bus.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-            return GetHCDataAll(buList);
+            return GetHCDataAll(selYear, buList);
         }
         public static object QueryHCDataAll(string date, string warehouse)
         {
@@ -437,7 +438,7 @@ namespace WarehouseLaborEfficiencyWeb.DAL
             }
         }
 
-        private static List<TMapDatatables> GetHCDataAll(string[] buList)
+        private static List<TMapDatatables> GetHCDataAll(string selYear, string[] buList)
         {
             var items = new List<TMapDatatables>();
             if(null==buList || 0 == buList.Length) { return items; }
@@ -446,15 +447,17 @@ namespace WarehouseLaborEfficiencyWeb.DAL
                 items.Add(new TMapDatatables
                     {
                         name = bu,
-                        entry = GetHCDataBu(bu)
+                        entry = GetHCDataBu(selYear, bu)
                     }
                 );
             }
             return items;
         }
 
-        private static TDatatables GetHCDataBu(string bu)
+        private static TDatatables GetHCDataBu(string selYear, string bu)
         {
+            int nYear = 0;
+            int.TryParse(selYear, out nYear);
             var res = new TDatatables();
             res.kinds = GetHCRows();
 
@@ -464,18 +467,21 @@ namespace WarehouseLaborEfficiencyWeb.DAL
                            where 0 == string.Compare(c.Warehouse, bu, true)
                            orderby c.Date
                            select c
-                           ).ToList().Select(c => new
-                           {
-                               Date = DateTimeHelper.GetLocalDateStr(c.Date).Substring(0, 7),/*yyyy-MM*/
-                               c.System_Clerk,
-                               c.Receiving,
-                               c.Shipping,
-                               c.RTV_Scrap,
-                               c.Inventory_Control,
-                               c.Overall,
-                               c.Forklift_Driver,
-                               c.Total
-                           });
+                           ).AsEnumerable();
+                var items = from c in qry
+                            where c.Date.Year == nYear
+                            select new {
+                                Date = DateTimeHelper.GetLocalDateStr(c.Date).Substring(0, 7),/*yyyy-MM*/
+                                c.System_Clerk,
+                                c.Receiving,
+                                c.Shipping,
+                                c.RTV_Scrap,
+                                c.Inventory_Control,
+                                c.Overall,
+                                c.Forklift_Driver,
+                                c.Total
+                            };
+
                 res.data = qry.ToList();
             }
          
@@ -484,12 +490,16 @@ namespace WarehouseLaborEfficiencyWeb.DAL
         #endregion
 
         #region HCRate
-        public static List<string> GetHCRateMonth()
+        public static List<string> GetHCRateMonth(string selYear)
         {
+            int nYear = 0;
+            int.TryParse(selYear, out nYear);
             using (var context = new WarehouseLaborEffEntities())
             {
                 var qry = (from x in context.v_tbl_hcdata
-                           select x.Date).Distinct().AsEnumerable().Select(x => x.ToString("yyyy-MM"));
+                           select x.Date).Distinct().AsEnumerable()
+                           .Where(x=>x.Year==nYear)
+                           .Select(x => x.ToString("yyyy-MM"));
                 return qry.ToList();
             }
         }

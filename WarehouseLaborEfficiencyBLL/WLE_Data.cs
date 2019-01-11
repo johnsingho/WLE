@@ -232,7 +232,7 @@ namespace WarehouseLaborEfficiencyBLL
             }
         }
 
-        public static byte[] GetHCData_Down(string bus)
+        public static byte[] GetHCData_Down(string bus, string selYear)
         {
             byte[] bys = null;
             MySqlParameter[] parameter = null;
@@ -251,8 +251,10 @@ namespace WarehouseLaborEfficiencyBLL
                                           ,Forklift_Driver
                                           ,Total
                                     FROM V_Tbl_HCData
+                                    where year(Date)={0}
                                     order by Date
                                     "
+                                    , selYear
                                     );
             }
             else
@@ -280,9 +282,10 @@ namespace WarehouseLaborEfficiencyBLL
                                           ,Total
                                     FROM V_Tbl_HCData
                                     where Warehouse in ({0})
+                                    and year(Date)={1}
                                     order by Date
                                     ",
-                                    sb.ToString()
+                                    sb.ToString(), selYear
                                     );
             }
             

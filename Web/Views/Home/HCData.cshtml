@@ -38,10 +38,10 @@
 
 <div class="wrapper">
     @using (Html.BeginForm("QueryHCData", "Query",
-                           FormMethod.Post, new { @id = "frmQueryHCData" }))
+                                   FormMethod.Post, new { @id = "frmQueryHCData" }))
     {
         <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-7">
                 <span class="my-bigger">WareHouse</span>
                 <span>
                     <select id="idSelBu" required multiple>
@@ -50,7 +50,15 @@
                     @Html.Hidden("warehouses")
                 </span>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-2">
+                <span class="my-bigger">Year</span>
+                <span>
+                    <select id="idSelYear" name="selYear" required>
+                        <option></option>
+                    </select>
+                </span>
+            </div>
+            <div class="col-md-3">
                 @Html.ValidationSummary(false, "", new { @class = "text-danger" })
                 <button class="btn btn-info btn-sm" type="submit" id="btnQuery">Query</button>
                 <button class="btn btn-info btn-sm" type="button" id="btnQueryAll">Query All</button>
@@ -70,8 +78,11 @@
 
 @section Scripts{
     <script>
+        var selectorYear = null;
+
         $(function () {
             InitData();
+            InitSelYear();
             setTimeout(function () {
                 DoQueryAll();
             }, 800);
@@ -86,6 +97,9 @@
             $("#btnQueryAll").click(function () {
                 DoQueryAll();
             });
+
+            selectorYear = new TSelect2Helper($("#idSelYear"));
+            //selectorYear.SetSelectChangeCallback(RefSelYear);
 
             var url = "@Url.Action("GetWarehouseInfo", "Query")";
             AjaxPost(url,
@@ -127,6 +141,30 @@
             });
         }
 
+
+        function InitSelYear() {
+            var url = "@Url.Action("QueryYear", "Query")";
+            var para = {
+                dataType: "HCData"
+            };
+            AjaxPost(url,
+                JSON.stringify(para),
+                true,
+                function (result) {
+                    if (!result.bok) {
+                        BootstrapDialog.alert(result.msg);
+                        return;
+                    }
+                    var yearList = result.data || [];
+                    //var warehouseList = result.extra || [];
+
+                    $("#idSelYear").select2({
+                        data: yearList,
+                        placeholder: "choose...",
+                        width: "120px"
+                    });
+                });
+        }
         function DoQueryAll() {
             var $ctlSelBu = $('#idSelBu');
             $ctlSelBu.find('option').prop('selected', 'selected');

@@ -47,6 +47,7 @@ function DownloadData(dType, $frm) {
     if ($frm.valid()) {
         var startW = GetSelect2Sel($('#idSelStartWeek'));
         var endWeek = GetSelect2Sel($('#idSelEndWeek'));
+        var selYear = GetSelect2Sel($('#idSelYear'));
         var url = "/Query/DownloadData";
         var para = {
             dType: dType,

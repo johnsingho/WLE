@@ -60,7 +60,7 @@ namespace WarehouseLaborEfficiencyWeb.Controllers
         }
 
         [HttpPost]
-        public ActionResult GetWeekDataInitInfo(string selYear)
+        public ActionResult GetWeekDataInitInfo(int selYear)
         {
             var lstData = QueryHelper.GetWeekdateList(selYear);
             var obj = new TRes
@@ -153,9 +153,9 @@ namespace WarehouseLaborEfficiencyWeb.Controllers
         }
 
         [HttpPost]
-        public ActionResult QueryMonthData(string selKind)
+        public ActionResult QueryMonthData(int selYear, string selKind)
         {
-            var dat = QueryHelper.GetMonthData(selKind);
+            var dat = QueryHelper.GetMonthData(selYear, selKind);
             var obj = new TRes
             {
                 bok = true,
@@ -199,9 +199,9 @@ namespace WarehouseLaborEfficiencyWeb.Controllers
 
         #region HCData        
         [HttpPost]
-        public ActionResult QueryHCData(string warehouses)
+        public ActionResult QueryHCData(string selYear, string warehouses)
         {
-            var dat = QueryHelper.GetHCData(warehouses);
+            var dat = QueryHelper.GetHCData(selYear, warehouses);
             var obj = new TRes
             {
                 bok = true,
@@ -247,9 +247,9 @@ namespace WarehouseLaborEfficiencyWeb.Controllers
 
         #region HCRate
         [HttpPost]
-        public ActionResult GetHCRateMonth()
+        public ActionResult GetHCRateMonth(string selYear)
         {
-            var lstData = QueryHelper.GetHCRateMonth();
+            var lstData = QueryHelper.GetHCRateMonth(selYear);
             var obj = new TRes
             {
                 bok = true,
@@ -329,7 +329,7 @@ namespace WarehouseLaborEfficiencyWeb.Controllers
 
 
         [HttpGet]
-        public ActionResult DownloadData(string dType, string bu, string startWeek, string endWeek)
+        public ActionResult DownloadData(string dType, string bu, string startWeek, string endWeek, string selYear)
         {
             if (!CommonInfo.HasRight(TRightID.DOWNLOAD))
             {
@@ -342,7 +342,7 @@ namespace WarehouseLaborEfficiencyWeb.Controllers
                 //case "MonthData":
                 //    return DownloadData_MonthData(bu, startWeek, endWeek);
                 case "HCData":
-                    return DownloadData_HCData(bu);
+                    return DownloadData_HCData(bu, selYear);
             }
             return new EmptyResult();
         }
@@ -369,10 +369,10 @@ namespace WarehouseLaborEfficiencyWeb.Controllers
             return File(bys, ExcelType.XLSX_MIME, fn);
         }
         
-        private ActionResult DownloadData_HCData(string bu)
+        private ActionResult DownloadData_HCData(string bu, string selYear)
         {
             var fn = string.Format("{0}_{1}.xlsx", "HCData", DateTimeHelper.GetToday());
-            var bys = WLE_Data.GetHCData_Down(bu);
+            var bys = WLE_Data.GetHCData_Down(bu, selYear);
             if (null == bys) { return new EmptyResult(); }
             return File(bys, ExcelType.XLSX_MIME, fn);
         }

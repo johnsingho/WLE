@@ -169,13 +169,14 @@
                     //invalid
                     return false;
                 } else {
+                    var selIt = selectorYear.GetCurSelData();
                     var url = $(this).attr("action");
                     AjaxPostForm(url, '#frmQueryWeekData', true, function (resp) {
                         if (resp.bok) {
                             EmptyTable();
                             weekData = {
                                 'columns': resp.data.columns,
-                                'selYear':selectorYear.GetCurSelData(),
+                                'selYear': selIt.text,
                                 'kinds': resp.data.kinds,
                                 'data': JSON.parse(resp.data.data)
                             };
