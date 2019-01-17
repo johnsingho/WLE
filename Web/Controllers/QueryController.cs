@@ -60,7 +60,7 @@ namespace WarehouseLaborEfficiencyWeb.Controllers
         }
 
         [HttpPost]
-        public ActionResult GetWeekDataInitInfo(int selYear)
+        public ActionResult GetWeekDataInitInfo(string selYear)
         {
             var lstData = QueryHelper.GetWeekdateList(selYear);
             var obj = new TRes

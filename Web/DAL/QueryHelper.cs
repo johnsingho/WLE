@@ -61,10 +61,8 @@ namespace WarehouseLaborEfficiencyWeb.DAL
             }
         }
         
-        internal static List<TSelectOpt> GetWeekdateList(int selYear)
+        internal static List<TSelectOpt> GetWeekdateList(string selYear)
         {
-            //var nYear = 0;
-            //int.TryParse(selYear, out nYear);
             using (var context = new WarehouseLaborEffEntities())
             {
                 var lst = (from c in context.v_tbl_weekdata
@@ -72,14 +70,27 @@ namespace WarehouseLaborEfficiencyWeb.DAL
                            orderby g.Key
                            select g.FirstOrDefault()
                           ).AsEnumerable();
-                var qWeekData = (from x in lst
-                                 where x.Date.Year == selYear
-                                 select x).Select(x => new TSelectOpt
-                                 {
-                                     id = DateTimeHelper.GetLocalDateStrNull(x.Date),
-                                     text = DateTimeHelper.GetLocalDateStrNull(x.Date)
-                                 });
-                return qWeekData.ToList();
+                var nYear = 0;
+                if (int.TryParse(selYear, out nYear))
+                {
+                    var qWeekData = (from x in lst
+                                     where x.Date.Year == nYear
+                                     select x).Select(x => new TSelectOpt
+                                     {
+                                         id = DateTimeHelper.GetLocalDateStrNull(x.Date),
+                                         text = DateTimeHelper.GetLocalDateStrNull(x.Date)
+                                     });
+                    return qWeekData.ToList();
+                }else
+                {
+                    var qWeekData = (from x in lst
+                                     select x).Select(x => new TSelectOpt
+                                     {
+                                         id = DateTimeHelper.GetLocalDateStrNull(x.Date),
+                                         text = DateTimeHelper.GetLocalDateStrNull(x.Date)
+                                     });
+                    return qWeekData.ToList();
+                }
             }
         }
 
@@ -95,7 +106,10 @@ namespace WarehouseLaborEfficiencyWeb.DAL
                               ).AsEnumerable()
                               .Select(x => x.Date.ToString("yyyy"))
                                .Distinct().OrderByDescending(x => x);
-                    return lst.ToList();
+                    var lstYear = new List<string>();
+                    lstYear.Add("All");
+                    lstYear.AddRange(lst);
+                    return lstYear;
                 }
             }
             else if (dataType.Equals("monthdata", StringComparison.InvariantCultureIgnoreCase))
@@ -482,7 +496,7 @@ namespace WarehouseLaborEfficiencyWeb.DAL
                                 c.Total
                             };
 
-                res.data = qry.ToList();
+                res.data = items.ToList();
             }
          
             return res;
