@@ -80,7 +80,13 @@ namespace WarehouseLaborEfficiencyWeb.Controllers
             try
             {
                 UserBasicInfo domainUser = null;
-                if (!CommonInfo.IsLogin())
+                if("guest".Equals(ad, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    //特殊帐号
+                    var user = SysUserInfo.GetUserInfoByAd("guest");
+                    domainUser = new UserBasicInfo(user.id, user.FullName, user.Email, user.FullName, user.IsAdmin);
+                }
+                else if(!CommonInfo.IsLogin())
                 {
                     var user = SysUserInfo.GetUserInfoByAd(ad);
                     if (user == null)
